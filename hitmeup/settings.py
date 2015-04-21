@@ -41,6 +41,9 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    # Vendor
+    'django_jinja',
+
     # Custom
     'hitmeup',
     'staticpages',
@@ -60,6 +63,32 @@ MIDDLEWARE_CLASSES = (
 ROOT_URLCONF = 'hitmeup.urls'
 
 TEMPLATES = [
+    {
+        'BACKEND': "django_jinja.backend.Jinja2",
+        'APP_DIRS': True,
+        'OPTIONS': {
+            'match_extension': '.html',
+            "match_regex": r"^(?!admin/).*",
+
+            "newstyle_gettext": True,
+            "extensions": [
+                "jinja2.ext.do",
+                "jinja2.ext.loopcontrols",
+                "jinja2.ext.with_",
+                "jinja2.ext.i18n",
+                "jinja2.ext.autoescape",
+                "django_jinja.builtins.extensions.CsrfExtension",
+                "django_jinja.builtins.extensions.CacheExtension",
+                "django_jinja.builtins.extensions.TimezoneExtension",
+                "django_jinja.builtins.extensions.UrlsExtension",
+                "django_jinja.builtins.extensions.StaticFilesExtension",
+                "django_jinja.builtins.extensions.DjangoFiltersExtension",
+            ],
+            "autoescape": True,
+            "auto_reload": DEBUG,
+            "translation_engine": "django.utils.translation",
+        }
+    },
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [],
