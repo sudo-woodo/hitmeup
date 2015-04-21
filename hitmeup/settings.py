@@ -46,6 +46,7 @@ INSTALLED_APPS = (
 
     # Custom
     'hitmeup',
+    'navbar',
     'staticpages',
 )
 
@@ -58,7 +59,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.middleware.security.SecurityMiddleware',
-    'hitmeup.middleware.navbar.NavbarMiddleware',
+    'navbar.middleware.NavbarMiddleware',
 )
 
 ROOT_URLCONF = 'hitmeup.urls'

@@ -1,5 +1,7 @@
 from django.core.urlresolvers import resolve
-from hitmeup.config.navbar import entries
+
+from config import entries
+
 
 class NavbarMiddleware:
     def process_template_response(self, request, response):
