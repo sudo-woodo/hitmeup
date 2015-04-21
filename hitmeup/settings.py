@@ -58,6 +58,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.middleware.security.SecurityMiddleware',
+    'hitmeup.middleware.navbar.NavbarMiddleware',
 )
 
 ROOT_URLCONF = 'hitmeup.urls'
@@ -67,8 +68,7 @@ TEMPLATES = [
         'BACKEND': "django_jinja.backend.Jinja2",
         'APP_DIRS': True,
         'OPTIONS': {
-            'match_extension': '.html',
-            "match_regex": r"^(?!admin/).*",
+            'match_extension': '.jinja',
 
             "newstyle_gettext": True,
             "extensions": [
