@@ -1,8 +1,29 @@
+{% load static %}
+
 <html>
     <head>
         <title>{% block title %}{% endblock %}</title>
+
+        {# CSS - Vendor #}
+        <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+        <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap-theme.min.css">
+
+        {# CSS - Custom #}
+        <link rel="stylesheet" type="text/css" href="{% static 'hitmeup/css/base.css' %}">
+        {% for sheet in css %}
+            <link rel="stylesheet" type="text/css" href="{% static sheet %}">
+        {% endfor %}
     </head>
     <body>
         {% block content %}{% endblock %}
+
+        {# JS - Vendor #}
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+
+        {# JS - Custom #}
+        <script src="{% static 'hitmeup/js/base.js' %}"></script>
+        {% for script in js %}
+            <script src="{% static script %}"></script>
+        {% endfor %}
     </body>
 </html>
