@@ -46,7 +46,7 @@ INSTALLED_APPS = (
 
     # Custom
     'hitmeup',
-    'navbar',
+    'dynamic_components',
     'staticpages',
 )
 
@@ -59,10 +59,23 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.middleware.security.SecurityMiddleware',
-    'navbar.middleware.NavbarMiddleware',
 )
 
 ROOT_URLCONF = 'hitmeup.urls'
+
+CONTEXT_PROCESSORS = [
+    # Stock
+    "django.contrib.auth.context_processors.auth",
+    "django.template.context_processors.debug",
+    "django.template.context_processors.i18n",
+    "django.template.context_processors.media",
+    "django.template.context_processors.static",
+    "django.template.context_processors.tz",
+    "django.contrib.messages.context_processors.messages",
+
+    # Custom
+    'dynamic_components.context_processors.navbar',
+]
 
 TEMPLATES = [
     {
@@ -88,6 +101,7 @@ TEMPLATES = [
             "autoescape": True,
             "auto_reload": DEBUG,
             "translation_engine": "django.utils.translation",
+            'context_processors': CONTEXT_PROCESSORS,
         }
     },
     {
@@ -95,12 +109,7 @@ TEMPLATES = [
         'DIRS': [],
         'APP_DIRS': True,
         'OPTIONS': {
-            'context_processors': [
-                'django.template.context_processors.debug',
-                'django.template.context_processors.request',
-                'django.contrib.auth.context_processors.auth',
-                'django.contrib.messages.context_processors.messages',
-            ],
+            'context_processors': CONTEXT_PROCESSORS,
         },
     },
 ]
