@@ -5,7 +5,7 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 
-        <title>{% block title %}{% endblock %}</title>
+        <title>{% block title %}HitMeUp{% endblock %}</title>
         <meta name="description" content="HitMeUp">
 
         <link rel="shortcut icon" type="image/ico" href="{{ static('favicon.ico') }}"/>
@@ -14,6 +14,9 @@
         {# CSS - Vendor #}
         <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
         <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap-theme.min.css">
+        {% for sheet in ext_css %}
+            <link rel="stylesheet" type="text/css" href="{{ sheet }}">
+        {% endfor %}
 
         {# CSS - Custom #}
         <link rel="stylesheet" type="text/css" href="{{ static('hitmeup/css/base.css') }}">
@@ -29,7 +32,7 @@
         <![endif]-->
     </head>
     <body>
-        {% include 'navbar/navbar.jinja' %}
+        {% include 'navbar.jinja' %}
 
         {% block content %}{% endblock %}
 
@@ -37,6 +40,9 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/3.7.0/lodash.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+        {% for script in ext_js %}
+            <script src="{{ script }}"></script>
+        {% endfor %}
 
         {# JS - Custom #}
         <script src="{{ static('hitmeup/js/base.js') }}"></script>
