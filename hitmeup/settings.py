@@ -137,3 +137,9 @@ USE_TZ = True
 STATIC_ROOT = 'staticroot'
 
 STATIC_URL = '/static/'
+
+# Navigation
+
+from navigation import entries
+
+NAVBAR_ENTRIES = entries
