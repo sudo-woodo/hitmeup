@@ -1,6 +1,7 @@
 from django.core.urlresolvers import resolve, Resolver404
 from django.conf import settings
 
+#TODO documentation
 def navbar(request):
     # Get navbar config
     try:
