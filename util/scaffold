@@ -1,0 +1,74 @@
+#!/bin/bash
+
+# Scaffolds an app by generating the folders required.
+
+indent="    "
+
+usage() {
+  echo "Usage: scaffold [app directory]"
+  echo
+  echo "For example:"
+  echo "\$ scaffold staticpages"
+}
+
+# If not one arg, print usage
+if [[ "$#" != 1 ]]; then
+  usage
+  exit 1
+fi
+
+appname=$1
+
+if [[ "$appname" =~ -(h|-help) ]]; then
+  usage
+  exit 0
+fi
+
+# Format slashes
+dir="${PWD%%/}/$appname"
+dir="${dir%%/}"
+
+if [[ ! -d "$dir" ]]; then
+  echo "ERROR: App directory for $appname does not exist!"
+  echo "TRIED: $dir"
+  echo
+  usage
+  exit 1
+fi
+
+tomake=(
+  "$dir/static"
+  "$dir/static/$appname"
+  "$dir/static/$appname/js"
+  "$dir/static/$appname/css"
+  "$dir/static/$appname/img"
+  "$dir/templates"
+  "$dir/templates/$appname"
+)
+
+# Make dirs
+for i in ${tomake[@]}; do
+  echo "Making directory ${i}..."
+  if [[ -d "$i" ]]; then
+    echo "${indent}Skipping - directory already exists."
+  else
+    mkdir $i
+  fi
+done
+
+totouch=(
+  "$dir/urls.py"
+)
+
+# Touch files
+for i in ${totouch[@]}; do
+  echo "Making file ${i}..."
+  if [[ -f "$i" ]]; then
+    echo "${indent}Skipping - file already exists."
+  else
+    touch $i
+  fi
+done
+
+echo
+echo "Done!"
