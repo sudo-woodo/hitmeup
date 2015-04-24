@@ -3,11 +3,15 @@
     <head>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+        {# Don't let mobile users resize #}
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 
+        {# Metadata #}
         <title>{% block title %}HitMeUp{% endblock %}</title>
         <meta name="description" content="HitMeUp">
 
+        {# Icons #}
         <link rel="shortcut icon" type="image/ico" href="{{ static('favicon.ico') }}"/>
         <link rel="apple-touch-icon" href="{{ static('apple-touch-icon.png') }}">
 
@@ -32,8 +36,10 @@
         <![endif]-->
     </head>
     <body>
+        {# Stick the navbar in #}
         {% include 'navbar.jinja' %}
 
+        {# Where the main content of the page goes #}
         {% block content %}{% endblock %}
 
         {# JS - Vendor #}
