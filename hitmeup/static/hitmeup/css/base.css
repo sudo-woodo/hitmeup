@@ -2,3 +2,11 @@ body {
     /* For fixed navbar */
     padding-top: 50px;
 }
+
+.navbar-brand {
+    padding: 5px;
+}
+
+.navbar-brand .logo {
+    height: 100%;
+}
