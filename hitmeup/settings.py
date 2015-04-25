@@ -152,3 +152,20 @@ STATIC_URL = '/static/'
 from navigation import entries
 
 NAVBAR_ENTRIES = entries
+
+# Scaffold command
+
+SCAFFOLDAPP_DIRS = [
+    (os.path.join('{app}', 'static'), "holds project static assets"),
+    (os.path.join('{app}', 'static', '{app}'), "holds {app}'s static assets"),
+    (os.path.join('{app}', 'static', '{app}', 'js'), "holds {app}'s Javascript files"),
+    (os.path.join('{app}', 'static', '{app}', 'css'), "holds {app}'s CSS files"),
+    (os.path.join('{app}', 'static', '{app}', 'img'), "holds {app}'s image files"),
+    (os.path.join('{app}', 'templates'), "holds project templates"),
+    (os.path.join('{app}', 'templates', '{app}'), "holds {app}'s templates"),
+    ]
+
+SCAFFOLDAPP_FILES = [
+    (os.path.join('{app}', 'urls.py'), "describes {app}'s routes"),
+]
+
