@@ -6,8 +6,6 @@ from StringIO import StringIO
 from django.core.management import call_command
 from django.core.management.base import CommandError
 from django.test import TestCase
-
-# Create your tests here.
 from hitmeup import settings
 
 
