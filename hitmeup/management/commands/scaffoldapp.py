@@ -1,6 +1,8 @@
 from django.core.management.base import BaseCommand, CommandError
+from django.conf import settings
 import os
 import errno
+
 
 class Command(BaseCommand):
     help = "Scaffolds an app directory with the typical directories and files you need."
@@ -8,30 +10,18 @@ class Command(BaseCommand):
 
     TABS = "    "
 
-    DIRS = [
-        (os.path.join('{app}', 'static'), "holds project static assets"),
-        (os.path.join('{app}', 'static', '{app}'), "holds {app}'s static assets"),
-        (os.path.join('{app}', 'static', '{app}', 'js'), "holds {app}'s Javascript files"),
-        (os.path.join('{app}', 'static', '{app}', 'css'), "holds {app}'s CSS files"),
-        (os.path.join('{app}', 'static', '{app}', 'img'), "holds {app}'s image files"),
-        (os.path.join('{app}', 'templates'), "holds project templates"),
-        (os.path.join('{app}', 'templates', '{app}'), "holds {app}'s templates"),
-    ]
-
-    FILES = [
-        (os.path.join('{app}', 'urls.py'), "describes {app}'s routes")
-    ]
-
     def add_arguments(self, parser):
         parser.add_argument('app', metavar='directory', help="the directory to scaffold")
 
     def handle(self, *args, **options):
         app = options['app']
 
+        # check if folder exists
         if not os.path.isdir(app):
             raise CommandError("App directory \"%s\" does not exist." % app)
 
-        for path, desc in self.DIRS:
+        # generate dirs
+        for path, desc in settings.SCAFFOLDAPP_DIRS:
             path = path.format(app=app)
             desc = desc.format(app=app)
 
@@ -41,14 +31,22 @@ class Command(BaseCommand):
             except OSError as e:
                 if e.errno == errno.EEXIST and os.path.isdir(path):
                     self.stdout.write(self.TABS + "%s already exists." % path)
-                else:
-                    raise
+                else: raise
 
-        for path, desc in self.FILES:
+        # generate files
+        for path, desc in settings.SCAFFOLDAPP_FILES:
             path = path.format(app=app)
             desc = desc.format(app=app)
 
             self.stdout.write("Making file {path}, which {desc}...".format(path=path, desc=desc))
+            # make containing dir
+            container = os.path.dirname(path)
+            try:
+                os.makedirs(container)
+            except OSError as e:
+                if e.errno == errno.EEXIST and os.path.isdir(container): pass
+                else: raise
+            # make file
             try:
                 open(path).close()
             except IOError:
