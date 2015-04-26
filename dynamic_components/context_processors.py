@@ -22,7 +22,7 @@ def navbar(request):
     try:
         entries = settings.NAVBAR_ENTRIES
     except AttributeError:
-        return
+        return {}
 
     # Mark the active view
     try:
