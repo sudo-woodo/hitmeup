@@ -14,4 +14,5 @@ urlpatterns = [
 
     url(r'^admin/', include(admin.site.urls)),
     url(r'^', include('staticpages.urls', namespace='staticpages')),
+    url(r'^googlelogin/', include('google_login.urls', namespace='googlelogin'))
 ]
