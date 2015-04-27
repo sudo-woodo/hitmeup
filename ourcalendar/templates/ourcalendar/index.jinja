@@ -1,0 +1,67 @@
+    <!DOCTYPE html>
+    <html>
+
+    <head lang="en">
+      <link rel='stylesheet' href='http://fullcalendar.io/js/fullcalendar-2.3.1/fullcalendar.min.css' />
+    <link rel="stylesheet" type="text/css" href="http://getbootstrap.com/dist/css/bootstrap.min.css">
+
+
+    <script src='http://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
+    <script src='http://cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment.min.js'></script>
+    <script src='http://fullcalendar.io/js/fullcalendar-2.3.1/fullcalendar.min.js'></script>
+        <meta charset="UTF-8">
+        <title>test_calendar</title>
+        <script>
+            {#        var customizedTitle= "{{ eventobject.title }}";#}
+            {#          var customizedTime= "{{ eventobject.start_time }}";#}
+
+            var events = [
+                {
+                    title: 'Eat banana',
+                    start: '2015-04-20'
+                },
+                {
+                    title: 'Eat chocolate',
+                    start: '2015-04-03T10:00:00',
+                    end: '2015-04-03T11:00:00'
+                }
+                {#                title: customizedTitle,#}
+                {#                start: '2015-04-06'#}
+                {#            }#}
+            ];
+            var prevClick;
+            $(document).ready(function() {
+
+                // page is now ready, initialize the calendar...
+
+                $('#calendar').fullCalendar({
+                    editable: true,
+                    // put your options and callbacks here
+                    header: {
+                        left: 'prev,next prevYear,nextYear',
+                        center: 'title',
+                        right: 'today month,agendaWeek,agendaDay'
+                    },
+                    dayClick: function() {
+                        alert('a day has been clicked!');
+                        if (prevClick)
+                            $(prevClick).css('background-color', 'white');
+                        $(this).css('background-color', 'rgba(204,255,249,0.3)');
+                        prevClick = this;
+
+
+                    },
+                    events: events
+                })
+            });
+        </script>
+    </head>
+    <body>
+    <div id='calendar'>
+    </div>
+{#{% for event in Event.objects.all()%}#}
+{#    <p>{{ event.title }} </p>#}
+{#{% endfor %}#}
+
+    </body>
+    </html>
