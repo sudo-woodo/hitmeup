@@ -19,10 +19,7 @@ def navbar(request):
     """
 
     # Get navbar config
-    try:
-        entries = settings.NAVBAR_ENTRIES
-    except AttributeError:
-        return {}
+    entries = getattr(settings, 'NAVBAR_ENTRIES', [])
 
     # Mark the active view
     try:
