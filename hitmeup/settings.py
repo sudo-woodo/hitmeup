@@ -43,6 +43,7 @@ INSTALLED_APPS = (
 
     # Vendor
     'django_jinja',
+    'social.apps.django_app.default',
 
     # Custom
     'hitmeup',
@@ -52,6 +53,7 @@ INSTALLED_APPS = (
 )
 
 MIDDLEWARE_CLASSES = (
+    # Stock
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -60,6 +62,9 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.middleware.security.SecurityMiddleware',
+
+    # Vendor
+    'social.apps.django_app.middleware.SocialAuthExceptionMiddleware',
 )
 
 ROOT_URLCONF = 'hitmeup.urls'
@@ -73,6 +78,10 @@ CONTEXT_PROCESSORS = [
     "django.template.context_processors.static",
     "django.template.context_processors.tz",
     "django.contrib.messages.context_processors.messages",
+
+    # Vendor
+    'social.apps.django_app.context_processors.backends',
+    'social.apps.django_app.context_processors.login_redirect',
 
     # Custom
     'dynamic_components.context_processors.navbar',
@@ -170,3 +179,16 @@ SCAFFOLDAPP_FILES = [
     (os.path.join('{app}', 'urls.py'), "describes {app}'s routes"),
 ]
 
+# Auth
+
+SOCIAL_AUTH_URL_NAMESPACE = 'social'
+
+AUTHENTICATION_BACKENDS = (
+    'social.backends.google.GoogleOAuth2',
+)
+
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '799523529172-b4d7a9mrgk58b2at210rg9kvcabn4fdj.apps.googleusercontent.com'
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = 'lVGLEcs_CGmYiNQCu81zpKy7'
+SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = [
+    'https://www.googleapis.com/auth/calendar.readonly',
+]

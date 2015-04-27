@@ -5,5 +5,11 @@
 {% endblock %}
 
 {% block content %}
-    Stuff
+    <a href="{{ url('social:begin', 'google-oauth2') }}?next={{ request.path }}">Login with Google</a>
+    <br />
+    <br />
+    {{ params }}
+    <br />
+    <br />
+    {{ data }}
 {% endblock %}
