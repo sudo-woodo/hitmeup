@@ -21,7 +21,7 @@ class Command(BaseCommand):
             raise CommandError("App directory \"%s\" does not exist." % app)
 
         # generate dirs
-        for path, desc in settings.SCAFFOLDAPP_DIRS:
+        for path, desc in getattr(settings, 'SCAFFOLDAPP_DIRS', []):
             path = path.format(app=app)
             desc = desc.format(app=app)
 
@@ -34,7 +34,7 @@ class Command(BaseCommand):
                 else: raise
 
         # generate files
-        for path, desc in settings.SCAFFOLDAPP_FILES:
+        for path, desc in getattr(settings, 'SCAFFOLDAPP_FILES', []):
             path = path.format(app=app)
             desc = desc.format(app=app)
 

@@ -6,7 +6,4 @@ def home(request):
         'css': [
             'staticpages/css/home.css'
         ],
-        'js_data': {
-            'hello': ['world', 1]
-        }
     })
