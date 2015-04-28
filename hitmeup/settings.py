@@ -164,7 +164,7 @@ SCAFFOLDAPP_DIRS = [
     (os.path.join('{app}', 'static', '{app}', 'img'), "holds {app}'s image files"),
     (os.path.join('{app}', 'templates'), "holds project templates"),
     (os.path.join('{app}', 'templates', '{app}'), "holds {app}'s templates"),
-    ]
+]
 
 SCAFFOLDAPP_FILES = [
     (os.path.join('{app}', 'urls.py'), "describes {app}'s routes"),
