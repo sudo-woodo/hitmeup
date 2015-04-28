@@ -13,7 +13,7 @@ urlpatterns = [
     # url(r'^blog/', include('blog.urls')),
 
     url(r'^admin/', include(admin.site.urls)),
-    url(r'^calendar/', include('ourcalendar.urls')),
+    url(r'^calendar/', include('ourcalendar.urls', namespace='calendar')),
     url(r'^', include('staticpages.urls', namespace='staticpages')),
 
 ]
