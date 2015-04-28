@@ -8,8 +8,8 @@ def calendar(request):
     for c in Calendar.objects.all():
         events = Event.objects.filter(calendar=c).values('start', 'end', 'title')
         for e in events:
-            e['start'] = e['start'].strftime('%Y-%m-%d %H:%M:%S')
-            e['end'] = e['end'].strftime('%Y-%m-%d %H:%M:%S')
+            e['start'] = e['start'].strftime('%Y-%m-%dT%H:%M:%S')
+            e['end'] = e['end'].strftime('%Y-%m-%dT%H:%M:%S')
             e['color'] = c.color
         calendars[c.title] = list(events)
 
