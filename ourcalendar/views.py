@@ -1,9 +1,18 @@
 from django.shortcuts import render
-from django.core import serializers
-from .models import Event
+from .models import Event, Calendar
 
 
 def calendar(request):
+    calendars = {}
+
+    for c in Calendar.objects.all():
+        events = Event.objects.filter(calendar=c).values('start', 'end', 'title')
+        for e in events:
+            e['start'] = e['start'].strftime('%Y-%m-%d %H:%M:%S')
+            e['end'] = e['end'].strftime('%Y-%m-%d %H:%M:%S')
+            e['color'] = c.color
+        calendars[c.title] = list(events)
+
     context = {
         'ext_css': [
             'http://fullcalendar.io/js/fullcalendar-2.3.1/fullcalendar.min.css',
@@ -19,7 +28,7 @@ def calendar(request):
             'ourcalendar/js/events.js',
         ],
         'js_data': {
-            'events': serializers.serialize('json', Event.objects.all()),
+            'calendars': calendars,
         },
     }
     return render(request, 'ourcalendar/calendar.jinja', context)
