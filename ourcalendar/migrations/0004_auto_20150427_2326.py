@@ -13,14 +13,4 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.AlterField(
-            model_name='event',
-            name='end',
-            field=models.DateTimeField(default=datetime.datetime(2015, 4, 27, 23, 26, 12, 118245, tzinfo=utc)),
-        ),
-        migrations.AlterField(
-            model_name='event',
-            name='start',
-            field=models.DateTimeField(default=datetime.datetime(2015, 4, 27, 23, 26, 12, 118206, tzinfo=utc)),
-        ),
     ]
