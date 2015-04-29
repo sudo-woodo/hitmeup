@@ -1,0 +1,25 @@
+{% extends "base.jinja" %}
+
+{% block title %}
+    Signup
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <h1>Sign Up for HitMeUp!</h1>
+        <form id="signup_form" method="post" action="{{ url('ourlogin:signup') }}"
+              enctype="multipart/form-data">
+
+            {% csrf_token %}
+
+            {% for field in signup_form %}
+                <div class="form-group">
+                    <label for="{{ field.id }}">{{ field.name|title }}</label>
+                        {{ field }}
+                </div>
+
+            {% endfor %}
+            <button type="submit" name="submit" class="btn btn-default">Sign Up</button>
+        </form>
+    </div>
+{% endblock %}

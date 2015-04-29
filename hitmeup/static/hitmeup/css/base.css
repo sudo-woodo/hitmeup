@@ -8,5 +8,6 @@ body {
 }
 
 .navbar-brand .logo {
-    height: 100%;
+    width: 100px;
+    height: auto;
 }
