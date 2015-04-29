@@ -17,6 +17,7 @@
                     $(prevClick).css('background-color', 'white');
                 $(this).css('background-color', 'rgba(204,255,249,0.3)');
                 prevClick = this;
+                $("#myModal").modal('show');
             },
             eventClick: function(event) {
                 alert('Location: ' + event.location + '\nDescription: ' + event.description);
