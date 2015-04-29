@@ -20,7 +20,15 @@
                 $("#myModal").modal('show');
             },
             eventClick: function(event) {
-                alert('Location: ' + event.location + '\nDescription: ' + event.description);
+                $('#eventDetailModal .modal-title').text(event.title);
+                $('#eventDetailModal .modal-title').css('color', event.color);
+                $('#eventDetailModal #start-time').text(moment(event.start).format('LLL'));
+                $('#eventDetailModal #end-time').text(moment(event.end).format('LLL'));
+                $('#eventDetailModal #cal-title').text(event.calendar);
+                $('#eventDetailModal #location').text(event.location);
+                $('#eventDetailModal #description').text(event.description);
+                $('#eventDetailModal #attendees').text(event.users ? event.users : 'No one yet!');
+                $('#eventDetailModal').modal('show');
             },
             events: events,
             fixedWeekCount: false

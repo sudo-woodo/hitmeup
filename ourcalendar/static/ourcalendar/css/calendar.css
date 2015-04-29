@@ -1,3 +1,7 @@
 #calendar {
     margin-top: 2em;
 }
+
+#eventDetailModal dt {
+    margin-top: -0.1em;
+}

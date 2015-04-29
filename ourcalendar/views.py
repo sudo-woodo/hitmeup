@@ -11,6 +11,7 @@ def calendar(request):
             e['start'] = e['start'].strftime('%Y-%m-%dT%H:%M:%S')
             e['end'] = e['end'].strftime('%Y-%m-%dT%H:%M:%S')
             e['color'] = c.color
+            e['calendar'] = c.title
         calendars[c.title] = list(events)
 
     context = {
