@@ -1,3 +1,4 @@
+import copy
 from django.core.urlresolvers import resolve, Resolver404
 from django.conf import settings
 
@@ -19,15 +20,14 @@ def navbar(request):
     """
 
     # Get navbar config
-    entries = getattr(settings, 'NAVBAR_ENTRIES', [])
+    entries = copy.deepcopy(getattr(settings, 'NAVBAR_ENTRIES', []))
 
     # Mark the active view
     try:
         active = resolve(request.path).view_name
         for entry in entries:
-            if entry['view'] == active:
-                entry['active'] = True
+            entry['active'] = entry['view'] == active
     except Resolver404:
-        pass
+        active = None
 
-    return {'navbar_entries': entries}
+    return {'navbar_entries': entries, 'view': active}
