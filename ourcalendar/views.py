@@ -6,7 +6,7 @@ def calendar(request):
     calendars = {}
 
     for c in Calendar.objects.all():
-        events = Event.objects.filter(calendar=c).values('start', 'end', 'title')
+        events = Event.objects.filter(calendar=c).values('start', 'end', 'title', 'location', 'description', 'users')
         for e in events:
             e['start'] = e['start'].strftime('%Y-%m-%dT%H:%M:%S')
             e['end'] = e['end'].strftime('%Y-%m-%dT%H:%M:%S')
