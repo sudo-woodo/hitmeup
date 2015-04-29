@@ -14,6 +14,6 @@ urlpatterns = [
 
     url(r'^admin/', include(admin.site.urls)),
     url(r'^', include('staticpages.urls', namespace='staticpages')),
-    url(r'^googlelogin/', include('google_login.urls', namespace='googlelogin')),
+    url(r'^googlelogin/', include('google_login.urls', namespace='google_login')),
     url('', include('social.apps.django_app.urls', namespace='social')),
 ]

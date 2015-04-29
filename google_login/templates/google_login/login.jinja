@@ -5,11 +5,12 @@
 {% endblock %}
 
 {% block content %}
-    <a href="{{ url('social:begin', 'google-oauth2') }}?next={{ request.path }}">Login with Google</a>
-    <br />
-    <br />
-    {{ params }}
-    <br />
-    <br />
-    {{ data }}
+    {% if user.is_authenticated() %}
+        <a href="{{ url('google_login:do_logout') }}?next={{ request.path }}">Logout</a>
+        <br />
+        <br />
+        {{ resp }}
+    {% else %}
+        <a href="{{ url('social:begin', 'google-oauth2') }}?next={{ request.path }}">Login with Google</a>
+    {% endif %}
 {% endblock %}
