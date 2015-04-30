@@ -31,7 +31,9 @@
                 $('#eventDetailModal').modal('show');
             },
             events: events,
-            fixedWeekCount: false
+            fixedWeekCount: false,
+            height: 600,
+            scrollTime: "08:00:00"
         })
     });
 })(window.jQuery, $HMU);
