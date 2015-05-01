@@ -2,14 +2,14 @@ from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import logout_then_login
 from django.core.urlresolvers import reverse
-from django.http.response import HttpResponseRedirect, HttpResponse
+from django.http.response import HttpResponseRedirect
 from django.shortcuts import render
+from django.views.generic import View
 from user_accounts.forms import UserForm, SignupForm
 
 
-def do_signup(request):
-    if request.method == 'POST':
-
+class SignUpView(View):
+    def post(self, request):
         # Fill out form with request data
         signup_form = SignupForm(data=request.POST)
         if signup_form.is_valid():
@@ -29,25 +29,25 @@ def do_signup(request):
             return render(request, 'user_accounts/signup.jinja',
                           {'signup_form': signup_form})
 
-    # if the user is already logged in and is trying to access the signup
-    # page, return them to home
-    if request.user.is_authenticated():
-        return HttpResponseRedirect(reverse('static_pages:home'))
+    def get(self, request):
+        # if the user is already logged in and is trying to access the signup
+        # page, return them to home
+        if request.user.is_authenticated():
+            return HttpResponseRedirect(reverse('static_pages:home'))
 
-    # if it is not a POST request, just return a blank form for the user
-    # to fill out
-    return render(request, 'user_accounts/signup.jinja',
-                  {'signup_form': SignupForm()})
+        # if it is not a POST request, just return a blank form for the user
+        # to fill out
+        return render(request, 'user_accounts/signup.jinja',
+                      {'signup_form': SignupForm()})
 
 
-def do_login(request):
-    if request.method == 'POST':
+class LoginView(View):
+    def post(self, request):
         # Fill out form with request data
         login_form = UserForm(data=request.POST)
         if login_form.is_valid():
             user = authenticate(username=login_form.cleaned_data['username'],
                                 password=login_form.cleaned_data['password'])
-
             if user:
                 # if the user is active, log them in and redirect to home
                 if user.is_active:
@@ -60,7 +60,6 @@ def do_login(request):
                             'This account has been marked as inactive.'
                         ]
                     })
-
             # If user provided wrong info, rerender with errors
             else:
                 return render(request, 'user_accounts/login.jinja', {
@@ -75,16 +74,16 @@ def do_login(request):
                 'login_form': login_form
             })
 
-    else:
+    def get(self, request):
         # if the user is already logged in and is trying to access the login
         # page, return them to home
         if request.user.is_authenticated():
             return HttpResponseRedirect(reverse('static_pages:home'))
 
         login_form = UserForm()
-        return render(request, 'user_accounts/login.jinja', {'login_form': login_form})
+        return render(request, 'user_accounts/login.jinja',
+                      {'login_form': login_form})
 
 
-@login_required
-def do_logout(request):
+def logout(request):
     return logout_then_login(request)
