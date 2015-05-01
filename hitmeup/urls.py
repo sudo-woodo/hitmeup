@@ -12,6 +12,7 @@ urlpatterns = [
     # url(r'^$', 'hitmeup.views.home', name='home'),
     # url(r'^blog/', include('blog.urls')),
 
-    url(r'^', include('staticpages.urls', namespace='staticpages')),
     url(r'^admin/', include(admin.site.urls)),
+    url(r'^', include('static_pages.urls', namespace='static_pages')),
+    url(r'^', include('user_accounts.urls', namespace='user_accounts')),
 ]

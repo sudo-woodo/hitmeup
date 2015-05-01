@@ -1,0 +1,41 @@
+{% extends "base.jinja" %}
+
+{% block title %}
+    Signup
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <h1>Sign Up for HitMeUp!</h1>
+
+        {% for field in signup_form %}
+            {% if field.errors %}
+                {% for error in field.errors %}
+                    <div class="form-error alert alert-danger alert-dismissible" role="alert">
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        {{ field.label_tag() }} {{ error|escape }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endfor %}
+
+        <form id="signup_form" method="post" action="{{ url('user_accounts:signup') }}"
+              enctype="multipart/form-data">
+            
+            {% csrf_token %}
+
+            {% for field in signup_form %}
+                <div class="form-group">
+                    {{ field.label_tag() }}
+                    {{ field }}
+                </div>
+            {% endfor %}
+
+            <button type="submit" name="submit" class="btn btn-default">
+                Sign Up
+            </button>
+        </form>
+    </div>
+{% endblock %}
