@@ -54,7 +54,12 @@ def do_login(request):
                     login(request, user)
                     return HttpResponseRedirect(reverse('static_pages:home'))
                 else:
-                    return HttpResponse("Your HitMeUp account is disabled.")
+                    return render(request, 'login/login.jinja', {
+                        'login_form': login_form,
+                        'error_messages': [
+                            'This account has been marked as inactive.'
+                        ]
+                    })
 
             # If user provided wrong info, rerender with errors
             else:
