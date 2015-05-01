@@ -49,6 +49,7 @@ INSTALLED_APPS = (
     'dynamic_components',
     'staticpages',
     'login',
+    'ourcalendar',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -132,13 +133,13 @@ DATABASES = {
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'America/Los_Angeles'
 
 USE_I18N = True
 
 USE_L10N = True
 
-USE_TZ = True
+USE_TZ = False
 
 
 # Static files (CSS, JavaScript, Images)
