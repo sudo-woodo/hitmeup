@@ -7,9 +7,15 @@
 {% block content %}
     <div class="container">
         <h1>Sign Up for HitMeUp!</h1>
-        <form id="signup_form" method="post" action="{{ url('ourlogin:signup') }}"
-              enctype="multipart/form-data">
 
+        <form id="signup_form" method="post" action="{{ url('login:signup') }}"
+              enctype="multipart/form-data">
+            {% if error %}
+                <div class="alert alert-warning alert-dismissible" role="alert">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        Username already exists!
+                </div>
+            {% endif %}
             {% csrf_token %}
 
             {% for field in signup_form %}

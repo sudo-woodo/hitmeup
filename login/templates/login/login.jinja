@@ -8,7 +8,7 @@
     <div class="container">
         <h1>Login to HitMeUp</h1>
 
-        <form id="login_form" method="post" action="{{ url('ourlogin:login') }}">
+        <form id="login_form" method="post" action="{{ url('login:login') }}">
             {% csrf_token %}
             {% if error %}
                 <div class="alert alert-danger alert-dismissible" role="alert">

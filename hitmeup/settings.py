@@ -48,7 +48,7 @@ INSTALLED_APPS = (
     'hitmeup',
     'dynamic_components',
     'staticpages',
-    'ourlogin',
+    'login',
 )
 
 MIDDLEWARE_CLASSES = (

@@ -33,32 +33,30 @@
             <ul class="nav navbar-nav navbar-right">
                 {% if user.is_authenticated() %}
                     <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Welcome back {{ user.username }} !<span class="caret"></span></a>
-                            <ul class="dropdown-menu dropdown-menu-right" role="menu">
-                                <li><a href="">My Profile</a></li>
-                                <li><a href="">My Calendar</a></li>
-                                <li><a href="">Account Settings</a></li>
-                                <li class="divider"></li>
-                                <li><a href="{{ url('ourlogin:logout') }}">Logout</a></li>
-                            </ul>
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+                            Welcome back {{ user.username }}! <span class="caret"></span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-right" role="menu">
+                            <li><a href="{{ url('login:logout') }}">Logout</a></li>
+                        </ul>
                     </li>
 
                 {% else %}
                     <li class="
-                        {% if view == 'ourlogin:signup' %}
+                        {% if view == 'login:signup' %}
                         active
                         {% endif %}
                     ">
-                        <a href="{{ url('ourlogin:signup') }}">
+                        <a href="{{ url('login:signup') }}">
                             Sign Up
                         </a>
                     </li>
                     <li class="
-                        {% if view == 'ourlogin:login' %}
+                        {% if view == 'login:login' %}
                         active
                         {% endif %}
                     ">
-                        <a href="{{ url('ourlogin:login') }}">
+                        <a href="{{ url('login:login') }}">
                             Log In
                         </a>
                     </li>

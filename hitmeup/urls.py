@@ -14,5 +14,5 @@ urlpatterns = [
 
     url(r'^admin/', include(admin.site.urls)),
     url(r'^', include('staticpages.urls', namespace='staticpages')),
-    url(r'^', include('ourlogin.urls', namespace='ourlogin')),
+    url(r'^', include('login.urls', namespace='login')),
 ]
