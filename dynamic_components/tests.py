@@ -1,18 +1,20 @@
 from django.conf import settings
-from django.http.response import Http404
+from django.core.urlresolvers import reverse
 from django.test import TestCase
 from django.test.client import Client
 from django.test.utils import override_settings
+from util import random_string
 
 
+HOME_URL = reverse('static_pages:home')
 NORMAL_ENTRIES = [
     {
-        'name': 'Home',
-        'view': 'staticpages:home',
+        'name': random_string(),
+        'view': 'static_pages:home',
     },
     {
-        'name': 'About',
-        'view': '',
+        'name': random_string(),
+        'view': 'static_pages:home',
     },
 ]
 
@@ -23,7 +25,6 @@ class NavbarTestCase(TestCase):
     Tests different navbar scenarios.
     """
 
-
     def setUp(self):
         self.client = Client()
 
@@ -31,18 +32,20 @@ class NavbarTestCase(TestCase):
         """
         Tests if context contains what is expected.
         """
-        pass
+        response = self.client.get(HOME_URL)
+        for entry in NORMAL_ENTRIES:
+            node = '<a href="%s">%s</a>' % (reverse(entry['view']), entry['name'])
+            self.assertContains(response, node, html=True)
 
     def test_404(self):
         """
         Tests if 404 requests don't throw errors.
         """
-        with self.assertRaises(Http404):
-            response = self.client.get('/DOES_NOT_EXIST')
+        response = self.client.get('/DOES_NOT_EXIST')
+        self.assertEqual(response.status_code, 404)
 
         # ensure no entries are marked active
-        for entry in response.context.entries:
-            self.assertFalse('active' in entry)
+        self.assertNotContains(response, '<li class="active">', status_code=404, html=True)
 
     @override_settings(NAVBAR_ENTRIES=None)
     def test_unset(self):
@@ -52,5 +55,7 @@ class NavbarTestCase(TestCase):
         # unset
         del settings.NAVBAR_ENTRIES
 
-        response = self.client.get('/')
-        self.assertFalse(response.context and 'navbar_entries' in response.context, "Found navbar_entries in context.")
+        response = self.client.get(HOME_URL)
+
+        for entry in NORMAL_ENTRIES:
+            self.assertNotContains(response, entry['name'])
