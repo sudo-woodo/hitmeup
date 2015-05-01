@@ -22,26 +22,22 @@ def do_signup(request):
             new_user = authenticate(username=request.POST['username'],
                                     password=request.POST['password'])
             login(request, new_user)
-            return HttpResponseRedirect(reverse('staticpages:home'))
+            return HttpResponseRedirect(reverse('static_pages:home'))
         else:
 
             # Return the form with errors
             return render(request, 'login/signup.jinja',
                           {'signup_form': signup_form})
-    else:
 
-        # if the user is already logged in and is trying to access the signup
-        # page, return them to home
-        if request.user.is_authenticated():
-            return HttpResponseRedirect(reverse('staticpages:home'))
+    # if the user is already logged in and is trying to access the signup
+    # page, return them to home
+    if request.user.is_authenticated():
+        return HttpResponseRedirect(reverse('static_pages:home'))
 
-        # if it is not a POST request, just return a blank form for the user
-        # to fill out
-        else:
-            signup_form = SignupForm()
-
+    # if it is not a POST request, just return a blank form for the user
+    # to fill out
     return render(request, 'login/signup.jinja',
-                  {'signup_form': signup_form})
+                  {'signup_form': SignupForm()})
 
 
 def do_login(request):
@@ -56,7 +52,7 @@ def do_login(request):
                 # if the user is active, log them in and redirect to home
                 if user.is_active:
                     login(request, user)
-                    return HttpResponseRedirect(reverse('staticpages:home'))
+                    return HttpResponseRedirect(reverse('static_pages:home'))
                 else:
                     return HttpResponse("Your HitMeUp account is disabled.")
 
@@ -78,7 +74,7 @@ def do_login(request):
         # if the user is already logged in and is trying to access the login
         # page, return them to home
         if request.user.is_authenticated():
-            return HttpResponseRedirect(reverse('staticpages:home'))
+            return HttpResponseRedirect(reverse('static_pages:home'))
 
         login_form = UserForm()
         return render(request, 'login/login.jinja', {'login_form': login_form})

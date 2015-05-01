@@ -13,6 +13,6 @@ urlpatterns = [
     # url(r'^blog/', include('blog.urls')),
 
     url(r'^admin/', include(admin.site.urls)),
-    url(r'^', include('staticpages.urls', namespace='staticpages')),
+    url(r'^', include('static_pages.urls', namespace='static_pages')),
     url(r'^', include('login.urls', namespace='login')),
 ]

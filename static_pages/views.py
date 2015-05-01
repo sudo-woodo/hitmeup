@@ -4,6 +4,6 @@ from django.shortcuts import render
 def home(request):
     return render(request, 'staticpages/home.jinja', {
         'css': [
-            'staticpages/css/home.css'
+            'static_pages/css/home.css'
         ],
     })

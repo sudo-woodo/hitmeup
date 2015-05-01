@@ -4,7 +4,7 @@ from django.test import TestCase, Client
 
 SIGNUP_URL = reverse('login:signup')
 LOGIN_URL = reverse('login:login')
-HOME_URL = reverse('staticpages:home')
+HOME_URL = reverse('static_pages:home')
 LOGIN_INFO = {'username': 'name', 'password': 'password'}
 SIGNUP_INFO = LOGIN_INFO.copy()
 SIGNUP_INFO.update({'email': 'email@website.com'})
@@ -62,6 +62,5 @@ class LoginTestCase(TestCase):
         # Tests a logging in of a user with incorrect information
         response = self.client.post(LOGIN_URL, {'username': 'Name',
                                                 'password': 'wrongpassword'})
-        print(response)
         self.assertContains(response, 'form-error')
 

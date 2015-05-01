@@ -1,6 +1,6 @@
 entries = [
     {
         'name': 'Home',
-        'view': 'staticpages:home',
+        'view': 'static_pages:home',
     },
 ]

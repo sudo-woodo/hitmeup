@@ -47,7 +47,7 @@ INSTALLED_APPS = (
     # Custom
     'hitmeup',
     'dynamic_components',
-    'staticpages',
+    'static_pages',
     'login',
 )
 
