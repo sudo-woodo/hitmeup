@@ -1,20 +1,10 @@
 from django.shortcuts import render
-from .models import Event, Calendar
+from django.contrib.auth.decorators import login_required
+from ourcalendar.logic.calendar import get_events
 
-
+@login_required
 def calendar(request):
-    calendars = {}
-
-    for c in Calendar.objects.all():
-        events = Event.objects.filter(calendar=c).values('start', 'end', 'title', 'location', 'description', 'users')
-        for e in events:
-            e['start'] = e['start'].strftime('%Y-%m-%dT%H:%M:%S')
-            e['end'] = e['end'].strftime('%Y-%m-%dT%H:%M:%S')
-            e['color'] = c.color
-            e['calendar'] = c.title
-        calendars[c.title] = list(events)
-
-    context = {
+    return render(request, 'ourcalendar/calendar.jinja', {
         'ext_css': [
             'http://fullcalendar.io/js/fullcalendar-2.3.1/fullcalendar.min.css',
         ],
@@ -29,7 +19,6 @@ def calendar(request):
             'ourcalendar/js/events.js',
         ],
         'js_data': {
-            'calendars': calendars,
+            'calendars': get_events(request.user),
         },
-    }
-    return render(request, 'ourcalendar/calendar.jinja', context)
+    })

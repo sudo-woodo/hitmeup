@@ -1,11 +1,8 @@
+from django.contrib.auth.models import User
 from django.utils import timezone
 from django.db import models
 from django.forms import ModelForm
 from django import forms
-
-
-class User(models.Model):
-    name = models.CharField(max_length=50)
 
 
 class Calendar(models.Model):
