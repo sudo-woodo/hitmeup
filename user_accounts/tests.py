@@ -2,8 +2,8 @@ from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.test import TestCase, Client
 
-SIGNUP_URL = reverse('login:signup')
-LOGIN_URL = reverse('login:login')
+SIGNUP_URL = reverse('user_accounts:signup')
+LOGIN_URL = reverse('user_accounts:login')
 HOME_URL = reverse('static_pages:home')
 LOGIN_INFO = {'username': 'name', 'password': 'password'}
 SIGNUP_INFO = LOGIN_INFO.copy()
@@ -44,7 +44,7 @@ class SignUpTestCase(TestCase):
 
 class LoginTestCase(TestCase):
     """
-    Tests login implementation.
+    Tests user_accounts implementation.
     """
     def setUp(self):
         self.client = Client()

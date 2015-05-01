@@ -37,26 +37,26 @@
                             Welcome back {{ user.username }}! <span class="caret"></span>
                         </a>
                         <ul class="dropdown-menu dropdown-menu-right" role="menu">
-                            <li><a href="{{ url('login:logout') }}">Logout</a></li>
+                            <li><a href="{{ url('user_accounts:logout') }}">Logout</a></li>
                         </ul>
                     </li>
 
                 {% else %}
                     <li class="
-                        {% if view == 'login:signup' %}
+                        {% if view == 'user_accounts:signup' %}
                             active
                         {% endif %}
                     ">
-                        <a href="{{ url('login:signup') }}">
+                        <a href="{{ url('user_accounts:signup') }}">
                             Sign Up
                         </a>
                     </li>
                     <li class="
-                        {% if view == 'login:login' %}
+                        {% if view == 'user_accounts:login' %}
                             active
                         {% endif %}
                     ">
-                        <a href="{{ url('login:login') }}">
+                        <a href="{{ url('user_accounts:login') }}">
                             Log In
                         </a>
                     </li>

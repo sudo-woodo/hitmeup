@@ -4,7 +4,7 @@ from django.contrib.auth.views import logout_then_login
 from django.core.urlresolvers import reverse
 from django.http.response import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render
-from login.forms import UserForm, SignupForm
+from user_accounts.forms import UserForm, SignupForm
 
 
 def do_signup(request):
@@ -26,7 +26,7 @@ def do_signup(request):
         else:
 
             # Return the form with errors
-            return render(request, 'login/signup.jinja',
+            return render(request, 'user_accounts/signup.jinja',
                           {'signup_form': signup_form})
 
     # if the user is already logged in and is trying to access the signup
@@ -36,7 +36,7 @@ def do_signup(request):
 
     # if it is not a POST request, just return a blank form for the user
     # to fill out
-    return render(request, 'login/signup.jinja',
+    return render(request, 'user_accounts/signup.jinja',
                   {'signup_form': SignupForm()})
 
 
@@ -54,7 +54,7 @@ def do_login(request):
                     login(request, user)
                     return HttpResponseRedirect(reverse('static_pages:home'))
                 else:
-                    return render(request, 'login/login.jinja', {
+                    return render(request, 'user_accounts/login.jinja', {
                         'login_form': login_form,
                         'error_messages': [
                             'This account has been marked as inactive.'
@@ -63,7 +63,7 @@ def do_login(request):
 
             # If user provided wrong info, rerender with errors
             else:
-                return render(request, 'login/login.jinja', {
+                return render(request, 'user_accounts/login.jinja', {
                     'login_form': login_form,
                     'error_messages': [
                         'Incorrect username or password.'
@@ -71,7 +71,7 @@ def do_login(request):
                 })
         # If there's an form error, rerender with errors
         else:
-            return render(request, 'login/login.jinja', {
+            return render(request, 'user_accounts/login.jinja', {
                 'login_form': login_form
             })
 
@@ -82,7 +82,7 @@ def do_login(request):
             return HttpResponseRedirect(reverse('static_pages:home'))
 
         login_form = UserForm()
-        return render(request, 'login/login.jinja', {'login_form': login_form})
+        return render(request, 'user_accounts/login.jinja', {'login_form': login_form})
 
 
 @login_required

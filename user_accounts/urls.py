@@ -1,6 +1,5 @@
 from django.conf.urls import url
-from django.views.generic import TemplateView
-import views
+from user_accounts import views
 
 urlpatterns = [
     url(r'^signup/$', views.do_signup, name='signup'),

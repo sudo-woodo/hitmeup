@@ -1,14 +1,25 @@
 {% extends "base.jinja" %}
 
 {% block title %}
-    Signup
+    Login
 {% endblock %}
 
 {% block content %}
     <div class="container">
-        <h1>Sign Up for HitMeUp!</h1>
+        <h1>Login to HitMeUp</h1>
 
-        {% for field in signup_form %}
+        {% if error_messages %}
+            {% for error in error_messages %}
+                <div class="form-error alert alert-danger alert-dismissible" role="alert">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <strong>{{ error }}</strong>
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        {% for field in login_form %}
             {% if field.errors %}
                 {% for error in field.errors %}
                     <div class="form-error alert alert-danger alert-dismissible" role="alert">
@@ -21,12 +32,11 @@
             {% endif %}
         {% endfor %}
 
-        <form id="signup_form" method="post" action="{{ url('login:signup') }}"
-              enctype="multipart/form-data">
-            
+        <form id="login_form" method="post" action="{{ url('user_accounts:login') }}">
+
             {% csrf_token %}
 
-            {% for field in signup_form %}
+            {% for field in login_form %}
                 <div class="form-group">
                     {{ field.label_tag() }}
                     {{ field }}
@@ -34,7 +44,7 @@
             {% endfor %}
 
             <button type="submit" name="submit" class="btn btn-default">
-                Sign Up
+                Login
             </button>
         </form>
     </div>
