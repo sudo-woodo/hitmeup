@@ -24,7 +24,6 @@ class SignUpView(View):
             login(request, new_user)
             return HttpResponseRedirect(reverse('static_pages:home'))
         else:
-
             # Return the form with errors
             return render(request, 'user_accounts/signup.jinja',
                           {'signup_form': signup_form})
@@ -35,10 +34,10 @@ class SignUpView(View):
         if request.user.is_authenticated():
             return HttpResponseRedirect(reverse('static_pages:home'))
 
-        # if it is not a POST request, just return a blank form for the user
-        # to fill out
-        return render(request, 'user_accounts/signup.jinja',
-                      {'signup_form': SignupForm()})
+        # Otherwise, return a blank form for the user to fill out
+        return render(request, 'user_accounts/signup.jinja', {
+            'signup_form': SignupForm()
+        })
 
 
 class LoginView(View):
@@ -80,9 +79,11 @@ class LoginView(View):
         if request.user.is_authenticated():
             return HttpResponseRedirect(reverse('static_pages:home'))
 
+        # Else, display a empty form for the user
         login_form = UserForm()
-        return render(request, 'user_accounts/login.jinja',
-                      {'login_form': login_form})
+        return render(request, 'user_accounts/login.jinja', {
+            'login_form': login_form
+        })
 
 
 def logout(request):
