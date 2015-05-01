@@ -64,3 +64,8 @@ class LoginTestCase(TestCase):
                                                 'password': 'wrongpassword'})
         self.assertContains(response, 'form-error')
 
+    def test_login_while_logged_in(self):
+        # Tests accessing the signup page while already logged in
+        self.client.post(LOGIN_URL, LOGIN_INFO)
+        response = self.client.get(LOGIN_URL)
+        self.assertRedirects(response, HOME_URL)
