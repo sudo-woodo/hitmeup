@@ -15,5 +15,5 @@ urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
     url(r'^calendar/', include('ourcalendar.urls', namespace='calendar')),
     url(r'^', include('staticpages.urls', namespace='staticpages')),
-
+    url(r'^', include('login.urls', namespace='login')),
 ]

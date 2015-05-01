@@ -48,7 +48,8 @@ INSTALLED_APPS = (
     'hitmeup',
     'dynamic_components',
     'staticpages',
-    'ourcalendar'
+    'login',
+    'ourcalendar',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -170,3 +171,5 @@ SCAFFOLDAPP_FILES = [
     (os.path.join('{app}', 'urls.py'), "describes {app}'s routes"),
 ]
 
+# Authentication
+LOGIN_URL = '/login/'
