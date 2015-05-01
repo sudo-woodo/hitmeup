@@ -64,6 +64,10 @@ def do_login(request):
             return render(request, 'login/login.jinja', {'error': True})
 
     else:
+        # if the user is already logged in and is trying to access the login page, return them to home
+        if request.user.is_authenticated():
+            return HttpResponseRedirect('/')
+
         return render(request, 'login/login.jinja', {})
 
 
