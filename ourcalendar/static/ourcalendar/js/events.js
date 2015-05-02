@@ -21,8 +21,9 @@
                 $("#createEventModal").modal('show');
             },
             eventClick: function(event) {
-                $('#eventDetailModal .modal-title').text(event.title);
+                $('#eventDetailModal .modal-title').text(event.title + ' (' + event.id + ')');
                 $('#eventDetailModal .modal-title').css('color', event.color);
+                $('#eventDetailModal .label').css('background-color', event.color);
                 $('#eventDetailModal #start-time').text(moment(event.start).format('LLL'));
                 $('#eventDetailModal #end-time').text(moment(event.end).format('LLL'));
                 $('#eventDetailModal #cal-title').text(event.calendar);
@@ -32,7 +33,9 @@
                 $('#eventDetailModal').modal('show');
             },
             events: events,
-            fixedWeekCount: false
+            fixedWeekCount: false,
+            height: 600,
+            scrollTime: "08:00:00"
         })
     });
 })(window.jQuery, $HMU);
