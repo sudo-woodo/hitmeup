@@ -91,6 +91,10 @@ def logout(request):
 
 def friends_list(request):
     return render(request, 'user_accounts/friends_list.jinja', {
+        'ext_css': [
+            'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.3.0/css/'
+            'font-awesome.min.css',
+        ],
         'css': [
             'user_accounts/css/friends_list.css'
         ],
