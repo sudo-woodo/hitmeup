@@ -5,6 +5,7 @@
 
     var prevClick;
     $(document).ready(function() {
+
         $('#calendar').fullCalendar({
             editable: true,
             header: {
@@ -17,7 +18,7 @@
                     $(prevClick).css('background-color', 'white');
                 $(this).css('background-color', 'rgba(204,255,249,0.3)');
                 prevClick = this;
-                $("#myModal").modal('show');
+                $("#createEventModal").modal('show');
             },
             eventClick: function(event) {
                 $('#eventDetailModal .modal-title').text(event.title);

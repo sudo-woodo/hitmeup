@@ -7,7 +7,7 @@
 {% block content %}
     <div id='calendar'></div>
 
-    <div id="myModal" class="modal fade">
+    <div id="createEventModal" class="modal fade">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -17,7 +17,12 @@
                 <div class="modal-body">
 
                     <!--INSERT THE FORM HERE -->
+                    <form id="eventform" method="post">
+                        {% csrf_token %}
 
+
+
+                    </form>
 
                     <p>Do you want to save your event?</p>
                     <p class="text-warning"><small>If you don't save, your changes will be lost.</small></p>

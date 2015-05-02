@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from .models import Event, Calendar
-
+from ourcalendar.forms import EventForm
 
 def calendar(request):
     calendars = {}
@@ -33,3 +33,4 @@ def calendar(request):
         },
     }
     return render(request, 'ourcalendar/calendar.jinja', context)
+
