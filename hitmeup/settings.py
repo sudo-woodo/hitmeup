@@ -172,6 +172,3 @@ SCAFFOLDAPP_FILES = [
 
 # Authentication
 LOGIN_URL = '/login/'
-
-# https://docs.djangoproject.com/en/1.4/topics/auth/#storing-additional-information-about-users
-AUTH_PROFILE_MODULE = 'user_accounts.UserProfile'
