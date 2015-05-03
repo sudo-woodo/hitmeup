@@ -9,7 +9,7 @@ class Calendar(models.Model):
     title = models.CharField(max_length=200)
     color = models.CharField(max_length=100)
     privacy = models.IntegerField(default=0)
-    user = models.ForeignKey(User)
+    owner = models.ForeignKey(User)
 
 
 class Event(models.Model):
@@ -19,9 +19,8 @@ class Event(models.Model):
     calendar = models.ForeignKey(Calendar)
     location = models.CharField(max_length=200)
     description = models.CharField(max_length=600)
-    users = models.ManyToManyField(User)
 
-
+''' -removed- Richard says we don't need
 class EventForm(ModelForm):
     title = forms.CharField(max_length=200, help_text="Event title:")
     start = forms.DateTimeField(help_text="Start time:")
@@ -44,3 +43,4 @@ class CalendarForm(ModelForm):
         model = Calendar
         fields = '__all__'
 
+'''
