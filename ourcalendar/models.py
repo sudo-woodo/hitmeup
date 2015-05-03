@@ -1,15 +1,16 @@
 from django.contrib.auth.models import User
 from django.utils import timezone
 from django.db import models
-from django.forms import ModelForm
-from django import forms
+
+
+class Dummyprofile(models.Model):
+    calendar = models.OneToOneField(Calendar)
 
 
 class Calendar(models.Model):
     title = models.CharField(max_length=200)
     color = models.CharField(max_length=100)
     privacy = models.IntegerField(default=0)
-    owner = models.ForeignKey(User)
 
 
 class Event(models.Model):
