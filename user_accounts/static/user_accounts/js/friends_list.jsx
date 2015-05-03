@@ -83,7 +83,7 @@
         render: function() {
             var friendNodes = this.props.data.map(function (friend) {
                 return (
-                    <FriendBox friend={friend}></FriendBox>
+                    <FriendBox friend={friend}/>
                 );
             });
 
@@ -98,64 +98,50 @@
             );
         }
     });
-    
+
     var FriendBox = React.createClass({
         render: function() {
+            var friendName = {
+                name: this.props.friend.name,
+                fav: this.props.friend.fav
+            };
             return (
                 <div className="friend-box">
                     <div className="col-xs-12 col-sm-6 col-md-4">
                         <div className="panel panel-default">
                             <div className="friend-info panel-body">
                                 <div className="profile-pic-container">
-                                    <img
-                                        src={ this.props.friend.picture_url }
-                                        alt="test"
-                                        className="profile-pic img-circle"
+                                    <FriendPic
+                                        friendPic=
+                                            {this.props.friend.picture_url}
                                     />
                                 </div>
                                 <div className="profile-info-container">
                                     <ul className="fa-ul">
-                                        <li>
-                                            <i className={'fa-li ' + cx({
-                                                'fa': true,
-                                                'fa-heart':
-                                                    this.props.friend.fav,
-                                                'fa-heart-o':
-                                                    !this.props.friend.fav
-                                            })}></i>
+                                        <FriendName
+                                            friendName={ friendName }
+                                        />
 
-                                            <strong>
-                                                { this.props.friend.name }
-                                            </strong>
-                                        </li>
+                                        <FriendFree
+                                            friendFree=
+                                                {
+                                                    this.props.friend.free
+                                                }
+                                        />
 
-                                        <li>
-                                            <i className={'fa-li ' + cx({
-                                                'fa': true,
-                                                'fa-check-circle':
-                                                    this.props.friend.free,
-                                                'fa-clock-o':
-                                                    !this.props.friend.free
-                                            })}></i>
+                                        <FriendEmail
+                                            friendEmail=
+                                                {
+                                                    this.props.friend.email
+                                                }
+                                        />
 
-                                            {
-                                                this.props.friend.free
-                                                    ? 'Free'
-                                                    : 'Busy'
-                                            }
-                                        </li>
-
-                                        <li>
-                                            <i className="fa-li fa fa-envelope"></i>
-
-                                            { this.props.friend.email }
-                                        </li>
-
-                                        <li>
-                                            <i className="fa-li fa fa-phone"></i>
-
-                                            { this.props.friend.phone }
-                                        </li>
+                                        <FriendPhone
+                                            friendPhone=
+                                                {
+                                                    this.props.friend.phone
+                                                }
+                                        />
                                     </ul>
                                 </div>
                             </div>
@@ -166,7 +152,94 @@
         }
     });
 
+    var FriendPic = React.createClass({
+        render: function() {
+            return (
+                <img
+                    src={ this.props.friendPic }
+                    alt="test"
+                    className="profile-pic img-circle"
+                />
+            );
+        }
+    });
 
+    var FriendName = React.createClass({
+        render: function() {
+            return (
+                <li>
+                    <i
+                        className={cx({
+                            'fa': true,
+                            'fa-li': true,
+                            'fa-heart':
+                                this.props.friendName.fav,
+                            'fa-heart-o':
+                                !this.props.friendName.fav
+                        })}
+                    ></i>
+
+                    <strong>
+                        { this.props.friendName.name }
+                    </strong>
+                </li>
+            );
+        }
+    });
+
+    var FriendFree = React.createClass({
+        render: function() {
+            return (
+                <li>
+                    <i className={cx({
+                        'fa': true,
+                        'fa-li': true,
+                        'fa-check-circle':
+                            this.props.friendFree,
+                        'fa-clock-o':
+                            !this.props.friendFree
+                    })}></i>
+
+                    <span className={cx({
+                        'free':
+                            this.props.friendFree,
+                        'busy':
+                            !this.props.friendFree
+                    })}>
+                        {
+                            this.props.friendFree
+                                ? 'Free'
+                                : 'Busy'
+                        }
+                    </span>
+
+
+                </li>
+            );
+        }
+    });
+
+    var FriendEmail = React.createClass({
+        render: function() {
+            return (
+                <li>
+                    <i className="fa-li fa fa-envelope"></i>
+                    { this.props.friendEmail }
+                </li>
+            );
+        }
+    });
+
+    var FriendPhone = React.createClass({
+        render: function() {
+            return (
+                <li>
+                    <i className="fa-li fa fa-phone"></i>
+                    { this.props.friendPhone }
+                </li>
+            );
+        }
+    });
 
     React.render(
         <FriendsList data={data}/>,
