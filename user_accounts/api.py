@@ -4,7 +4,7 @@ from restless.preparers import FieldsPreparer
 from .models import UserProfile
 
 
-class UserResource(DjangoResource):
+class UserProfileResource(DjangoResource):
     preparer = FieldsPreparer(fields={
         'username': 'user.username',
         'email': 'user.email',
@@ -39,3 +39,31 @@ class UserResource(DjangoResource):
         user = UserProfile.objects.get(user__id=pk)
         user.user.is_active = False
         user.user.save()
+
+
+class FriendshipResource(DjangoResource):
+    preparer = FieldsPreparer(fields={
+        'username': 'user.username',
+        'email': 'user.email',
+        'first_name': 'user.first_name',
+        'last_name': 'user.last_name',
+    })
+
+    # Fix me later?
+    def is_authenticated(self):
+        return True
+
+    def list(self, user):
+        return UserProfile.objects.get(user__id=user).friends
+
+    def update(self, user, pk):
+        this = UserProfile.objects.get(user__id=user)
+        other = UserProfile.objects.get(user__id=pk)
+
+        this.add_friend(other)
+
+    def delete(self, user, pk):
+        this = UserProfile.objects.get(user__id=user)
+        other = UserProfile.objects.get(user__id=pk)
+
+        this.del_friend(other)
