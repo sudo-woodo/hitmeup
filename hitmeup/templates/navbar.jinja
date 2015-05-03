@@ -41,12 +41,14 @@
                     ">
                         <a href="{{ url('notifications:list') }}">
                             <i class="fa
+                            {# TODO: conditional, change to red when notif (maybe badge?) #}
                                 {% if True %}
                                     fa-bell
                                 {% else %}
                                     fa-bell-o
                                 {% endif %}
                             "></i>
+                            Notifications
                         </a>
                     </li>
 
