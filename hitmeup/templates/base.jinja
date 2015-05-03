@@ -3,11 +3,8 @@
     <head>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
-
-        {# Don't let mobile users resize #}
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 
-        {# Metadata #}
         <title>{% block title %}HitMeUp{% endblock %}</title>
         <meta name="description" content="HitMeUp">
 
@@ -39,6 +36,7 @@
         {# CSS - Vendor #}
         <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
         <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap-theme.min.css">
+        <link rel="stylesheet" type="text/css" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
         {% for sheet in ext_css %}
             <link rel="stylesheet" type="text/css" href="{{ sheet }}">
         {% endfor %}
@@ -57,10 +55,8 @@
         <![endif]-->
     </head>
     <body>
-        {# Stick the navbar in #}
         {% include 'navbar.jinja' %}
 
-        {# Where the main content of the page goes #}
         {% block content %}{% endblock %}
 
         {# JS - Variables stored in $HMU #}
@@ -80,6 +76,11 @@
         <script type="application/javascript" src="{{ static('hitmeup/js/base.js') }}"></script>
         {% for script in js %}
             <script type="application/javascript" src="{{ static(script) }}"></script>
+        {% endfor %}
+
+        {# JSX - Custom #}
+        {% for script in jsx %}
+            <script type="text/jsx" src="{{ static(script) }}"></script>
         {% endfor %}
     </body>
 </html>

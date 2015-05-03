@@ -49,6 +49,7 @@ INSTALLED_APPS = (
     'dynamic_components',
     'static_pages',
     'user_accounts',
+    'notifications',
 )
 
 MIDDLEWARE_CLASSES = (
