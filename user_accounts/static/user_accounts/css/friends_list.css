@@ -1,21 +1,32 @@
+/* TODO: More specific CSS classes */
+
+body {
+    /*
+    background-color: #eceff1;
+    */
+}
+
 #main-content {
     margin-top: 20px;
 }
 
 .panel-default {
-    background-color: #43a047;
-    color: white;
-}
-
-.profile-pic {
-    height: 100px;
-    width: 100px;
+    /*
+    border-color: #cfd8dc;
+    background-color: #b0bec5;
+    */
 }
 
 .profile-pic-container {
     display: inline-block;
     float: left;
     margin-right: 10px;
+}
+
+.profile-pic {
+    height: 100px;
+    width: 100px;
+    border: solid darkgrey 1px;
 }
 
 .profile-info-container {
@@ -28,21 +39,14 @@
     text-overflow: ellipsis;
 }
 
-.fa-heart {
-    color: #F77982;
+.fa-heart, .fa-heart-o {
+    color: #ff4081;
 }
 
-.fa-heart-o {
-    color: white;
-}
-.free {
-    color: #42ED51;
-}
-
-.fa-check-circle {
+.free, .fa-check-circle {
     color: #42ED51;
 }
 
 .busy, .fa-clock-o {
-    color: #f44336;
+    color: #d50000;
 }
