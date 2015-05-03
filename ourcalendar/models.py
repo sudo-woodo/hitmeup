@@ -3,15 +3,15 @@ from django.utils import timezone
 from django.db import models
 
 
-class Dummyprofile(models.Model):
-    calendar = models.OneToOneField(Calendar)
-
-
 class Calendar(models.Model):
     title = models.CharField(max_length=200)
     color = models.CharField(max_length=100)
     privacy = models.IntegerField(default=0)
 
+
+class Dummyprofile(models.Model):
+    username = models.CharField(max_length=200)
+    calendar = models.OneToOneField(Calendar, related_name='owner')
 
 class Event(models.Model):
     start = models.DateTimeField(default=timezone.now)
