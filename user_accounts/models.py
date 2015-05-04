@@ -3,6 +3,7 @@ from django.core.exceptions import ValidationError
 from django.core.validators import RegexValidator
 from django.db import models
 from django.db.models.signals import post_save
+from django.dispatch.dispatcher import receiver
 
 
 class UserProfile(models.Model):
@@ -15,7 +16,7 @@ class UserProfile(models.Model):
         message="Phone number must be entered in the format: "
                 "'+999999999'. Up to 15 digits allowed.")
     phone = models.CharField(max_length=16, validators=[phone_regex], blank=True)
-    bio = models.CharField(max_length=300, blank=True)
+    bio = models.TextField(max_length=300, blank=True)
 
     def __unicode__(self):
         return self.user.username
@@ -94,11 +95,10 @@ class UserProfile(models.Model):
 
 # Auto-create a UserProfile when creating a User
 # https://docs.djangoproject.com/en/1.4/topics/auth/#storing-additional-information-about-users
+@receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):
     if created:
         UserProfile.objects.create(user=instance)
-
-post_save.connect(create_user_profile, sender=User)
 
 
 class Friendship(models.Model):
