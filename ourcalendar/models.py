@@ -1,35 +1,41 @@
-from django.contrib.auth.models import User
+from django.core.validators import RegexValidator
 from django.db.models.signals import post_save
 from django.dispatch.dispatcher import receiver
 from django.utils import timezone
 from django.db import models
+from user_accounts.models import UserProfile
 
 
 class Calendar(models.Model):
-    pass
-
-
-class DummyProfile(models.Model):
-    user = models.OneToOneField(User, primary_key=True, related_name='profile')
-    calendar = models.OneToOneField(Calendar, default=Calendar.objects.create(), related_name='owner')
+    owner = models.ForeignKey(UserProfile, related_name='calendars')
+    title = models.CharField(max_length=200)
+    color_regex = RegexValidator(
+        regex=r'^[\dA-F]{6}',
+        message="Color must be in 6-digit hex format."
+    )
+    color = models.CharField(max_length=6, validators=[color_regex])
+    privacy = models.IntegerField(default=0)
 
     def __unicode__(self):
-        return self.user.username
+        return "%s -> %s" % (self.owner, self.title)
 
 
-@receiver(post_save, sender=User)
+@receiver(post_save, sender=UserProfile)
 def create_user_profile(sender, instance, created, **kwargs):
     if created:
-        DummyProfile.objects.create(user=instance)
+        Calendar.objects.create(owner=instance, title='Default', color='267F00')
 
 
 class Event(models.Model):
     calendar = models.ForeignKey(Calendar, related_name='events')
-    title = models.CharField(max_length=200)
+    title = models.CharField(max_length=200, default='New Event')
     start = models.DateTimeField(default=timezone.now)
     end = models.DateTimeField(default=timezone.now)
-    location = models.CharField(max_length=200)
-    description = models.CharField(max_length=600)
+    location = models.CharField(max_length=200, blank=True)
+    description = models.TextField(max_length=600, blank=True)
+
+    def __unicode__(self):
+        return "%s -> %s -> %s" % (self.calendar.owner, self.calendar, self.title)
 
     def serialize(self):
         return {
