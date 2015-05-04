@@ -5,7 +5,8 @@ from django.core.urlresolvers import reverse
 from django.http.response import HttpResponseRedirect
 from django.shortcuts import render
 from django.views.generic import View
-from user_accounts.forms import UserForm, SignupForm
+from user_accounts.forms import UserForm, SignupForm, EditForm
+from django.contrib.auth.models import User
 
 
 class SignUpView(View):
@@ -90,8 +91,8 @@ def logout(request):
 
 class EditView(View):
     def post(self, request):
-        # Fill out form with request data
-        edit_form = SignupForm(data=request.POST)
+        # Fill out form with request data and sets instance as current user
+        edit_form = EditForm(request.POST, instance=request.user)
         if edit_form.is_valid():
             user = edit_form.save()
             user.set_password(user.password)
@@ -109,9 +110,10 @@ class EditView(View):
                           {'edit_form': edit_form})
 
     def get(self, request):
+        # Only allows user to change account info if logged in
         if request.user.is_authenticated():
             return render(request, 'user_accounts/edit.jinja', {
-                'edit_form': SignupForm()
+                'edit_form': EditForm()
             })
-
+        # Else returns to the home page
         return HttpResponseRedirect(reverse('static_pages:home'))

@@ -28,3 +28,15 @@ class SignupForm(forms.ModelForm, UserForm):
     class Meta:
         model = User
         fields = ('email', 'username', 'password')
+
+class EditForm(forms.ModelForm, UserForm):
+    email = forms.CharField(widget=forms.EmailInput(attrs={
+        'class': 'form-control',
+        'placeholder': 'Enter Email',
+        'id': 'email',
+        'name': 'email'
+    }))
+
+    class Meta:
+        model = User
+        fields = ('username', 'password', 'email')
