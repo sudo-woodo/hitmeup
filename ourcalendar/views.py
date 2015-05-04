@@ -18,6 +18,6 @@ def calendar(request):
             'ourcalendar/js/events.js',
         ],
         'js_data': {
-            'calendars': [e.serialize() for e in request.user.profile.calendar.events.all()],
+            'calendars': [e.serialize() for e in request.user.profile.calendars.get(title='Default').events.all()],
         },
     })
