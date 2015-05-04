@@ -85,6 +85,33 @@ class LoginView(View):
             'login_form': login_form
         })
 
-
 def logout(request):
     return logout_then_login(request)
+
+class EditView(View):
+    def post(self, request):
+        # Fill out form with request data
+        edit_form = SignupForm(data=request.POST)
+        if edit_form.is_valid():
+            user = edit_form.save()
+            user.set_password(user.password)
+            user.save()
+
+            # After saving the new user to the db, log them in and redirect
+            # to home page
+            new_user = authenticate(username=request.POST['username'],
+                                    password=request.POST['password'])
+            login(request, new_user)
+            return HttpResponseRedirect(reverse('static_pages:home'))
+        else:
+            # Return the form with errors
+            return render(request, 'user_accounts/edit.jinja',
+                          {'edit_form': edit_form})
+
+    def get(self, request):
+        if request.user.is_authenticated():
+            return render(request, 'user_accounts/edit.jinja', {
+                'edit_form': SignupForm()
+            })
+
+        return HttpResponseRedirect(reverse('static_pages:home'))
