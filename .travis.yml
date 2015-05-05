@@ -8,6 +8,6 @@ before_script:
   - psql -c "create user hmu with password 'hmu';" -U postgres
   - psql -c "alter user hmu createdb;" -U postgres
   - psql -c "create database hitmeup owner hmu;" -U postgres
-  - python manage.py syncdb -migrate -noinput
+  - python manage.py migrate
 script:
   - python manage.py test
