@@ -14,7 +14,7 @@ urlpatterns = [
     # url(r'^blog/', include('blog.urls')),
 
     url(r'^admin/', include(admin.site.urls)),
-    url(r'^api/users/(?P<user>\d+)/friends/', include(FriendshipResource.urls())),
+    url(r'^api/friends/', include(FriendshipResource.urls())),
     url(r'^api/users/', include(UserProfileResource.urls())),
     url(r'^', include('static_pages.urls', namespace='static_pages')),
     url(r'^', include('user_accounts.urls', namespace='user_accounts')),

@@ -41,23 +41,20 @@ class UserProfileResource(DjangoResource):
 
         profile = UserProfile.objects.get(user__id=pk)
 
-        profile.user.email = self.data['email']
-        profile.user.first_name = self.data['first_name']
-        profile.user.last_name = self.data['last_name']
+        if 'email' in self.data:
+            profile.user.email = self.data['email']
+        if 'first_name' in self.data:
+            profile.user.first_name = self.data['first_name']
+        if 'last_name' in self.data:
+            profile.user.last_name = self.data['last_name']
+        if 'phone' in self.data:
+            profile.phone = self.data['phone']
+        if 'bio' in self.data:
+            profile.bio = self.data['bio']
+
         profile.user.save()
         profile.save()
         return profile
-
-    # DELETE /api/users/<pk>/
-    # Sets a user to inactive with id=pk
-    def delete(self, pk):
-        if self.request.user.id != int(pk):
-            raise Unauthorized('Not authorized to delete '
-                               'another user\'s profile.')
-        
-        profile = UserProfile.objects.get(user__id=pk)
-        profile.user.is_active = False
-        profile.user.save()
 
 
 class FriendshipResource(DjangoResource):
@@ -76,35 +73,21 @@ class FriendshipResource(DjangoResource):
     def is_authenticated(self):
         return self.request.user.is_authenticated()
 
-    # GET /api/users/<user>/friends/
-    # Gets a list of friends of a user with id=user
-    def list(self, user):
-        if self.request.user.id != int(user):
-            raise Unauthorized('Not authorized to view '
-                               'another user\'s friends.')
+    # GET /api/friends/
+    # Gets a list of friends of the current user
+    def list(self):
+        return UserProfile.objects.get(user__id=self.request.user.id).friends
 
-        return UserProfile.objects.get(user__id=user).friends
-
-    # PUT /api/users/<user>/friends/<pk>/
-    # Adds a friendship of users: 'user' -> 'pk'
-    def update(self, user, pk):
-        if self.request.user.id != int(user):
-            raise Unauthorized('Not authorized to add to '
-                               'another user\'s friends.')
-
-        this = UserProfile.objects.get(user__id=user)
+    # PUT /api/friends/<pk>/
+    # Adds a friendship of current user -> 'pk'
+    def update(self, pk):
+        this = UserProfile.objects.get(user__id=self.request.user.id)
         other = UserProfile.objects.get(user__id=pk)
-
         this.add_friend(other)
 
-    # DELETE /api/users/<user>/friends/<pk>/
-    # Removes a friendship of users: 'user <-> 'pk'
-    def delete(self, user, pk):
-        if self.request.user.id != int(user):
-            raise Unauthorized('Not authorized to remove '
-                               'another user\'s friends.')
-
-        this = UserProfile.objects.get(user__id=user)
+    # DELETE /api/friends/<pk>/
+    # Removes a friendship of current user <-> 'pk'
+    def delete(self, pk):
+        this = UserProfile.objects.get(user__id=self.request.user.id)
         other = UserProfile.objects.get(user__id=pk)
-
         this.del_friend(other)
