@@ -1,16 +1,16 @@
 from restless.dj import DjangoResource
 from restless.preparers import FieldsPreparer
 from notifications.models import Notification
+from user_accounts.models import UserProfile
 
 
 class NotificationResource(DjangoResource):
     preparer = FieldsPreparer(fields={
-        'start': 'start',
-        'end': 'end',
-        'title': 'title',
-        'calendar': 'calendar.id',
-        'location': 'location',
-        'description': 'description',
+        'user': 'user',
+        'image_url': 'image_url',
+        'action_url': 'action_url',
+        'text': 'text',
+        'read': 'read',
     })
 
     # Authentication!
@@ -36,10 +36,8 @@ class NotificationResource(DjangoResource):
         try:
             notification = Notification.objects.get(id=pk)
         except Notification.DoesNotExist:
-            post = Notification()
+            notification = Notification()
 
-        notification.title = self.data['title']
-        notification.user = User.objects.get(username=self.data['author'])
-        notification.content = self.data['body']
+        notification.read = self.data['read']
         notification.save()
-        return post
+        return notification
