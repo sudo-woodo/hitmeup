@@ -1,24 +1,22 @@
 from restless.dj import DjangoResource
 from restless.preparers import FieldsPreparer
 from ourcalendar.models import Event, Calendar
-
+from user_accounts.models import UserProfile
+from django.contrib.auth.models import User
 
 class EventResource(DjangoResource):
     preparer = FieldsPreparer(fields={
         'start': 'start',
         'end': 'end',
         'title': 'title',
-        'calendar': 'calendar.id',
+        'calendar': 'calendar.title',
         'location': 'location',
         'description': 'description',
     })
 
     # Authentication!
     def is_authenticated(self):
-        # Open everything wide!
-        # DANGEROUS, DO NOT DO IN PRODUCTION.
         return self.request.user.is_authenticated()
-        #return True
 
     # GET /api/events/
     def list(self):
@@ -30,12 +28,14 @@ class EventResource(DjangoResource):
 
     # POST /api/events/
     def create(self):
-        print 33
         e = Event.objects.create(
             start=self.data['start'],
             end=self.data['end'],
             title=self.data['title'],
-            calendar=Calendar.objects.get(title="Default"),
+            #Get a calendar who's owner profile is linked to the user sending the POST request
+            calendar=Calendar.objects.get(
+                owner=UserProfile.objects.get(user=self.request.user),
+                title=self.data['calendar']),
             description=self.data['description']
         )
         return e
