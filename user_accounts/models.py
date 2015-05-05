@@ -1,9 +1,15 @@
+import django.dispatch
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.core.validators import RegexValidator
 from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch.dispatcher import receiver
+from user_accounts.templatetags import gravatar
+
+
+request_friend = django.dispatch.Signal(providing_args=["from_friend", "to_friend"])
+accept_friend = django.dispatch.Signal(providing_args=["from_friend", "to_friend"])
 
 
 class UserProfile(models.Model):
@@ -39,6 +45,10 @@ class UserProfile(models.Model):
         return self.user.email
 
     @property
+    def gravatar_url(self):
+        return gravatar.gravatar_url(self.user.email)
+
+    @property
     def friends(self):
         # Only friends you have accepted AND friends that have accepted you
         return self.outgoing_friends.filter(
@@ -65,17 +75,23 @@ class UserProfile(models.Model):
 
         # If no, then create a pending outgoing friendship
         except Friendship.DoesNotExist:
-            outgoing = Friendship.objects.create(
+            outgoing, created = Friendship.objects.get_or_create(
                 from_friend=self, to_friend=other)
+            if created:
+                request_friend.send(sender=self.__class__,
+                                    from_friend=self, to_friend=other)
 
         # If yes, accept the incoming friendship
         # and make an accepted outgoing friendship
         else:
-            outgoing = Friendship.objects.get_or_create(
-                from_friend=self, to_friend=other)[0]
+            outgoing, created = Friendship.objects.get_or_create(
+                from_friend=self, to_friend=other)
             outgoing.accepted = incoming.accepted = True
             outgoing.save()
             incoming.save()
+            if created:
+                accept_friend.send(sender=self.__class__,
+                                   from_friend=self, to_friend=other)
 
         return outgoing
 
