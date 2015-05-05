@@ -2,8 +2,23 @@ import copy
 from django.core.urlresolvers import resolve, Resolver404
 from django.conf import settings
 
-#TODO documentation
+
 def navbar(request):
+    """
+    Fills the 'navbar_entries' variable with the navbar entries, and marks the active view.
+    Will grab the entries from settings.NAVBAR_ENTRIES, in the following format:
+    [
+        {
+            'name': string,
+            'view': string,
+        },
+        ...
+    ]
+
+    :param request: The request object.
+    :return: The dict {'navbar_entries': entries}.
+    """
+
     # Get navbar config
     entries = copy.deepcopy(getattr(settings, 'NAVBAR_ENTRIES', []))
 
