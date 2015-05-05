@@ -9,7 +9,7 @@
             text: 'FedoraGuy420 has friend requested you!',
             time: '4 hours ago',
             read: false,
-            action: '/'
+            action: '/notifications/api/'
         },
         {
             image: 'http://i1.kym-cdn.com/entries/icons/facebook/000/011/121/tumblr_m8t7bxSG2k1r61mz1o5_250.gif',
