@@ -17,7 +17,7 @@
                     $(prevClick).css('background-color', 'white');
                 $(this).css('background-color', 'rgba(204,255,249,0.3)');
                 prevClick = this;
-                                // using jQuery
+                 /*               // using jQuery
                 function getCookie(name) {
                     var cookieValue = null;
                     if (document.cookie && document.cookie != '') {
@@ -44,7 +44,7 @@
                             xhr.setRequestHeader("X-CSRFToken", csrftoken);
                         }
                     }
-                });
+                });*/
 
                 $.ajax({
                     url:'/calendar/api/events/',
@@ -53,7 +53,6 @@
                         end: '1990-12-12 12:13', calendar:'Default',
                         description: 'new des', location: ''}),
                     contentType: "application/json",
-             //       dataType: "json",
                     success:function(response){},
                     complete:function(){},
                     error:function (xhr, textStatus, thrownError){

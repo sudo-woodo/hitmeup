@@ -17,8 +17,8 @@ class EventResource(DjangoResource):
     def is_authenticated(self):
         # Open everything wide!
         # DANGEROUS, DO NOT DO IN PRODUCTION.
-        #return self.request.user.is_authenticated()
-        return True
+        return self.request.user.is_authenticated()
+        #return True
 
     # GET /api/events/
     def list(self):
