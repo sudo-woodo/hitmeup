@@ -5,9 +5,9 @@ services: postgresql
 install:
   - pip install -r requirements.txt
 before_script:
-  - psql -c "create user hmu with password 'hmu';"
-  - psql -c "alter user hmu createdb;"
-  - psql -c "create database hitmeup owner hmu;"
+  - psql -c "create user hmu with password 'hmu';" -U postgres
+  - psql -c "alter user hmu createdb;" -U postgres
+  - psql -c "create database hitmeup owner hmu;" -U postgres
   - python manage.py syncdb -migrate -noinput
 script:
   - python manage.py test
