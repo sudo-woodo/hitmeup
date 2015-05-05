@@ -93,20 +93,24 @@ class UserProfile(models.Model):
                 accept_friend.send(sender=self.__class__,
                                    from_friend=self, to_friend=other)
 
-        return outgoing
+        return outgoing, created
 
     def del_friend(self, other):
+        outgoing_deleted, incoming_deleted = True
+
         # Delete the outgoing
         try:
             Friendship.objects.get(from_friend=self, to_friend=other).delete()
         except Friendship.DoesNotExist:
-            pass
+            outgoing_deleted = False
 
         # Delete the incoming
         try:
             Friendship.objects.get(from_friend=other, to_friend=self).delete()
         except Friendship.DoesNotExist:
-            pass
+            incoming_deleted = False
+
+        return outgoing_deleted, incoming_deleted
 
 
 # Auto-create a UserProfile when creating a User
