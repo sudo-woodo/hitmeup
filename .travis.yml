@@ -4,8 +4,12 @@ cache: pip
 services: postgresql
 install: pip install -r requirements.txt
 before_script:
-  - psql -c "create user hmu with password 'hmu';" -U postgres
-  - psql -c "alter user hmu createdb;" -U postgres
-  - psql -c "create database hitmeup owner hmu;" -U postgres
-  - python manage.py migrate
+- psql -c "create user hmu with password 'hmu';" -U postgres
+- psql -c "alter user hmu createdb;" -U postgres
+- psql -c "create database hitmeup owner hmu;" -U postgres
+- python manage.py migrate
 script: python manage.py test
+env:
+  global:
+  - secure: bpbScT4Y03ZAZyQ2sHrCwBkHZCxoeLyI3OVnwmuAK4P4jk68jPbb+CQqt27qwzIMxT6N4CapVv7tdY7X7h4+Jo4RkSsMAEiZyYX5ScYVFnzUk3b1T9smY0P8nj7IWxtOMvoLAeom5cbki+Az7lOcqcX2QgMm4/A77110zMxc3RM=
+  - secure: DXSEmt9uPbndQT8dSLfxm+jk9ycYbUQF1sbzZLNJOSS79EVs35RXkTFrcNLG0q2AEYeVutV3aOot7yHS72BNGHzBrXp5Bgn57IkNrTIxX2b5LSozt5HQgQb5auRgfNoxbbYJIM942oJ87dyRI7h6jL+EIWGn7Q9Hr675pbLtSAA=
