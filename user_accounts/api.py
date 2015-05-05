@@ -54,6 +54,7 @@ class UserProfileResource(DjangoResource):
         if self.request.user.id != int(pk):
             raise Unauthorized('Not authorized to delete '
                                'another user\'s profile.')
+        
         profile = UserProfile.objects.get(user__id=pk)
         profile.user.is_active = False
         profile.user.save()
