@@ -18,7 +18,11 @@
                     $(prevClick).css('background-color', 'white');
                 $(this).css('background-color', 'rgba(204,255,249,0.3)');
                 prevClick = this;
-                $("#createEventModal").modal('show');
+                $("#create-event-modal").modal('show');
+                $("#create-event-modal").on('hide.bs.modal', function () {
+                    $(this).find('form')[0].reset();
+                });
+                $('#datetimepicker1').datetimepicker();
             },
             eventClick: function(event) {
                 $('#eventDetailModal .modal-title').text(event.title + ' (' + event.id + ')');
@@ -39,3 +43,4 @@
         })
     });
 })(window.jQuery, $HMU);
+
