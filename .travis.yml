@@ -1,6 +1,8 @@
 language: python
 python: 2.7
-cache: pip
+cache:
+  directories:
+  - $HOME/.cache/pip
 services: postgresql
 install: pip install -r requirements.txt
 before_script:
@@ -11,5 +13,5 @@ before_script:
 script: python manage.py test
 env:
   global:
-  - secure: RkSAGOLI+CxChgKb/Ycwo/62jvYw1ZkJitB66ZYalfL6az28NsgqvU43LFP9RZLK8gqVlhM7MiFCJOtmlz0pAdugeeY8WQ+fpolvCZs4GTpofRhpeBQYpRULrZPatLt5/t9EdBJL+PPqRarmM2NHVJt8KpGI6R0CEg3WAEqnG0k=
-  - secure: A5YQ98I76EIw4bi1gLcS5NpgU9n4UgkI75pYQlDNhC41PyVM0CfkTEsLqWW4/rS0I4CucIz+6JfjrsjgW3T/kYC+PgmA3KH6RT6oeVSMvA1Pt1pGUcQAVnm+hYN5GaTIro0CEFpdidxkR8eSRaUdat9Dh1UTqTcazd4Fz7XrlwU=
+  - secure: EsAsuZp7jyuGcrtdYo8HkrvBnnChj08MVmgqWnHh/g9tc5AJPocNTv+DRWOCN/R4tz7oqJTcvhWTPT6HtkXWhnmIGBsuke1McFa+C8OuJRBhcmf+fNDBRh7E4PuXCaOTUcG1hYa4g16qOqJa/CopeaOQjZa6gjDvPuutXxAR7as=
+  - secure: swbp8Ep65hrmziyl33yw2wDyWleDn0SJFiPYYUzyxjQ/MPKLFMZdgCTTCmNONKKmq6e28RPrXGmWj18p8ZanGggAhwP6kV7br+pCZ4lSb85VQw2wshDmS+/s07u82qaChflDye24ih1ni8HOO2656+Vt5/6ANxu9d01DirGTCfg=
