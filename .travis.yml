@@ -11,5 +11,5 @@ before_script:
 script: python manage.py test
 env:
   global:
-  - secure: bpbScT4Y03ZAZyQ2sHrCwBkHZCxoeLyI3OVnwmuAK4P4jk68jPbb+CQqt27qwzIMxT6N4CapVv7tdY7X7h4+Jo4RkSsMAEiZyYX5ScYVFnzUk3b1T9smY0P8nj7IWxtOMvoLAeom5cbki+Az7lOcqcX2QgMm4/A77110zMxc3RM=
   - secure: DXSEmt9uPbndQT8dSLfxm+jk9ycYbUQF1sbzZLNJOSS79EVs35RXkTFrcNLG0q2AEYeVutV3aOot7yHS72BNGHzBrXp5Bgn57IkNrTIxX2b5LSozt5HQgQb5auRgfNoxbbYJIM942oJ87dyRI7h6jL+EIWGn7Q9Hr675pbLtSAA=
+  - secure: SjBFw23DlDgOklmOkwBE6kIE3IOQfQRJj5p1ind5imIMUosehkDi+5ZPudMcte84qm/je7nUcOwKQ4eTW6nrPwi6g6mA+CmtaP2HEWvi9wZIq1RWfoEfy9UUuMYAT6kN5LZ/GkPjeBagncnDZwE1n+qO81XxXPgIsfI915VG8ks=
