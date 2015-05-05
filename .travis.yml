@@ -8,9 +8,10 @@ install: pip install -r requirements.txt
 before_script:
 - psql -c "create user hmu with password 'hmu';" -U postgres
 - psql -c "alter user hmu createdb;" -U postgres
-- psql -c "create database hitmeup owner hmu;" -U postgres
-- python manage.py migrate
 script: python manage.py test
+branches:
+  only:
+  - master
 env:
   global:
   - secure: EsAsuZp7jyuGcrtdYo8HkrvBnnChj08MVmgqWnHh/g9tc5AJPocNTv+DRWOCN/R4tz7oqJTcvhWTPT6HtkXWhnmIGBsuke1McFa+C8OuJRBhcmf+fNDBRh7E4PuXCaOTUcG1hYa4g16qOqJa/CopeaOQjZa6gjDvPuutXxAR7as=
