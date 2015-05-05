@@ -1,0 +1,13 @@
+language: python
+python:
+  - 2.7
+services: postgresql
+install:
+  - pip install -r requirements.txt
+before_script:
+  - psql -c "create user hmu with password 'hmu';"
+  - psql -c "alter user hmu createdb;"
+  - psql -c "create database hitmeup owner hmu;"
+  - python manage.py syncdb -migrate -noinput
+script:
+  - python manage.py test
