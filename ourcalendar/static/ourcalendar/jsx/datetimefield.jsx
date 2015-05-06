@@ -1,6 +1,11 @@
 var DateTimeField = React.createClass({
-    //Need to download necessary bootstrap requirements for datetimefield.
-   render: function() {
+
+    handleSubmit: function(data)  {
+
+
+    },
+
+    render: function() {
        return (
             <div class="container">
                 <div class="row">

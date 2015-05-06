@@ -1,6 +1,5 @@
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
-from ourcalendar.logic.calendar import get_events
 
 @login_required
 def calendar(request):
@@ -28,6 +27,6 @@ def calendar(request):
             'ourcalendar/jsx/eventmodal.jsx'
         ],
         'js_data': {
-            'calendars': get_events(request.user),
+            'calendars': [e.serialize() for e in request.user.profile.calendars.get(title='Default').events.all()],
         },
     })

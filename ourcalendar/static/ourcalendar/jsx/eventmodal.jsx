@@ -9,6 +9,11 @@ var EventModal = React.createClass({
 
     },
 
+    handleDateSubmit: function(date)  {
+
+
+    },
+
     getInitialState: function()  {
         return {
             id: -1,
@@ -37,7 +42,7 @@ var EventModal = React.createClass({
                             <form id="event-form" onSubmit={this.handleSubmit}>
                                 <p><input type="text" placeholder="Title" value={this.state.title} ref="title" onChange={this.handleInput} /></p>
                                 <p><input type="text" placeholder="Description" value={this.state.description} ref="description" onChange={this.handleInput}/></p>
-                                <p><DateTimeField placeholder="Start time" /></p>
+                                <p><DateTimeField onDateSubmit={this.handleDateSubmit} /></p>
                                 <p><DateTimeField placeholder="End time" /></p>
                             </form>
 
