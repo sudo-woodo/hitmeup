@@ -20,15 +20,12 @@
                 $("#myModal").modal('show');
             },
             eventClick: function(event) {
-                $('#eventDetailModal .modal-title').text(event.title + ' (' + event.id + ')');
-                $('#eventDetailModal .modal-title').css('color', event.color);
-                $('#eventDetailModal .label').css('background-color', event.color);
+                // Use event.id to get the clicked event's id
+                $('#eventDetailModal .modal-title').text(event.title);
                 $('#eventDetailModal #start-time').text(moment(event.start).format('LLL'));
                 $('#eventDetailModal #end-time').text(moment(event.end).format('LLL'));
-                $('#eventDetailModal #cal-title').text(event.calendar);
                 $('#eventDetailModal #location').text(event.location);
                 $('#eventDetailModal #description').text(event.description);
-                $('#eventDetailModal #attendees').text(event.users ? event.users : 'No one yet!');
                 $('#eventDetailModal').modal('show');
             },
             events: events,
