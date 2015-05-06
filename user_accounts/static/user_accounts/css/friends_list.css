@@ -1,9 +1,7 @@
 /* TODO: More specific CSS classes */
 
 body {
-    /*
-    background-color: #eceff1;
-    */
+    background-color: #e0e0e0;
 }
 
 #main-content {
@@ -11,10 +9,7 @@ body {
 }
 
 .panel-default {
-    /*
-    border-color: #cfd8dc;
-    background-color: #b0bec5;
-    */
+    border-color: #bdbdbd;
 }
 
 .profile-pic-container {
@@ -30,7 +25,6 @@ body {
 }
 
 .profile-info-container {
-    padding-top: 15px;
     width: 60%;
     display: inline-block;
     float: left;
@@ -39,6 +33,9 @@ body {
     text-overflow: ellipsis;
 }
 
+.calendar-link:hover {
+    text-decoration: none;
+}
 .fa-heart, .fa-heart-o {
     color: #ff4081;
 }
