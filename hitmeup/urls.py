@@ -14,6 +14,6 @@ urlpatterns = [
 
     url(r'^admin/', include(admin.site.urls)),
     url(r'^notifications/', include('notifications.urls', namespace='notifications')),
-    url(r'^', include('static_pages.urls', namespace='static_pages')),
-    url(r'^', include('user_accounts.urls', namespace='user_accounts')),
+    url(r'^$', include('static_pages.urls', namespace='static_pages')),
+    url(r'^$', include('user_accounts.urls', namespace='user_accounts')),
 ]

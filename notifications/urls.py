@@ -1,6 +1,9 @@
-from django.conf.urls import url
-from . import views
+from django.conf.urls import patterns, url, include
 
-urlpatterns = [
+from api import NotificationResource
+import views
+
+urlpatterns = patterns[
     url(r'^$', views.list, name='list'),
+    url(r'^api/$', include(NotificationResource.urls())),
 ]
