@@ -17,21 +17,21 @@ class NotificationResource(DjangoResource):
     def is_authenticated(self):
         # Open everything wide!
         # DANGEROUS, DO NOT DO IN PRODUCTION.
-        return self.request.user.is_authenticated()
-        #return True
+        #return self.request.user.is_authenticated()
+        return True
 
-    # GET /api/events/
+    # GET /api/
     #TODO LIST GET
     def list(self):
         return Notification.objects.all()
 
-    # GET /api/events/<pk>/
+    # GET /api/
     def detail(self, pk):
         return Notification.objects.get(id=pk)
 
     #TODO DETAIL PUT
 
-    # PUT /api/posts/<pk>/
+    # PUT /api/<pk>/
     def update(self, pk):
         try:
             notification = Notification.objects.get(id=pk)

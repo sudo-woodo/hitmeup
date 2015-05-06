@@ -52,6 +52,7 @@
             this.setState({
                 notifications: fromServer
             });
+
         },
         render: function() {
             var notifications = this.state.notifications.map(function(notif) {
