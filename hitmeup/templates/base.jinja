@@ -81,5 +81,10 @@
         {% for script in js %}
             <script type="application/javascript" src="{{ static(script) }}"></script>
         {% endfor %}
+
+        {# JSX - Custom #}
+        {% for script in jsx %}
+            <script type="text/jsx" src="{{ static(script) }}"></script>
+        {% endfor %}
     </body>
 </html>
