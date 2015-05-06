@@ -4,6 +4,7 @@ var EventModal = React.createClass({
         data.preventDefault();
         var title = React.findDOMNode(this.refs.title).value.trim();
         var description = React.findDOMNode(this.refs.description).value.trim();
+        var location = React.findDOMNode(this.refs.description).value.trim();
 
         //Figure out way to sent data to server.
 
@@ -18,14 +19,17 @@ var EventModal = React.createClass({
         return {
             id: -1,
             title: '',
-            description: ''
+            description: '',
+            location: ''
+
         };
     },
 
     handleInput: function()  {
         this.setState({
             title: this.refs.title.getDOMNode().value,
-            description: this.refs.description.getDOMNode().value
+            description: this.refs.description.getDOMNode().value,
+            location: this.refs.location.getDOMNode().value
         });
     },
 
@@ -40,12 +44,11 @@ var EventModal = React.createClass({
                         </div>
                         <div className="modal-body">
                             <form id="event-form" onSubmit={this.handleSubmit}>
-                                <p><input type="text" placeholder="Title" value={this.state.title} ref="title" onChange={this.handleInput} /></p>
-                                <p><input type="text" placeholder="Description" value={this.state.description} ref="description" onChange={this.handleInput}/></p>
+                                <p><input type="text" className="form-control" placeholder="Title" value={this.state.title} ref="title" onChange={this.handleInput} /></p>
                                 <p><DateTimeField onDateSubmit={this.handleDateSubmit} /></p>
-                                <p><DateTimeField placeholder="End time" /></p>
+                                <p><input type="text" className="form-control" placeholder="Location" value={this.state.location} ref="location" onChange={this.handleInput} /></p>
+                                <p><textArea className="form-control" placeholder="Description" value={this.state.description} ref="description" onChange={this.handleInput}/></p>
                             </form>
-
 
                             <p>Click save changes to save event to your calendar.</p>
                             <p class="text-warning"><small>If you don't save, your changes will be lost.</small></p>

@@ -22,7 +22,6 @@
                 $("#create-event-modal").on('hide.bs.modal', function () {
                     $(this).find('form')[0].reset();
                 });
-                $('#datetimepicker1').datetimepicker();
             },
             eventClick: function(event) {
                 $('#eventDetailModal .modal-title').text(event.title + ' (' + event.id + ')');

@@ -3,10 +3,7 @@ from django.db.models.signals import post_save
 from django.dispatch.dispatcher import receiver
 from django.utils import timezone
 from django.db import models
-<<<<<<< HEAD
-=======
 from user_accounts.models import UserProfile
->>>>>>> 8708198739a2418ce0deb255dde51731be47081a
 
 
 class Calendar(models.Model):
@@ -22,8 +19,6 @@ class Calendar(models.Model):
     def __unicode__(self):
         return "%s -> %s" % (self.owner, self.title)
 
-<<<<<<< HEAD
-=======
 
 @receiver(post_save, sender=UserProfile)
 def create_user_profile(sender, instance, created, **kwargs):
@@ -55,4 +50,3 @@ class Event(models.Model):
             'location': self.location,
             'description': self.description,
         }
->>>>>>> 8708198739a2418ce0deb255dde51731be47081a

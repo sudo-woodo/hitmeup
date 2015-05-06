@@ -5,19 +5,35 @@ var DateTimeField = React.createClass({
 
     },
 
+    componentDidMount: function() {
+        console.log('a');
+        $('#datetimepicker6').datetimepicker();
+        $('#datetimepicker7').datetimepicker();
+        $("#datetimepicker6").on("dp.change", function (e) {
+            $('#datetimepicker7').data("DateTimePicker").minDate(e.date);
+        });
+        $("#datetimepicker7").on("dp.change", function (e) {
+            $('#datetimepicker6').data("DateTimePicker").maxDate(e.date);
+        });
+    },
+
     render: function() {
        return (
-            <div class="container">
-                <div class="row">
-                    <div class='col-sm-6'>
-                        <div class="form-group">
-                            <div class='input-group date' id='datetimepicker1'>
-                                <input type='text' class="form-control" />
-                                <span class="input-group-addon">
-                                    <span class="glyphicon glyphicon-calendar"></span>
-                                </span>
-                            </div>
-                        </div>
+            <div>
+                <div className="form-group">
+                    <div className='input-group date' id='datetimepicker6'>
+                        <input type='text' className="form-control" />
+                            <span className="input-group-addon">
+                            <span className="glyphicon glyphicon-calendar"></span>
+                        </span>
+                    </div>
+                </div>
+                <div className="form-group">
+                    <div className='input-group date' id='datetimepicker7'>
+                        <input type='text' className="form-control" />
+                        <span className="input-group-addon">
+                            <span className="glyphicon glyphicon-calendar"></span>
+                        </span>
                     </div>
                 </div>
             </div>
