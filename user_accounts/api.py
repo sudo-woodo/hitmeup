@@ -7,7 +7,7 @@ from .models import UserProfile, Friendship
 
 class UserProfileResource(DjangoResource):
     preparer = FieldsPreparer(fields={
-        'id': 'id',
+        'id': 'user.id',
         'username': 'username',
         'email': 'email',
         'first_name': 'first_name',
@@ -16,6 +16,8 @@ class UserProfileResource(DjangoResource):
         'bio': 'bio',
         'phone': 'phone',
     })
+
+    MODIFIABLE_FIELDS = ['email', 'first_name', 'last_name', 'phone', 'bio']
 
     def is_authenticated(self):
         return self.request.user.is_authenticated()
@@ -37,30 +39,23 @@ class UserProfileResource(DjangoResource):
     # NOTE: for AJAX calls through jQuery, use JSON.stringify on your data
     def update(self, pk):
         if self.request.user.id != int(pk):
-            raise Unauthorized('Not authorized to update '
-                               'another user\'s profile.')
+            raise Unauthorized("Not authorized to update "
+                               "another user's profile.")
 
-        profile = UserProfile.objects.get(user__id=pk)
+        profile = self.request.user.profile
 
-        if 'email' in self.data:
-            profile.user.email = escape(self.data['email'])
-        if 'first_name' in self.data:
-            profile.user.first_name = escape(self.data['first_name'])
-        if 'last_name' in self.data:
-            profile.user.last_name = escape(self.data['last_name'])
-        if 'phone' in self.data:
-            profile.phone = escape(self.data['phone'])
-        if 'bio' in self.data:
-            profile.bio = escape(self.data['bio'])
+        for field in self.data:
+            if field in self.MODIFIABLE_FIELDS:
+                setattr(profile.user, field, escape(self.data[field]))
 
         profile.user.save()
         profile.save()
         return profile
 
 
-class FriendshipResource(DjangoResource):
+class FriendResource(DjangoResource):
     preparer = FieldsPreparer(fields={
-        'id': 'id',
+        'id': 'user.id',
         'username': 'username',
         'email': 'email',
         'first_name': 'first_name',
@@ -78,12 +73,34 @@ class FriendshipResource(DjangoResource):
     def list(self):
         return self.request.user.profile.friends
 
+
+class FriendshipResource(DjangoResource):
+    preparer = FieldsPreparer(fields={
+        'accepted': 'accepted',
+        'from_friend': 'from_friend.user.id',
+        'to_friend': 'to_friend.user.id',
+    })
+
+    def is_authenticated(self):
+        return self.request.user.is_authenticated()
+
+    # GET /api/friendships/
+    # Gets a list of friends of the current user, where friends is:
+    # accepted friends + outgoing friend requests + incoming friend requests.
+    # No duplicate friendships for accepted friends.
+    def list(self):
+        return \
+            Friendship.objects.filter(from_friend=self.request.user.profile) | \
+            Friendship.objects.filter(to_friend=self.request.user.profile,
+                                      accepted=False)
+
     # PUT /api/friends/<pk>/
     # Adds a friendship of current user -> 'pk'
     def update(self, pk):
         other = UserProfile.objects.get(user__id=pk)
         self.request.user.profile.add_friend(other)
-        return other
+        return Friendship.objects.get(from_friend=self.request.user.profile,
+                                      to_friend=other)
 
     # DELETE /api/friends/<pk>/
     # Removes a friendship of current user <-> 'pk'

@@ -22,10 +22,6 @@ class UserProfile(models.Model):
 
     # Word of caution: none of these attributes are "settable."
     @property
-    def id(self):
-        return self.user.id
-
-    @property
     def username(self):
         return self.user.username
 
