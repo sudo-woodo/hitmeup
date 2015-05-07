@@ -8,34 +8,85 @@
     <div class="container">
         <h1>Edit Settings</h1>
 
-        {% for field in edit_form %}
+        {% if error_messages %}
+            {% for error in error_messages %}
+                <div class="form-error alert alert-danger alert-dismissible" role="alert">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <strong>{{ error }}</strong>
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        {% for field in password_form %}
             {% if field.errors %}
                 {% for error in field.errors %}
                     <div class="form-error alert alert-danger alert-dismissible" role="alert">
                         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
-                        {{ field.label_tag() }} {{ error|escape }}
+                        {{ field.label_tag() }}
+                        {{ error|escape }}
                     </div>
                 {% endfor %}
             {% endif %}
         {% endfor %}
 
-        <form id="edit_form" method="post" action="{{ url('user_accounts:edit') }}"
+        {% for field in email_form %}
+            {% if field.errors %}
+                {% for error in field.errors %}
+                    <div class="form-error alert alert-danger alert-dismissible" role="alert">
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        {{ field.label_tag() }}
+                        {{ error|escape }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endfor %}
+
+        <form id="password_form" method="post" action="{{ url('user_accounts:edit') }}"
               enctype="multipart/form-data">
             
             {% csrf_token %}
 
-            {% for field in edit_form %}
-                <div class="form-group">
+            {% for field in password_form %}
+                <div class="password-group">
                     {{ field.label_tag() }}
                     {{ field }}
                 </div>
             {% endfor %}
+            <div class="password-group">
+                <button type="submit" name="save-password" class="btn btn-default">
+                    Save Changes
+                </button>
+                <button type="reset" name="cancel-password" class="btn btn-default">
+                    Cancel
+                </button>
+            </div>
+        </form>
 
-            <button type="submit" name="submit" class="btn btn-default">
-                Save Changes
-            </button>
+        <form id="email_form" method="post" action="{{ url('user_accounts:edit') }}"
+              enctype="multipart/form-data">
+
+            {% csrf_token %}
+
+            {% for field in email_form %}
+                <div class="email-group">
+                    {{ field.label_tag() }}
+                    {{ field }}
+                </div>
+                <div class="password-group">
+                    <button type="submit" name="save-email" class="btn btn-default">
+                        Save Changes
+                    </button>
+                    <button type="reset" name="cancel-email" class="btn btn-default">
+                        Cancel
+                    </button>
+                </div>
+            {% endfor %}
         </form>
     </div>
 {% endblock %}

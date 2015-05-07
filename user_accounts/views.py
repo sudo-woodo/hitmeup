@@ -5,7 +5,7 @@ from django.core.urlresolvers import reverse
 from django.http.response import HttpResponseRedirect
 from django.shortcuts import render
 from django.views.generic import View
-from user_accounts.forms import UserForm, SignupForm, EditForm
+from user_accounts.forms import SignupForm, UserForm, EditForm, EmailForm, PasswordForm
 from django.contrib.auth.models import User
 
 
@@ -86,34 +86,65 @@ class LoginView(View):
             'login_form': login_form
         })
 
+
 def logout(request):
     return logout_then_login(request)
 
+
 class EditView(View):
     def post(self, request):
-        # Fill out form with request data and sets instance as current user
-        edit_form = EditForm(request.POST, instance=request.user)
-        if edit_form.is_valid():
-            user = edit_form.save()
-            user.set_password(user.password)
-            user.save()
+        if 'save-password' in request.POST:
+            password_form = PasswordForm(data=request.POST)
+            email_form = EmailForm()
+            if password_form.is_valid():
+                user = authenticate(username=request.user, password=password_form.cleaned_data['current_password'])
+                if user:
+                    user.set_password(password_form.cleaned_data['new_password'])
+                    user.save()
+                    new_user = authenticate(username=request.user, password=request.POST['new_password'])
+                    login(request, new_user)
+                    return HttpResponseRedirect(reverse('user_accounts:edit'))
+                else:
+                    return render(request, 'user_accounts/edit.jinja', {
+                        'password_form': password_form,
+                        'email_form': email_form,
+                        'error_messages': [
+                            'Incorrect password.'
+                        ]
+                    })
 
-            # After saving the new user to the db, log them in and redirect
-            # to home page
-            new_user = authenticate(username=request.POST['username'],
-                                    password=request.POST['password'])
-            login(request, new_user)
-            return HttpResponseRedirect(reverse('static_pages:home'))
-        else:
-            # Return the form with errors
-            return render(request, 'user_accounts/edit.jinja',
-                          {'edit_form': edit_form})
+            else:
+                return render(request, 'user_accounts/edit.jinja',{
+                    'password_form': password_form, 'email_form': email_form
+                })
+
+        if 'save-email' in request.POST:
+            password_form = PasswordForm()
+            email_form = EmailForm(data=request.POST)
+            if email_form.is_valid():
+                request.user.email = email_form.cleaned_data['email']
+                request.user.save()
+                return HttpResponseRedirect(reverse('user_accounts:edit'))
+            else:
+                return render(request, 'user_accounts/edit.jinja',{
+                    'password_form': password_form, 'email_form': email_form
+                })
 
     def get(self, request):
         # Only allows user to change account info if logged in
         if request.user.is_authenticated():
+            password_form = PasswordForm()
+            email_form = EmailForm()
+            email_form.__dict__['fields']['email'].widget.attrs['placeholder'] = request.user.email
             return render(request, 'user_accounts/edit.jinja', {
-                'edit_form': EditForm()
+                'password_form': password_form, 'email_form': email_form
             })
         # Else returns to the home page
         return HttpResponseRedirect(reverse('static_pages:home'))
+
+    def list(request):
+        return render(request, 'user_accounts/edit.jinja', {
+        'ext_js': [
+            'http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js'
+        ],
+    })

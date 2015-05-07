@@ -22,21 +22,40 @@ class SignupForm(forms.ModelForm, UserForm):
         'class': 'form-control',
         'placeholder': 'Enter Email',
         'id': 'email',
-        'name': 'email'
+        'name': 'Email'
     }))
 
     class Meta:
         model = User
         fields = ('email', 'username', 'password')
 
-class EditForm(forms.ModelForm, UserForm):
+
+class PasswordForm(forms.Form):
+    current_password = forms.CharField(widget=forms.PasswordInput(attrs={
+        'class': 'form-control',
+        'placeholder': 'Enter Current Password',
+        'id': 'current_password',
+        'name': 'Current Password'
+    }))
+
+    new_password = forms.CharField(widget=forms.PasswordInput(attrs={
+        'class': 'form-control',
+        'placeholder': 'Enter New Password',
+        'id': 'new_password',
+        'name': 'New Password'
+    }))
+
+
+class EmailForm(forms.Form):
     email = forms.CharField(widget=forms.EmailInput(attrs={
         'class': 'form-control',
         'placeholder': 'Enter Email',
         'id': 'email',
-        'name': 'email'
+        'name': 'Email'
     }))
 
+
+class EditForm(forms.ModelForm, PasswordForm, EmailForm):
     class Meta:
         model = User
-        fields = ('username', 'password', 'email')
+        fields = ('current_password', 'new_password', 'email')
