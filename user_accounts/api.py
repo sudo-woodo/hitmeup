@@ -89,18 +89,13 @@ class FriendshipResource(DjangoResource):
     # accepted friends + outgoing friend requests + incoming friend requests.
     # No duplicate friendships for accepted friends.
     def list(self):
-        return \
-            Friendship.objects.filter(from_friend=self.request.user.profile) | \
-            Friendship.objects.filter(to_friend=self.request.user.profile,
-                                      accepted=False)
+        return self.request.user.profile.friendships
 
     # PUT /api/friends/<pk>/
     # Adds a friendship of current user -> 'pk'
     def update(self, pk):
         other = UserProfile.objects.get(user__id=pk)
-        self.request.user.profile.add_friend(other)
-        return Friendship.objects.get(from_friend=self.request.user.profile,
-                                      to_friend=other)
+        return self.request.user.profile.add_friend(other)
 
     # DELETE /api/friends/<pk>/
     # Removes a friendship of current user <-> 'pk'
