@@ -1,3 +1,4 @@
+from django.contrib.humanize.templatetags.humanize import naturaltime
 from django.db import models
 from django.dispatch.dispatcher import receiver
 from user_accounts.models import UserProfile, request_friend, accept_friend
@@ -22,9 +23,9 @@ class Notification(models.Model):
     def __unicode__(self):
         return "%s @ %s: %s" % (self.recipient, self.time, self.text)
 
-    def mark_read(self):
-        self.read = True
-        self.save()
+    @property
+    def natural_time(self):
+        return naturaltime(self.time)
 
 
 #TODO: refactor signals to signals.py
