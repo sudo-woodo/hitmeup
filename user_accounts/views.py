@@ -93,17 +93,21 @@ def logout(request):
 
 class EditView(View):
     def post(self, request):
+        # Checks if user wishes to edit password
         if 'save-password' in request.POST:
+            # Fills out PasswordForm and empty EmailForm
             password_form = PasswordForm(data=request.POST)
             email_form = EmailForm()
             if password_form.is_valid():
                 user = authenticate(username=request.user, password=password_form.cleaned_data['current_password'])
+                # Validates current password
                 if user:
                     user.set_password(password_form.cleaned_data['new_password'])
                     user.save()
                     new_user = authenticate(username=request.user, password=request.POST['new_password'])
                     login(request, new_user)
                     return HttpResponseRedirect(reverse('user_accounts:edit'))
+                # Else, returns error message
                 else:
                     return render(request, 'user_accounts/edit.jinja', {
                         'password_form': password_form,
@@ -112,13 +116,14 @@ class EditView(View):
                             'Incorrect password.'
                         ]
                     })
-
+            # Else, returns error message
             else:
                 return render(request, 'user_accounts/edit.jinja',{
                     'password_form': password_form, 'email_form': email_form
-                })
-
+            })
+        # Checks if user wishes to edit email
         if 'save-email' in request.POST:
+            # Fills out EmailForm and empty PasswordForm
             password_form = PasswordForm()
             email_form = EmailForm(data=request.POST)
             if email_form.is_valid():
@@ -126,6 +131,9 @@ class EditView(View):
                 request.user.save()
                 return HttpResponseRedirect(reverse('user_accounts:edit'))
             else:
+                # Sets both initial and placeholder value
+                email_form.__dict__['fields']['email'].widget.attrs['placeholder'] = request.user.email
+                email_form.initial['email'] = request.user.email
                 return render(request, 'user_accounts/edit.jinja',{
                     'password_form': password_form, 'email_form': email_form
                 })
@@ -135,7 +143,9 @@ class EditView(View):
         if request.user.is_authenticated():
             password_form = PasswordForm()
             email_form = EmailForm()
+            # Sets both initial and placeholder value
             email_form.__dict__['fields']['email'].widget.attrs['placeholder'] = request.user.email
+            email_form.initial['email'] = request.user.email
             return render(request, 'user_accounts/edit.jinja', {
                 'password_form': password_form, 'email_form': email_form
             })
