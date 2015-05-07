@@ -13,15 +13,14 @@
                 center: 'title',
                 right: 'month,agendaWeek,agendaDay'
             },
-            dayClick: function() {
+            dayClick: function(date) {
                 if (prevClick)
                     $(prevClick).css('background-color', 'white');
                 $(this).css('background-color', 'rgba(204,255,249,0.3)');
                 prevClick = this;
+
+                $('#start-picker').data("DateTimePicker").date(date);
                 $("#create-event-modal").modal('show');
-                $("#create-event-modal").on('hide.bs.modal', function () {
-                    $(this).find('form')[0].reset();
-                });
             },
             eventClick: function(event) {
                 // Use event.id to get the clicked event's id

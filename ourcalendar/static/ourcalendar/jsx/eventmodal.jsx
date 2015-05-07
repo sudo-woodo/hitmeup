@@ -8,7 +8,7 @@ var EventModal = React.createClass({
             end: React.findDOMNode(this.refs.datetime.refs.end).value.trim(),
             location: React.findDOMNode(this.refs.location).value.trim(),
             description: React.findDOMNode(this.refs.description).value.trim()
-        }
+        };
 
         // Figure out way to send POST data to server.
         console.log('SUBMIT with data:');

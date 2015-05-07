@@ -27,6 +27,7 @@ var DateTimeField = React.createClass({
         $('#create-event-modal').on('hidden.bs.modal', function (e) {
             $('#start-picker').data("DateTimePicker").maxDate(false);
             $('#end-picker').data("DateTimePicker").minDate(false);
+            $('#event-form')[0].reset();
         })
     },
 
