@@ -7,7 +7,7 @@ from .models import UserProfile
 
 class UserProfileResource(DjangoResource):
     preparer = FieldsPreparer(fields={
-        'id': 'user.id',
+        'id': 'pk',
         'username': 'username',
         'email': 'email',
         'first_name': 'first_name',
@@ -17,7 +17,10 @@ class UserProfileResource(DjangoResource):
         'phone': 'phone',
     })
 
-    MODIFIABLE_FIELDS = ['email', 'first_name', 'last_name', 'phone', 'bio']
+    MODIFIABLE_FIELDS = {
+        'profile': ['phone', 'bio'],
+        'user': ['email', 'first_name', 'last_name'],
+    }
 
     def is_authenticated(self):
         return self.request.user.is_authenticated()
@@ -44,9 +47,14 @@ class UserProfileResource(DjangoResource):
 
         profile = self.request.user.profile
 
-        for field in self.data:
-            if field in self.MODIFIABLE_FIELDS:
-                setattr(profile.user, field, escape(self.data[field]))
+        for category in self.MODIFIABLE_FIELDS:
+            target = profile
+            if category == 'user':
+                target = profile.user
+
+            for field in self.MODIFIABLE_FIELDS[category]:
+                if field in self.data:
+                    setattr(target, field, escape(self.data[field]))
 
         profile.user.save()
         profile.save()
@@ -55,7 +63,7 @@ class UserProfileResource(DjangoResource):
 
 class FriendResource(DjangoResource):
     preparer = FieldsPreparer(fields={
-        'id': 'user.id',
+        'id': 'pk',
         'username': 'username',
         'email': 'email',
         'first_name': 'first_name',
@@ -68,36 +76,27 @@ class FriendResource(DjangoResource):
     def is_authenticated(self):
         return self.request.user.is_authenticated()
 
-    # GET /api/friends/
+    # GET /api/friends/?type=(accepted|incoming|outgoing)
     # Gets a list of friends of the current user.
+    # Returns accepted friends if "type" is not specified.
     def list(self):
-        return self.request.user.profile.friends
+        list_type = self.request.GET.get('type', 'accepted')
 
+        if list_type == 'incoming':
+            return self.request.user.profile.pending_incoming_friends
+        elif list_type == 'outgoing':
+            return self.request.user.profile.pending_outgoing_friends
+        else:
+            return self.request.user.profile.friends
 
-class FriendshipResource(DjangoResource):
-    preparer = FieldsPreparer(fields={
-        'accepted': 'accepted',
-        'from_friend': 'from_friend.user.id',
-        'to_friend': 'to_friend.user.id',
-    })
-
-    def is_authenticated(self):
-        return self.request.user.is_authenticated()
-
-    # GET /api/friendships/
-    # Gets a list of friends of the current user, where friends is:
-    # accepted friends + outgoing friend requests + incoming friend requests.
-    # No duplicate friendships for accepted friends.
-    def list(self):
-        return self.request.user.profile.friendships
-
-    # PUT /api/friendships/<pk>/
+    # PUT /api/friends/<pk>/
     # Adds a friendship of current user -> 'pk'
     def update(self, pk):
         other = UserProfile.objects.get(user__id=pk)
-        return self.request.user.profile.add_friend(other)
+        self.request.user.profile.add_friend(other)
+        return other
 
-    # DELETE /api/friendships/<pk>/
+    # DELETE /api/friends/<pk>/
     # Removes a friendship of current user <-> 'pk'
     def delete(self, pk):
         other = UserProfile.objects.get(user__id=pk)

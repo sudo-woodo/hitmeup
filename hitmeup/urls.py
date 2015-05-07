@@ -1,8 +1,7 @@
 from django.conf.urls import include, url
 from django.contrib import admin
 from django_jinja import views as jinja_views
-from user_accounts.api import UserProfileResource, \
-    FriendResource, FriendshipResource
+from user_accounts.api import UserProfileResource, FriendResource
 
 handler400 = jinja_views.BadRequest.as_view()
 handler403 = jinja_views.PermissionDenied.as_view()
@@ -15,9 +14,10 @@ urlpatterns = [
     # url(r'^blog/', include('blog.urls')),
 
     # REST APIs
-    url(r'^api/friends/', include(FriendResource.urls())),
-    url(r'^api/friendships/', include(FriendshipResource.urls())),
-    url(r'^api/users/', include(UserProfileResource.urls())),
+    url(r'^api/friends/', include(FriendResource.urls(),
+        namespace='friends_api')),
+    url(r'^api/users/', include(UserProfileResource.urls(),
+        namespace='users_api')),
 
     # Other URLs
     url(r'^admin/', include(admin.site.urls)),

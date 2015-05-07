@@ -59,11 +59,6 @@ class UserProfile(models.Model):
         return self.outgoing_friends.filter(
             incoming_friendships__accepted=False)
 
-    @property
-    def friendships(self):
-        return Friendship.objects.filter(from_friend=self) | \
-            Friendship.objects.filter(to_friend=self, accepted=False)
-
     # Throws IntegrityError if friendship already exists
     def add_friend(self, other):
         # Check if an incoming friendship exists
