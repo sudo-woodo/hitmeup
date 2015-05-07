@@ -13,6 +13,6 @@ def list(request):
             'JSXTransformer.js'
         ],
         'jsx': [
-            'notifications/jsx/list.jsx'
+            'notifications/js/list.jsx'
         ],
     })
