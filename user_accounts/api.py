@@ -60,31 +60,30 @@ class UserProfileResource(DjangoResource):
 
 class FriendshipResource(DjangoResource):
     preparer = FieldsPreparer(fields={
-        'accepted': 'accepted',
-        'from_friend': 'from_friend.id',
-        'to_friend': 'to_friend.id',
+        'id': 'id',
+        'username': 'username',
+        'email': 'email',
+        'first_name': 'first_name',
+        'last_name': 'last_name',
+        'full_name': 'full_name',
+        'bio': 'bio',
+        'phone': 'phone',
     })
 
     def is_authenticated(self):
         return self.request.user.is_authenticated()
 
     # GET /api/friends/
-    # Gets a list of friends of the current user, where friends is:
-    # accepted friends + outgoing friend requests + incoming friend requests.
-    # No duplicate friendships for accepted friends.
+    # Gets a list of friends of the current user.
     def list(self):
-        return \
-            Friendship.objects.filter(from_friend=self.request.user.profile) | \
-            Friendship.objects.filter(to_friend=self.request.user.profile,
-                                      accepted=False)
+        return self.request.user.profile.friends
 
     # PUT /api/friends/<pk>/
     # Adds a friendship of current user -> 'pk'
     def update(self, pk):
         other = UserProfile.objects.get(user__id=pk)
         self.request.user.profile.add_friend(other)
-        return Friendship.objects.get(from_friend=self.request.user.profile,
-                                      to_friend=other)
+        return other
 
     # DELETE /api/friends/<pk>/
     # Removes a friendship of current user <-> 'pk'
