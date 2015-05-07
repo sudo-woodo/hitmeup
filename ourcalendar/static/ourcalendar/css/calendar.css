@@ -6,3 +6,7 @@
     margin-top: -0.1em;
 }
 
+.modal-body textArea {
+    max-width: 100%;
+    min-width: 100%;
+}

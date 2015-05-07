@@ -22,7 +22,7 @@ var DateTimeField = React.createClass({
             <div>
                 <div className="form-group">
                     <div className='input-group date' id='datetimepicker6'>
-                        <input type='text' className="form-control" />
+                        <input type='text' ref="start" className="form-control" placeholder="Start time" />
                             <span className="input-group-addon">
                             <span className="glyphicon glyphicon-calendar"></span>
                         </span>
@@ -30,7 +30,7 @@ var DateTimeField = React.createClass({
                 </div>
                 <div className="form-group">
                     <div className='input-group date' id='datetimepicker7'>
-                        <input type='text' className="form-control" />
+                        <input type='text' ref="end" className="form-control" placeholder="End time" />
                         <span className="input-group-addon">
                             <span className="glyphicon glyphicon-calendar"></span>
                         </span>
