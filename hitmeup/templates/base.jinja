@@ -3,8 +3,11 @@
     <head>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+        {# Don't let mobile users resize #}
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 
+        {# Metadata #}
         <title>{% block title %}HitMeUp{% endblock %}</title>
         <meta name="description" content="HitMeUp">
 
@@ -55,8 +58,10 @@
         <![endif]-->
     </head>
     <body>
+        {# Stick the navbar in #}
         {% include 'navbar.jinja' %}
 
+        {# Where the main content of the page goes #}
         {% block content %}{% endblock %}
 
         {# JS - Variables stored in $HMU #}
