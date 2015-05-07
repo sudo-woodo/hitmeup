@@ -12,7 +12,7 @@ class Notification(models.Model):
         ACCEPT_FRIEND: '%s has accepted your friend request!',
     }
 
-    user = models.ForeignKey(UserProfile, related_name='notifications')
+    recipient = models.ForeignKey(UserProfile, related_name='notifications')
     image_url = models.CharField(max_length=600)
     action_url = models.CharField(max_length=600)
     text = models.CharField(max_length=200)
@@ -20,7 +20,7 @@ class Notification(models.Model):
     read = models.BooleanField(default=False)
 
     def __unicode__(self):
-        return "%s @ %s: %s" % (self.user, self.time, self.text)
+        return "%s @ %s: %s" % (self.recipient, self.time, self.text)
 
     def mark_read(self):
         self.read = True

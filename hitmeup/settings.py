@@ -77,6 +77,7 @@ CONTEXT_PROCESSORS = [
 
     # Custom
     'dynamic_components.context_processors.navbar',
+    'dynamic_components.context_processors.notification_count',
 ]
 
 TEMPLATES = [
