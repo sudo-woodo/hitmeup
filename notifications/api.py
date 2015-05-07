@@ -13,19 +13,18 @@ class NotificationResource(DjangoResource):
         'read': 'read',
     })
 
-    # Authentication!
     def is_authenticated(self):
         return self.request.user.is_authenticated()
 
-    # GET /api/notifications
+    # GET /api/notifications/
     def list(self):
         return self.request.user.profile.notifications.all()
 
-    # GET /api/notifications/<pk>
+    # GET /api/notifications/<pk>/
     def detail(self, pk):
         return self.request.user.profile.notifications.get(id=pk)
 
-    # PUT /api/<pk>/
+    # PUT /api/notifications/<pk>/
     def update(self, pk):
         notification = self.request.user.profile.notifications.get(id=pk)
         notification.read = escape(self.data['read'])
