@@ -25,7 +25,7 @@ SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 SECRET_KEY = os.environ['HMU_SECRET_KEY']
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get('HMU_DEBUG', False) == 'False'
+DEBUG = os.environ.get('HMU_DEBUG', False) == 'True'
 
 ALLOWED_HOSTS = ['*']
 

@@ -1,37 +1,34 @@
+from django.utils.html import escape
 from restless.dj import DjangoResource
 from restless.preparers import FieldsPreparer
-from notifications.models import Notification
 
 
 class NotificationResource(DjangoResource):
     preparer = FieldsPreparer(fields={
+        'id': 'id',
+        'image': 'image_url',
+        'action': 'action_url',
+        'text': 'text',
+        'time': 'natural_time',
         'read': 'read',
     })
 
     # Authentication!
     def is_authenticated(self):
-        #return self.request.user.is_authenticated()
-        return True
+        return self.request.user.is_authenticated()
 
-    # GET /api/
-    #TODO LIST GET
+    # GET /api/notifications
     def list(self):
-        print 1
-        return Notification.objects.all()
+        return self.request.user.profile.notifications.all()
 
-    # GET /api/
+    # GET /api/notifications/<pk>
     def detail(self, pk):
-        return Notification.objects.get(id=pk)
-
-    #TODO DETAIL PUT
+        return self.request.user.profile.notifications.get(id=pk)
 
     # PUT /api/<pk>/
     def update(self, pk):
-        try:
-            notification = Notification.objects.get(id=pk)
-        except Notification.DoesNotExist:
-            notification = Notification()
+        notification = self.request.user.profile.notifications.get(id=pk)
+        notification.read = escape(self.data['read'])
 
-        notification.read = self.data['read']
         notification.save()
         return notification
