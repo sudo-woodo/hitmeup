@@ -2,7 +2,7 @@ from restless.dj import DjangoResource
 from restless.preparers import FieldsPreparer
 from restless.exceptions import Unauthorized
 from django.utils.html import escape
-from .models import UserProfile, Friendship
+from .models import UserProfile
 
 
 class UserProfileResource(DjangoResource):
@@ -91,13 +91,13 @@ class FriendshipResource(DjangoResource):
     def list(self):
         return self.request.user.profile.friendships
 
-    # PUT /api/friends/<pk>/
+    # PUT /api/friendships/<pk>/
     # Adds a friendship of current user -> 'pk'
     def update(self, pk):
         other = UserProfile.objects.get(user__id=pk)
         return self.request.user.profile.add_friend(other)
 
-    # DELETE /api/friends/<pk>/
+    # DELETE /api/friendships/<pk>/
     # Removes a friendship of current user <-> 'pk'
     def delete(self, pk):
         other = UserProfile.objects.get(user__id=pk)
