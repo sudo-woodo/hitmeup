@@ -40,15 +40,12 @@
                         {% endif %}
                     ">
                         <a href="{{ url('notifications:list') }}">
-                            <i class="fa
-                            {# TODO: conditional, change to red when notif (maybe badge?) #}
-                                {% if True %}
-                                    fa-bell
-                                {% else %}
-                                    fa-bell-o
-                                {% endif %}
-                            "></i>
                             Notifications
+                            <span class="badge
+                                {% if notification_count %}
+                                    red-bg
+                                {% endif %}
+                            ">{{ notification_count }}</span>
                         </a>
                     </li>
 
