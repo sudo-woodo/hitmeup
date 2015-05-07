@@ -3,7 +3,7 @@ from django.core.urlresolvers import reverse
 from django.test import TestCase
 from django.test.client import Client
 from django.test.utils import override_settings
-from util import random_string
+from util.util import random_string
 
 
 HOME_URL = reverse('static_pages:home')
