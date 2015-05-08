@@ -31,7 +31,7 @@ class Notification(models.Model):
         return naturaltime(self.time)
 
 
-#TODO: refactor signals to signals.py
+#TODO: refactor signals to signals.py in hitmeup app
 @receiver(request_friend, sender=UserProfile)
 def send_friend_request_notification(sender, from_friend, to_friend, **kwargs):
     Notification.objects.create(

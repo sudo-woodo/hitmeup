@@ -14,7 +14,7 @@ class UserFactory(DjangoModelFactory):
 
     username = factory.Sequence(lambda n: 'user_%s' % n)
     password = factory.PostGenerationMethodCall('set_password', random_string())
-    email = factory.LazyAttribute(lambda u: '%s@example.com' % u)
+    email = factory.LazyAttribute(lambda u: '%s@example.com' % u.username)
 
     # We pass in 'user' to link the generated Profile to our just-generated User
     # This will call ProfileFactory(user=our_new_user), thus skipping the SubFactory.

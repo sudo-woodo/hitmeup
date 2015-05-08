@@ -22,10 +22,13 @@ class SignUpTestCase(TestCase):
             'username': self.user.username,
             'password': self.password,
         }
-        self.SIGNUP_INFO = self.LOGIN_INFO.copy()
-        self.SIGNUP_INFO.update({
-            'email': self.user.email,
-        })
+
+        # make fake signup info
+        self.SIGNUP_INFO = {
+            'username': 'X' + self.user.username,
+            'password': 'X' + self.password,
+            'email': 'X' + self.user.email,
+        }
 
     def test_standard(self):
         # Tests a standard registering of a new user
@@ -37,17 +40,13 @@ class SignUpTestCase(TestCase):
         self.assertRedirects(response, HOME_URL)
 
     def test_existing_user(self):
-        # Registers a new user
-        self.client.post(SIGNUP_URL, self.SIGNUP_INFO)
-
         # Tests registering with the same username
-        response = self.client.post(SIGNUP_URL, self.SIGNUP_INFO)
+        response = self.client.post(SIGNUP_URL, self.LOGIN_INFO)
         self.assertContains(response, 'form-error')
 
     def test_signup_while_logged_in(self):
         # Tests accessing the signup page while already logged in
-        self.client.post(SIGNUP_URL, self.SIGNUP_INFO)
-        self.client.post(LOGIN_URL, self.LOGIN_INFO)
+        self.client.login(**self.LOGIN_INFO)
         response = self.client.get(SIGNUP_URL)
         self.assertRedirects(response, HOME_URL)
 
@@ -69,8 +68,6 @@ class LoginTestCase(TestCase):
             'password': 'X' + self.password,
         }
 
-        self.user.save()
-
     def test_standard(self):
         # Tests a standard logging in of a user
         response = self.client.post(LOGIN_URL, self.LOGIN_INFO)
@@ -85,6 +82,6 @@ class LoginTestCase(TestCase):
 
     def test_login_while_logged_in(self):
         # Tests accessing the signup page while already logged in
-        self.client.post(LOGIN_URL, self.LOGIN_INFO)
+        self.client.login(**self.LOGIN_INFO)
         response = self.client.get(LOGIN_URL)
         self.assertRedirects(response, HOME_URL)
