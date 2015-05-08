@@ -20,6 +20,9 @@ class Notification(models.Model):
     time = models.DateTimeField(default=timezone.now)
     read = models.BooleanField(default=False)
 
+    class Meta:
+        ordering = ['-time']
+
     def __unicode__(self):
         return "%s @ %s: %s" % (self.recipient, self.time, self.text)
 
