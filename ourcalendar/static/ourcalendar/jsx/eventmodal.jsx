@@ -28,14 +28,17 @@ var EventModal = React.createClass({
 
         //Error checking to ensure user put in required fields.
         var arr = [];
-        if (postData.title.length === 0 ) {
-            arr.push('Missing title');
+        if (postData.end.length === 0 )  {
+            arr.unshift('End time is required.');
+            this.refs.datetime.refs.end.getDOMNode().focus();
         }
         if (postData.start.length === 0 )  {
-            arr.push('Missing start time');
+            arr.unshift('Start time is required.');
+            this.refs.datetime.refs.start.getDOMNode().focus();
         }
-        if (postData.end.length === 0 )  {
-            arr.push('Missing end time');
+        if (postData.title.length === 0 ) {
+            arr.unshift('Title is required.');
+            this.refs.title.getDOMNode().focus();
         }
 
         if (arr.length > 0 )  {
