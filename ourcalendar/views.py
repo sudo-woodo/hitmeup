@@ -6,6 +6,8 @@ def calendar(request):
     return render(request, 'ourcalendar/calendar.jinja', {
         'ext_css': [
             'http://fullcalendar.io/js/fullcalendar-2.3.1/fullcalendar.min.css',
+            'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.3.0/css/'
+            'font-awesome.min.css',
         ],
         'css': [
             'ourcalendar/css/calendar.css',
