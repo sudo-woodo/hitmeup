@@ -16,8 +16,10 @@
             dayClick: function(date) {
                 if (prevClick)
                     $(prevClick).css('background-color', 'white');
-                $(this).css('background-color', 'rgba(204,255,249,0.3)');
-                prevClick = this;
+                if (date.format('L') !== moment().format('L')) {
+                    $(this).css('background-color', 'rgba(204,255,249,0.3)');
+                    prevClick = this;
+                }
 
                 $('#start-picker').data("DateTimePicker").date(date);
                 reactor.setState(reactor.getInitialState());
