@@ -23,6 +23,10 @@ class UserProfile(models.Model):
 
     # Word of caution: none of these attributes are "settable."
     @property
+    def username(self):
+        return self.user.username
+
+    @property
     def first_name(self):
         return self.user.first_name
 
@@ -107,6 +111,7 @@ class Friendship(models.Model):
     to_friend = models.ForeignKey(UserProfile,
                                   related_name='incoming_friendships')
     accepted = models.BooleanField(default=False)
+    favorite = models.BooleanField(default=False)
 
     class Meta:
         unique_together = ('from_friend', 'to_friend')
