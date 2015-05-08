@@ -9,4 +9,23 @@
 .notification-img {
     width: 100px;
     height: 100px;
+    margin-right: 100px;
+    /*float: left; */
+}
+
+.notification-text {
+    font-size: 16px;
+}
+
+.big-check {
+    font-size: 100px;
+}
+
+.body-container {
+    display: inline-block;
+}
+
+.check-container {
+    display: inline-block;
+    float: right;
 }

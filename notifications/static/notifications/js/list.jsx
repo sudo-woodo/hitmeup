@@ -22,22 +22,27 @@
 
     var Notification = React.createClass({
         render: function() {
+            console.log('hi');
             return (
-                <div
-                    className={cx({
+                <div className={cx({
+                        'panel': true,
+                        'panel-default': true,
                         'notification': true,
                         'read': this.props.data.read
-                    })}
-                >
-                    <img className="notification-img" src={this.props.data.image} />
-                    <div className="notification-text">
-                        Text: {this.props.data.text}
-                    </div>
-                    <div className="notification-time">
-                        Time: {this.props.data.time}
-                    </div>
-                    <div>
-                        <a href={this.props.data.action}>Action</a>
+                    })}>
+                    <div className="panel-body">
+                        <img className="notification-img" src={this.props.data.image} />
+                        <div className="body-container">
+                            <div className="notification-text">
+                                {this.props.data.text}
+                            </div>
+                            <div className="notification-time">
+                                {this.props.data.time}
+                            </div>
+                        </div>
+                        <div className="check-container">
+                            <i className="big-check fa fa-check"></i>
+                        </div>
                     </div>
                 </div>
             );
