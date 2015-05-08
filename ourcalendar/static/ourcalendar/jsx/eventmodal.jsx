@@ -14,7 +14,10 @@ var EventModal = React.createClass({
         console.log('SUBMIT with data:');
         console.log(postData);
 
-        $('#create-event-modal').modal('hide');
+        if (postData.title.length === 0)
+            alert("Title required (make this look better)");
+        else
+            $('#create-event-modal').modal('hide');
     },
 
     handleDateSubmit: function(date)  {
