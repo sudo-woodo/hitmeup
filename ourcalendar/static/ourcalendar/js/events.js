@@ -20,6 +20,7 @@
                 prevClick = this;
 
                 $('#start-picker').data("DateTimePicker").date(date);
+                reactor.setState(reactor.getInitialState());
                 $("#create-event-modal").modal('show');
             },
             eventClick: function(event) {
