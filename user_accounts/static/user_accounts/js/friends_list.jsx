@@ -3,23 +3,12 @@
 
     var cx = React.addons.classSet;
 
-    /*$(document).on('mouseenter', ".info", function () {
-     var $this = $(this);
-     if (this.width < this.scrollWidth) {
-         $this.tooltip({
-             title: $this.text(),
-             placement: "bottom"
-         });
-         $this.tooltip('show');
-     }
-    });*/
-
     var data = [
         {
             'name': 'Gary Gillespie',
             'picture_url': 'https://media.licdn.com/mpr/mpr/shrink_200_200/p/2/000/0db/205/1492be8.jpg',
             'free': true,
-            'email': 'coconutwaterlvr@hotmail.com',
+            'email': 'coconutwaterlvrTESTINGTHEOVERFLOW@hotmail.com',
             'phone': '800-124-1457',
             'fav': true
         },
@@ -189,7 +178,10 @@
                                             {this.props.friend.picture_url}
                                     />
                                 </div>
-                                <div className="profile-info-container">
+
+                                <div className=
+                                    "profile-info-container overflow-control"
+                                >
                                     <ul className="fa-ul">
                                         { infoNodes }
                                     </ul>

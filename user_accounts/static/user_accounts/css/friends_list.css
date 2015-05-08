@@ -25,12 +25,62 @@ body {
 }
 
 .profile-info-container {
-    width: 60%;
+    pointer-events: none;
+    width: calc(100% - 110px);
     display: inline-block;
-    float: left;
     white-space: nowrap;
     overflow: hidden;
-    text-overflow: ellipsis;
+    text-overflow: clip;
+}
+
+.overflow-control {
+    position: relative;
+    pointer-events: none;
+}
+
+.overflow-control:after {
+    content: '';
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    filter: progid:DXImageTransform.Microsoft.gradient(
+            startColorstr='#ffffff',
+            endColorstr='#00ffffff',
+            GradientType=0
+    );
+    background: -webkit-linear-gradient(
+            right,
+            rgba(255,255,255,1) 0px,
+            rgba(255,255,255,0) 20px
+    );
+    background: -moz-linear-gradient(
+            right,
+            rgba(255,255,255,1) 0px,
+            rgba(255,255,255,0) 20px
+    );
+    background: -ms-linear-gradient(
+            right,
+            rgba(255,255,255,1) 0px,
+            rgba(255,255,255,0) 20px
+    );
+    background: -o-linear-gradient(
+            right,
+            rgba(255,255,255,1) 0px,
+            rgba(255,255,255,0) 20px
+    );
+    background: linear-gradient(
+            right,
+            rgba(255,255,255,1) 0px,
+            rgba(255,255,255,0) 20px
+    );
+    pointer-events: none;
+}
+
+.fa-ul {
+    pointer-events: all;
 }
 
 .calendar-link:hover {
