@@ -1,6 +1,7 @@
 from django.conf.urls import include, url
 from django.contrib import admin
 from django_jinja import views as jinja_views
+from api import EventResource
 
 
 handler400 = jinja_views.BadRequest.as_view()
@@ -17,4 +18,5 @@ urlpatterns = [
     url(r'^', include('static_pages.urls', namespace='static_pages')),
     url(r'^', include('user_accounts.urls', namespace='user_accounts')),
     url(r'^calendar/', include('ourcalendar.urls', namespace='calendar')),
+    url(r'^api/events/$', include(EventResource.urls()), namespace='events_api'),
 ]
