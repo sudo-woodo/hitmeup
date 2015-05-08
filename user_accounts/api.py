@@ -2,7 +2,7 @@ from restless.dj import DjangoResource
 from restless.preparers import FieldsPreparer
 from restless.exceptions import Unauthorized
 from django.utils.html import escape
-from .models import UserProfile
+from .models import UserProfile, Friendship
 
 
 class UserProfileResource(DjangoResource):
@@ -71,6 +71,8 @@ class FriendResource(DjangoResource):
         'full_name': 'full_name',
         'bio': 'bio',
         'phone': 'phone',
+        'favorite': 'favorite',
+        'accepted': 'accepted',
     })
 
     def is_authenticated(self):
@@ -80,20 +82,39 @@ class FriendResource(DjangoResource):
     # Gets a list of friends of the current user.
     # Returns accepted friends if "type" is not specified.
     def list(self):
+        def add_friendship_fields(from_friend, to_friend):
+            friendship = Friendship.objects.get(
+                from_friend=from_friend,
+                to_friend=to_friend)
+
+            if from_friend == self.request.user.profile:
+                return_friend = to_friend
+            else:
+                return_friend = from_friend
+
+            return_friend.accepted = friendship.accepted
+            return_friend.favorite = friendship.favorite
+            return return_friend
+
         list_type = self.request.GET.get('type', 'accepted')
 
         if list_type == 'incoming':
-            return self.request.user.profile.pending_incoming_friends
+            return [add_friendship_fields(f, self.request.user.profile)
+                    for f in self.request.user.profile.pending_incoming_friends]
         elif list_type == 'outgoing':
-            return self.request.user.profile.pending_outgoing_friends
-        else:
-            return self.request.user.profile.friends
+            return [add_friendship_fields(self.request.user.profile, f)
+                    for f in self.request.user.profile.pending_outgoing_friends]
+
+        return [add_friendship_fields(self.request.user.profile, f)
+                for f in self.request.user.profile.friends]
 
     # PUT /api/friends/<pk>/
     # Adds a friendship of current user -> 'pk'
     def update(self, pk):
         other = UserProfile.objects.get(user__id=pk)
-        self.request.user.profile.add_friend(other)
+        friendship = self.request.user.profile.add_friend(other)
+        other.accepted = friendship.accepted
+        other.favorite = friendship.favorite
         return other
 
     # DELETE /api/friends/<pk>/

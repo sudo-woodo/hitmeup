@@ -111,6 +111,7 @@ class Friendship(models.Model):
     to_friend = models.ForeignKey(UserProfile,
                                   related_name='incoming_friendships')
     accepted = models.BooleanField(default=False)
+    favorite = models.BooleanField(default=False)
 
     class Meta:
         unique_together = ('from_friend', 'to_friend')
