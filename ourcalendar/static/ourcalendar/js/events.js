@@ -13,18 +13,6 @@
                 center: 'title',
                 right: 'month,agendaWeek,agendaDay'
             },
-            dayClick: function(date) {
-                if (prevClick)
-                    $(prevClick).css('background-color', 'white');
-                if (date.format('L') !== moment().format('L')) {
-                    $(this).css('background-color', 'rgba(204,255,249,0.3)');
-                    prevClick = this;
-                }
-
-                $('#start-picker').data("DateTimePicker").date(date);
-                reactor.setState(reactor.getInitialState());
-                $("#create-event-modal").modal('show');
-            },
             eventClick: function(event) {
                 // Use event.id to get the clicked event's id
                 $('#eventDetailModal .modal-title').text(event.title);
@@ -37,7 +25,17 @@
             events: events,
             fixedWeekCount: false,
             height: 600,
-            scrollTime: "08:00:00"
+            scrollTime: "08:00:00",
+            selectable: true,
+            selectHelper: true,
+            unselectCancel: "#create-event-modal",
+            select: function(start, end) {
+                console.log('select');
+                $('#start-picker').data("DateTimePicker").date(start);
+                $('#end-picker').data("DateTimePicker").date(end);
+                reactor.setState(reactor.getInitialState());
+                $("#create-event-modal").modal('show');
+            }
         })
     });
 })(window.jQuery, $HMU);

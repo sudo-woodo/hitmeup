@@ -28,6 +28,7 @@ var DateTimeField = React.createClass({
             $('#start-picker').data("DateTimePicker").maxDate(false);
             $('#end-picker').data("DateTimePicker").minDate(false);
             $('#event-form')[0].reset();
+            $('#calendar').fullCalendar('unselect'); // dismisses selection (temp?)
         })
     },
 

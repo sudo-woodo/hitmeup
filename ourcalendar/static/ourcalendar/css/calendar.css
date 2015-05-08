@@ -1,9 +1,6 @@
 #calendar {
-    margin-top: 2em;
-}
-
-#eventDetailModal dt {
-    margin-top: -0.1em;
+    max-width: 90%;
+    margin: 20px auto auto auto;
 }
 
 .modal-body textArea {
