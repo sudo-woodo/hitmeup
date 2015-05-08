@@ -17,11 +17,13 @@ class UserProfileResource(DjangoResource):
         'phone': 'phone',
     })
 
+    # POST data fields that are accepted
     MODIFIABLE_FIELDS = {
         'profile': ['phone', 'bio'],
         'user': ['email', 'first_name', 'last_name'],
     }
 
+    # Authenticate if the user is currently logged in
     def is_authenticated(self):
         return self.request.user.is_authenticated()
 
@@ -47,6 +49,7 @@ class UserProfileResource(DjangoResource):
 
         profile = self.request.user.profile
 
+        # Grab and save all modifiable fields from POST data
         for category in self.MODIFIABLE_FIELDS:
             target = profile
             if category == 'user':
@@ -75,6 +78,7 @@ class FriendResource(DjangoResource):
         'accepted': 'accepted',
     })
 
+    # Authenticate if the user is currently logged in
     def is_authenticated(self):
         return self.request.user.is_authenticated()
 
@@ -82,11 +86,13 @@ class FriendResource(DjangoResource):
     # Gets a list of friends of the current user.
     # Returns accepted friends if "type" is not specified.
     def list(self):
+        # Set accepted, favorite fields for each friend
         def add_friendship_fields(from_friend, to_friend):
             friendship = Friendship.objects.get(
                 from_friend=from_friend,
                 to_friend=to_friend)
 
+            # Return the friend (not current user)
             if from_friend == self.request.user.profile:
                 return_friend = to_friend
             else:
