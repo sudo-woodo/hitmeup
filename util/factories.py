@@ -1,7 +1,7 @@
 from django.db.models.signals import post_save
+from django.utils.crypto import get_random_string
 import factory
 from factory.django import DjangoModelFactory
-from .util import random_string
 from django.conf.urls.static import static
 from django.contrib.auth.models import User
 from user_accounts.models import UserProfile, create_user_profile
@@ -13,7 +13,7 @@ class UserFactory(DjangoModelFactory):
         model = User
 
     username = factory.Sequence(lambda n: 'user_%s' % n)
-    password = factory.PostGenerationMethodCall('set_password', random_string())
+    password = factory.PostGenerationMethodCall('set_password', get_random_string())
     email = factory.LazyAttribute(lambda u: '%s@example.com' % u.username)
 
     # We pass in 'user' to link the generated Profile to our just-generated User

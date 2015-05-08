@@ -1,8 +1,8 @@
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.test import TestCase, Client
+from django.utils.crypto import get_random_string
 from util.factories import UserFactory
-from util.util import random_string
 
 
 SIGNUP_URL = reverse('user_accounts:signup')
@@ -16,7 +16,7 @@ class SignUpTestCase(TestCase):
     """
     def setUp(self):
         self.client = Client()
-        self.password = random_string()
+        self.password = get_random_string()
         self.user = UserFactory.create(password=self.password)
         self.LOGIN_INFO = {
             'username': self.user.username,
@@ -57,7 +57,7 @@ class LoginTestCase(TestCase):
     """
     def setUp(self):
         self.client = Client()
-        self.password = random_string()
+        self.password = get_random_string()
         self.user = UserFactory.create(password=self.password)
         self.LOGIN_INFO = {
             'username': self.user.username,

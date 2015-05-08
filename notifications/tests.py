@@ -1,8 +1,10 @@
 from django.contrib.humanize.templatetags.humanize import naturaltime
 from django.test import TestCase
+from django.test.client import Client
 from django.utils import timezone
+from django.utils.crypto import get_random_string
 from notifications.models import Notification
-from util.factories import NotificationFactory
+from util.factories import NotificationFactory, UserFactory
 
 
 class ModelTestCase(TestCase):
@@ -27,3 +29,27 @@ class ModelTestCase(TestCase):
         n = NotificationFactory(time=t)
 
         self.assertEqual(n.natural_time, naturaltime(t))
+
+class ApiTestCase(TestCase):
+    """
+    Tests the REST API.
+    """
+    def setUp(self):
+        # set up notifs
+        self.multi_user_notifs = [NotificationFactory() for _ in range(5)]
+
+        password = get_random_string()
+        user = UserFactory(password=password)
+        self.profile = user.profile
+        self.single_user_notifs = [
+            NotificationFactory(recipient=self.profile) for _ in range(5)
+        ]
+
+        # set up clients
+        self.anon_client = Client()
+        self.auth_client = Client()
+        self.auth_client.login(username=user.username,
+                               password=password)
+
+    def test_auth(self):
+        pass
