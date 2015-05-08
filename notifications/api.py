@@ -1,5 +1,6 @@
 from django.utils.html import escape
 from restless.dj import DjangoResource
+from restless.exceptions import BadRequest
 from restless.preparers import FieldsPreparer
 
 
@@ -27,7 +28,13 @@ class NotificationResource(DjangoResource):
     # PUT /api/notifications/<pk>/
     def update(self, pk):
         notification = self.request.user.profile.notifications.get(id=pk)
-        notification.read = escape(self.data['read'])
+        try:
+            if isinstance(self.data['read'], bool):
+                notification.read = self.data['read']
+            else:
+                raise BadRequest("'read' is not a boolean.")
+        except KeyError:
+            raise BadRequest("'read' not found in sent data.")
 
         notification.save()
         return notification

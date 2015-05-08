@@ -1,8 +1,8 @@
 from django.db.models.signals import post_save
+from django.templatetags.static import static
 from django.utils.crypto import get_random_string
 import factory
 from factory.django import DjangoModelFactory
-from django.conf.urls.static import static
 from django.contrib.auth.models import User
 from user_accounts.models import UserProfile, create_user_profile
 from notifications.models import Notification
@@ -48,6 +48,6 @@ class NotificationFactory(DjangoModelFactory):
         model = Notification
 
     recipient = factory.SubFactory(UserProfileFactory)
-    image_url = static('hitmeup/img/hitmeup_square.png')
+    image_url = static('/hitmeup/img/hitmeup_square.png')
     action_url = 'https://www.google.com/'
     text = factory.Sequence(lambda n: "Notification %s" % n)
