@@ -14,11 +14,13 @@
 }
 
 .notification-text {
-    font-size: 16px;
+    font-size: 20px;
+
 }
 
 .big-check {
-    font-size: 100px;
+    font-size: 40px;
+    color: green;
 }
 
 .body-container {
@@ -29,3 +31,4 @@
     display: inline-block;
     float: right;
 }
+

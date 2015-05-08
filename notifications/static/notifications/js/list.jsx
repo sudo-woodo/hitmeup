@@ -21,6 +21,9 @@
     ];
 
     var Notification = React.createClass({
+       // clickPanel: $(this).click.function({
+            //window.confirm("hi");
+       // }),
         render: function() {
             console.log('hi');
             return (
@@ -31,8 +34,8 @@
                         'read': this.props.data.read
                     })}>
                     <div className="panel-body">
-                        <img className="notification-img" src={this.props.data.image} />
-                        <div className="body-container">
+                        <img className="notification-img img-circle" src={this.props.data.image} />
+                        <div className="body-container" >
                             <div className="notification-text">
                                 {this.props.data.text}
                             </div>
@@ -46,7 +49,9 @@
                     </div>
                 </div>
             );
+
         }
+
     });
 
     var NotificationList = React.createClass({
