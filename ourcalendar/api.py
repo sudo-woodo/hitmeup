@@ -33,6 +33,17 @@ class EventResource(DjangoResource):
     def detail(self, pk):
         return Event.objects.get(id=pk)
 
+    # PUT /api/events/<pk>/
+    def update(self, pk):
+        event = Event.objects.get(id=pk)
+        #TODO How to check if data['start'] was in request
+        event.start=escape(self.data['start']),
+        event.end=escape(self.data['end']),
+        event.title=escape(self.data['title']),
+        event.description=escape(self.data['description']),
+        event.location=escape(self.data['location'])
+        return event
+
     # POST /api/events/
     def create(self):
         event = Event.objects.create(
