@@ -43,6 +43,7 @@ INSTALLED_APPS = (
 
     # Vendor
     'django_jinja',
+    'restless',
 
     # Custom
     'hitmeup',

@@ -3,9 +3,10 @@ from restless.preparers import FieldsPreparer
 from ourcalendar.models import Event, Calendar
 from django.utils.html import escape
 
+
 class EventResource(DjangoResource):
     preparer = FieldsPreparer(fields={
-        'event_id': 'event.id',
+        'event_id': 'pk',
         'start': 'start',
         'end': 'end',
         'title': 'title',
@@ -13,10 +14,13 @@ class EventResource(DjangoResource):
         'location': 'location',
         'description': 'description',
     })
-  # POST data fields that are accepted
+
+    # POST data fields that are accepted
+    # TODO use this!
     MODIFIABLE_FIELDS = {
         'event': ['start', 'end', 'location', 'description'],
     }
+
     # Authentication!
     def is_authenticated(self):
         return self.request.user.is_authenticated()
@@ -35,7 +39,8 @@ class EventResource(DjangoResource):
             start=escape(self.data['start']),
             end=escape(self.data['end']),
             title=escape(self.data['title']),
-            #Get a calendar who's owner profile is linked to the user sending the POST request
+            # Get a calendar whose owner profile is linked to the user
+            # sending the POST request
             calendar=Calendar.objects.get(
                 owner=escape(self.request.user.profile),
                 title=escape(self.data['calendar'])),
