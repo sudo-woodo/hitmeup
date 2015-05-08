@@ -15,22 +15,22 @@ class ModelTestCase(TestCase):
     """
     def test_ordering(self):
         # Tests if models are ordered correctly.
-        t0 = timezone.now()
-        t1 = t0 + timezone.timedelta(hours=1)
-        n0 = NotificationFactory(time=t0)
-        n1 = NotificationFactory(time=t1)
+        earlier_time = timezone.now()
+        later_time = earlier_time + timezone.timedelta(hours=1)
+        earlier_notification = NotificationFactory(time=earlier_time)
+        later_notification = NotificationFactory(time=later_time)
 
-        self.assertEqual(n0, Notification.objects.all()[1],
+        self.assertEqual(earlier_notification, Notification.objects.all()[1],
                          "Earlier notification not last")
-        self.assertEqual(n1, Notification.objects.all()[0],
+        self.assertEqual(later_notification, Notification.objects.all()[0],
                          "Later notification not first")
 
     def test_attrs(self):
         # Tests if attributes are set correctly.
-        t = timezone.now()
-        n = NotificationFactory(time=t)
+        time = timezone.now()
+        notification = NotificationFactory(time=time)
 
-        self.assertEqual(n.natural_time, naturaltime(t))
+        self.assertEqual(notification.natural_time, naturaltime(time))
 
 class ApiTestCase(TestCase):
     """

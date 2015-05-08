@@ -9,8 +9,8 @@ class Notification(models.Model):
     REQUEST_FRIEND = 'request_friend'
     ACCEPT_FRIEND = 'accept_friend'
     NOTIFICATION_STRINGS = {
-        REQUEST_FRIEND: '%s has friend requested you!',
-        ACCEPT_FRIEND: '%s has accepted your friend request!',
+        REQUEST_FRIEND: '%s has requested to be your friend!',
+        ACCEPT_FRIEND: '%s has added you as a friend!',
     }
 
     recipient = models.ForeignKey(UserProfile, related_name='notifications')
