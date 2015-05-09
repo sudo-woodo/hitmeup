@@ -119,8 +119,8 @@ class FriendResource(DjangoResource):
     def create_detail(self, pk):
         other = UserProfile.objects.get(user__id=pk)
         friendship = self.request.user.profile.add_friend(other)
-        other.accepted = friendship.accepted
-        other.favorite = friendship.favorite
+        other.accepted = friendship[0].accepted
+        other.favorite = friendship[0].favorite
         return other
 
     # PUT /api/friends/<pk>/
