@@ -16,7 +16,7 @@ def navbar(request):
     ]
 
     :param request: The request object.
-    :return: The dict {'navbar_entries': entries}.
+    :return: The dict {'navbar_entries': dict}.
     """
 
     # Get navbar config
