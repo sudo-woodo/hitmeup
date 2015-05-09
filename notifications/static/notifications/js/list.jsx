@@ -39,7 +39,7 @@
     ];
 
     var Notification = React.createClass({
-        handleClick:function(){
+        handleClick: function(){
             console.log("Clicked");
             //transitionTo('your_route_name', query={keyword: input_value});
 
@@ -62,8 +62,8 @@
                     }
                 }
             });
-
         },
+
         render: function() {
             console.log('hi');
             return (
@@ -73,28 +73,21 @@
                     'notification': true,
                     'read': this.props.data.read
                 })}>
-                    <div className="panel-body" onClick={this.handleClick} >
+                  <div className="panel-body" onClick={this.handleClick} >
                         <img className="notification-img" src={this.props.data.image} />
-                        <div className="notification-text">
-                            {this.props.data.text}
-                        <div className="body-container" >
-                           /* <div className="notification-text">
-                                {this.props.data.text}
-                            </div>*/
+                         <div className="body-container" >
+                             <div className="notification-text">
+                                 {this.props.data.text}
+                            </div>
                             <div className="notification-time">
                                 {this.props.data.time}
                             </div>
                         </div>
-                        /*<div className="notification-time">
-                            {this.props.data.time}
-                        </div>*/
                     </div>
 
                 </div>
             );
-
         }
-
     });
 
     var NotificationList = React.createClass({
