@@ -13,6 +13,25 @@ https://docs.djangoproject.com/en/1.8/ref/settings/
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
 
+# Haystack settings
+from urlparse import urlparse
+
+es = urlparse(os.environ.get('SEARCHBOX_URL') or 'http://127.0.0.1:9200/')
+
+port = es.port or 80
+
+HAYSTACK_CONNECTIONS = {
+    'default': {
+        'ENGINE': 'haystack.backends.elasticsearch_backend.ElasticsearchSearchEngine',
+        'URL': es.scheme + '://' + es.hostname + ':' + str(port),
+        'INDEX_NAME': 'documents',
+    },
+}
+
+if es.username:
+    HAYSTACK_CONNECTIONS['default']['KWARGS'] = {"http_auth": es.username + ':' + es.password}
+# End of Haystack settings
+
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # Honor the 'X-Forwarded-Proto' header for request.is_secure()
@@ -43,11 +62,12 @@ INSTALLED_APPS = (
 
     # Vendor
     'django_jinja',
+    'haystack',
 
     # Custom
     'hitmeup',
     'dynamic_components',
-    'search_bar'
+    'search_bar',
     'static_pages',
     'user_accounts',
 
