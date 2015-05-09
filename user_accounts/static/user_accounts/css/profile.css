@@ -59,7 +59,7 @@ body {
     border-right: solid #bdbdbd 1px;
     display: block;
     height: 40px;
-    width: 120px;
+    width: 140px;
     text-align: center;
 }
 
@@ -67,9 +67,12 @@ body {
     background-color: #e0e0e0;
 }
 
+#add-friend-text {
+    padding-left: 5px;
+}
 #info-panel {
     margin-top: 30px;
-    margin-bottom: 0px;
+    margin-bottom: 0;
     border-color: #bdbdbd;
 }
 
