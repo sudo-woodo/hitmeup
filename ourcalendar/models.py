@@ -3,6 +3,7 @@ from django.db.models.signals import post_save
 from django.dispatch.dispatcher import receiver
 from django.utils import timezone
 from django.db import models
+from user_accounts.logic.event_comparison import Interval
 from user_accounts.models import UserProfile
 
 
@@ -41,6 +42,7 @@ class Event(models.Model):
     def __unicode__(self):
         return "%s -> %s -> %s" % (self.calendar.owner, self.calendar, self.title)
 
+    # Serializes the event for the REST API
     def serialize(self):
         return {
             'id': self.id,
@@ -50,3 +52,8 @@ class Event(models.Model):
             'location': self.location,
             'description': self.description,
         }
+
+    # Returns an Interval for comparison operations
+    @property
+    def interval(self):
+        return Interval(self.start, self.end)

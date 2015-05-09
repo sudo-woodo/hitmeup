@@ -38,6 +38,8 @@ class UserProfile(models.Model):
     def email(self):
         return self.user.email
 
+    # Friendship helpers
+
     @property
     def friends(self):
         # Only friends you have accepted AND friends that have accepted you
@@ -78,6 +80,11 @@ class UserProfile(models.Model):
             incoming.save()
 
         return outgoing
+
+    # Calendar helpers
+
+    def intersect_free(self):
+        pass
 
     def del_friend(self, other):
         # Delete the outgoing
