@@ -1,4 +1,3 @@
-from django.utils.html import escape
 from restless.dj import DjangoResource
 from restless.exceptions import BadRequest
 from restless.preparers import FieldsPreparer
