@@ -1,8 +1,12 @@
+from django.conf import settings
+
 class Interval:
     """
     A representation of an time range that you can compare with another
     Interval, and perform operations like Union on.
     """
+    DEFAULT_TIME_FMT = '%Y-%m-%dT%H:%M:%S'
+
     def __init__(self, start, end):
         """
         :param start: The start time (datetime)
@@ -25,11 +29,19 @@ class Interval:
     def __ge__(self, other):
         return self.start >= other.start
 
+    # Serializes the interval for fullcalendar
+    def serialize(self):
+        return {
+            'start': self.start.strftime(getattr(settings, 'TIME_FMT',
+                                                 self.DEFAULT_TIME_FMT)),
+            'end': self.end.strftime(getattr(settings, 'TIME_FMT',
+                                             self.DEFAULT_TIME_FMT)),
+        }
+
     def overlaps(self, other):
         # Returns whether or not two intervals overlap.
         # i.e. if the intervals are disjoint.
         return self.end < other.start or self.start > other.end
-
 
     def join(self, other):
         # Joins two intervals.
@@ -41,7 +53,6 @@ class Interval:
         start = self.start if self.start < other.start else other.start
         end = self.end if self.end > other.end else other.end
         return Interval(start, end)
-
 
     @classmethod
     def union(intervals):

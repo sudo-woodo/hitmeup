@@ -177,3 +177,6 @@ SCAFFOLDAPP_FILES = [
 
 # Authentication
 LOGIN_URL = '/login/'
+
+# Fullcalendar
+TIME_FMT = '%Y-%m-%dT%H:%M:%S'
