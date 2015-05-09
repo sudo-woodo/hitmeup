@@ -1,3 +1,10 @@
+body {
+    background-color: #e0e0e0;
+}
+#header {
+    background-color: white;
+}
+
 #header-upper-half {
     background-color: gray;
 }
@@ -59,4 +66,14 @@
 
 #friend-button:hover {
     background-color: #e0e0e0;
+}
+
+#info-panel {
+    margin-top: 10px;
+    border-color: #bdbdbd;
+}
+
+#calendar-panel {
+    margin-top: 10px;
+    border-color: #bdbdbd;
 }
