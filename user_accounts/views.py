@@ -1,7 +1,8 @@
 from django.contrib.auth import authenticate, login
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
 from django.contrib.auth.views import logout_then_login
 from django.core.urlresolvers import reverse
+from django.http import Http404
 from django.http.response import HttpResponseRedirect
 from django.shortcuts import render
 from django.views.generic import View
@@ -22,7 +23,7 @@ class SignUpView(View):
             new_user = authenticate(username=request.POST['username'],
                                     password=request.POST['password'])
             login(request, new_user)
-            return HttpResponseRedirect(reverse('user_accounts:extendedsignup')
+            return HttpResponseRedirect(reverse('user_accounts:extended_signup')
                                         + '?first_visit=true')
         else:
             # Return the form with errors
@@ -44,20 +45,20 @@ class SignUpView(View):
 class SignUpExtended(View):
     def post(self, request):
         # Fill out form with request data
-        signupextended_form = SignUpExtendedForm(data=request.POST)
-        if signupextended_form.is_valid():
+        signup_extended_form = SignUpExtendedForm(data=request.POST)
+        if signup_extended_form.is_valid():
             # if the form is valid, update userprofile model
             user = request.user
             updatedFields = []
             if bool(dict):
-                for key in signupextended_form.cleaned_data:
-                    if signupextended_form.cleaned_data[key] != u'':
+                for key in signup_extended_form.cleaned_data:
+                    if signup_extended_form.cleaned_data[key] != u'':
                         if key == 'first_name' or key == 'last_name':
                             updatedFields.append(key)
                             setattr(
                                 user,
                                 key,
-                                signupextended_form.cleaned_data[key]
+                                signup_extended_form.cleaned_data[key]
                             )
 
                         else:
@@ -65,15 +66,15 @@ class SignUpExtended(View):
                             setattr(
                                 user.profile,
                                 key,
-                                signupextended_form.cleaned_data[key]
+                                signup_extended_form.cleaned_data[key]
                             )
             user.save()
             user.profile.save()
             return HttpResponseRedirect(reverse('static_pages:home'))
         # If there's an form error, rerender with errors
         else:
-            return render(request, 'user_accounts/signupextended.jinja', {
-                'signupextended_form': signupextended_form
+            return render(request, 'user_accounts/signup_extended.jinja', {
+                'signup_extended_form': signup_extended_form
             })
 
     def get(self, request):
@@ -82,8 +83,8 @@ class SignUpExtended(View):
             return HttpResponseRedirect(reverse('static_pages:home'))
 
         # Otherwise, return a blank form for the user to fill out
-        return render(request, 'user_accounts/signupextended.jinja', {
-            'signupextended_form': SignUpExtendedForm()
+        return render(request, 'user_accounts/signup_extended.jinja', {
+            'signup_extended_form': SignUpExtendedForm()
         })
 
 
@@ -135,3 +136,18 @@ class LoginView(View):
 
 def logout(request):
     return logout_then_login(request)
+
+
+class UserProfile(View):
+    def get(self, request, username):
+        if request.user.is_authenticated():
+            try:
+                profile = User.objects.get(username=username).profile
+                return render(request, 'user_accounts/profile.jinja', {
+                    'profile': profile
+                })
+            except User.DoesNotExist:
+                raise Http404("User does not exist")
+
+        else:
+            return HttpResponseRedirect(reverse('static_pages:home'))
