@@ -1,6 +1,7 @@
 from django.conf.urls import include, url
 from django.contrib import admin
 from django_jinja import views as jinja_views
+from notifications.api import NotificationResource
 
 handler400 = jinja_views.BadRequest.as_view()
 handler403 = jinja_views.PermissionDenied.as_view()
@@ -11,6 +12,10 @@ urlpatterns = [
     # Examples:
     # url(r'^$', 'hitmeup.views.home', name='home'),
     # url(r'^blog/', include('blog.urls')),
+
+    # REST APIs
+    url(r'^api/notifications/', include(NotificationResource.urls(),
+        namespace='notifications_api')),
 
     url(r'^admin/', include(admin.site.urls)),
     url(r'^notifications/', include('notifications.urls', namespace='notifications')),
