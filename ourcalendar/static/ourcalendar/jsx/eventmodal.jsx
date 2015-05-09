@@ -49,8 +49,8 @@ var EventModal = React.createClass({
         }
         else {
             //Format the dates to send the ajax request
-            postData.start = moment(postData.start).format('YYYY-MM-DD hh:mm');
-            postData.end = moment(postData.end).format('YYYY-MM-DD hh:mm');
+            postData.start = moment(postData.start).format('YYYY-MM-DD HH:mm');
+            postData.end = moment(postData.end).format('YYYY-MM-DD HH:mm');
 
             //ajax request goes here. Fix this url and function.
             $.ajax({
@@ -75,6 +75,13 @@ var EventModal = React.createClass({
                 errors: []
             });
             $('#create-event-modal').modal('hide');
+            if (postData.location.length === 0)
+                postData.location = 'No location';
+            if (postData.description.length === 0)
+                postData.description = 'No description';
+            var cal = $('#calendar');
+            cal.fullCalendar('renderEvent', postData, true);
+            cal.fullCalendar('unselect');
         }
     },
 
