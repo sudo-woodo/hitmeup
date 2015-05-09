@@ -1,0 +1,14 @@
+<li class="
+    {% if view == 'notifications:list' %}
+        active
+    {% endif %}
+">
+    <a href="{{ url('notifications:list') }}">
+        Notifications
+        <span class="badge
+            {% if notification_count %}
+                red-bg
+            {% endif %}
+        ">{{ notification_count }}</span>
+    </a>
+</li>

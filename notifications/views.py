@@ -13,7 +13,8 @@ def list(request):
             'https://cdnjs.cloudflare.com/ajax/libs/react/0.13.2/'
             'react-with-addons.min.js',
             'https://cdnjs.cloudflare.com/ajax/libs/react/0.13.0/'
-            'JSXTransformer.js'
+            'JSXTransformer.js',
+            'https://cdn.jsdelivr.net/bootbox/4.2.0/bootbox.min.js'
         ],
         'jsx': [
             'notifications/js/list.jsx'

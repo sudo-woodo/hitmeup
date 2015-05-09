@@ -28,3 +28,18 @@
 .body-container {
     display: inline;
 }
+
+.big-check {
+    font-size: 40px;
+    color: green;
+}
+
+.body-container {
+    display: inline-block;
+}
+
+.check-container {
+    display: inline-block;
+    float: right;
+}
+
