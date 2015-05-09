@@ -55,16 +55,16 @@ class Interval:
         return Interval(start, end)
 
     @classmethod
-    def union(intervals):
+    def union_list(cls, intervals):
         """
-        Returns the union of a list of intervals.
-        :param events: The list of intervals to union
-        :return:
+        Returns the union list of a list of intervals.
+        :param intervals: The list of intervals to union
+        :return: The list of intervals, union-list-ified
         """
         # Sort descending, use as a stack
         interval_stack = sorted((i.interval for i in intervals), reverse=True)
 
-        # Set up the return value
+        # Set up the return stack
         union_stack = []
         union_stack.append(interval_stack.pop())
 
@@ -85,3 +85,46 @@ class Interval:
 
         # We done, boyz
         return union_stack
+
+    @classmethod
+    def complement(cls, intervals, start, end):
+        """
+        Returns the complement of a list of intervals, provided a start
+        boundary and an end boundary. If start or end occurs within
+        the complement range, just use the complement range.
+        :param intervals: The list of intervals to complement
+        :param start: The start boundary of the complement
+        :param end: The end boundary of the complement
+        :return: The list of intervals, complemented
+        """
+        # Sort ascending, use as a queue
+        interval_queue = sorted(i.interval for i in intervals)
+
+        # Do the bounds check out?
+        try:
+            # Check the start bound
+            if start < interval_queue[0].end:
+                start_bound = start
+            else:
+                # Toss the first interval
+                start_bound = interval_queue.pop(0).end
+
+            # Check the end bound
+            if end > interval_queue[-1].start:
+                end_bound = end
+            else:
+                # Toss the last interval
+                end_bound = interval_queue.pop().start
+
+        # If we can't get anything, we have an empty interval list.
+        # Complement of nothing start -> end.
+        except IndexError:
+            return Interval(start, end)
+
+        # Set up the return stack
+        complement_stack = []
+        complement_stack.append(Interval(start_bound, interval_queue[0].start))
+
+        while interval_queue:
+            # Push Interval(cur.end, next.start)
+            pass
