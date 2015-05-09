@@ -25,6 +25,7 @@ class NotificationResource(DjangoResource):
         return self.request.user.profile.notifications.get(id=pk)
 
     # PUT /api/notifications/<pk>/
+    # data: {'read': boolean}
     def update(self, pk):
         notification = self.request.user.profile.notifications.get(id=pk)
         try:
