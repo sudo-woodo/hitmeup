@@ -1,6 +1,6 @@
 (function(React, $, _) {
     'use strict';
-
+  //  var transitionTo = Router.transitionTo;
     var cx = React.addons.classSet;
 
     var fromServer = [
@@ -41,6 +41,8 @@
     var Notification = React.createClass({
         handleClick:function(){
             console.log("Clicked");
+            //transitionTo('your_route_name', query={keyword: input_value});
+
             bootbox.dialog({
                 message: this.props.data.message,
                 title: this.props.data.text,
@@ -72,7 +74,7 @@
                     'read': this.props.data.read
                 })}>
                     <div className="panel-body" onClick={this.handleClick} >
-                        <img className="notification-img img-circle" src={this.props.data.image} />
+                        <img className="notification-img" src={this.props.data.image} />
                         <div className="body-container" >
                             <div className="notification-text">
                                 {this.props.data.text}
@@ -101,6 +103,7 @@
             this.setState({
                 notifications: fromServer
             });
+            setInterval(this.loadCommentsFromServer, this.props.pollInterval);
         },
         render: function() {
             var notifications = this.state.notifications.map(function(notif) {
@@ -116,7 +119,7 @@
     });
 
     React.render(
-        <NotificationList />,
+        <NotificationList pollInterval={1000}/>,
         document.getElementById('notification-list-container')
     );
 })(window.React, window.jQuery, window._);
