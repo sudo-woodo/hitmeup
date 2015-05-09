@@ -125,6 +125,7 @@ class FriendResource(DjangoResource):
 
     # PUT /api/friends/<pk>/
     # Edits favorite status of friend 'pk'
+    # data: {'favorite': boolean}
     def update(self, pk):
         other = UserProfile.objects.get(user__id=pk)
         friendship = Friendship.objects.get(from_friend=self.request.user.profile,
