@@ -144,6 +144,12 @@ class UserProfile(View):
             try:
                 profile = User.objects.get(username=username).profile
                 return render(request, 'user_accounts/profile.jinja', {
+                    'ext_css': [
+                        'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.3.0/css/font-awesome.min.css'
+                    ],
+                    'css': [
+                        'user_accounts/css/profile.css'
+                    ],
                     'profile': profile
                 })
             except User.DoesNotExist:

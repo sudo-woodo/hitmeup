@@ -1,3 +1,28 @@
 #header-upper-half {
     background-color: gray;
 }
+
+#header-lower-half {
+}
+
+#header-upper-half-content {
+    height: 110px;
+}
+
+#header-lower-half-content {
+    position: relative;
+    height: 50px;
+}
+
+#username_container {
+    padding-top: 20px;
+    padding-left: 140px;
+}
+
+#pic {
+    position: absolute;
+    left: 20px;
+    bottom: 0;
+    height: 125px;
+    width: 125px;
+}

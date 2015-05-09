@@ -7,7 +7,20 @@
 {% block content %}
     <div id="header">
         <div id="header-upper-half">
-            {{ profile.username }}
+            <div id="header-upper-half-content" class="container">
+                <div id="username_container">
+                    <h3>{{ profile.username }}</h3>
+                    {{ profile.first_name }} {{ profile.last_name }}
+                </div>
+            </div>
+        </div>
+        <div id="header-lower-half">
+            <div id="header-lower-half-content" class="container">
+                <img src="http://i.ytimg.com/vi/82yHd99YxnY/maxresdefault.jpg"
+                     alt=""
+                     id ="pic"
+                     class="img-thumbnail">
+            </div>
         </div>
     </div>
 {% endblock %}
