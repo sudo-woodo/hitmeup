@@ -5,7 +5,7 @@ from django.core.urlresolvers import reverse
 from django.http.response import HttpResponseRedirect
 from django.shortcuts import render
 from django.views.generic import View
-from user_accounts.forms import UserForm, SignupForm
+from user_accounts.forms import UserForm, SignupForm, SignUpExtendedForm
 
 
 class SignUpView(View):
@@ -18,11 +18,12 @@ class SignUpView(View):
             user.save()
 
             # After saving the new user to the db, log them in and redirect
-            # to home page
+            # to the extended signup page
             new_user = authenticate(username=request.POST['username'],
                                     password=request.POST['password'])
             login(request, new_user)
-            return HttpResponseRedirect(reverse('static_pages:home'))
+            return HttpResponseRedirect(reverse('user_accounts:extendedsignup')
+                                        + '?first_visit=true')
         else:
             # Return the form with errors
             return render(request, 'user_accounts/signup.jinja',
@@ -37,6 +38,52 @@ class SignUpView(View):
         # Otherwise, return a blank form for the user to fill out
         return render(request, 'user_accounts/signup.jinja', {
             'signup_form': SignupForm()
+        })
+
+
+class SignUpExtended(View):
+    def post(self, request):
+        # Fill out form with request data
+        signupextended_form = SignUpExtendedForm(data=request.POST)
+        if signupextended_form.is_valid():
+            # if the form is valid, update userprofile model
+            user = request.user
+            updatedFields = []
+            if bool(dict):
+                for key in signupextended_form.cleaned_data:
+                    if signupextended_form.cleaned_data[key] != u'':
+                        if key == 'first_name' or key == 'last_name':
+                            updatedFields.append(key)
+                            setattr(
+                                user,
+                                key,
+                                signupextended_form.cleaned_data[key]
+                            )
+
+                        else:
+                            updatedFields.append(key)
+                            setattr(
+                                user.profile,
+                                key,
+                                signupextended_form.cleaned_data[key]
+                            )
+            user.save()
+            user.profile.save()
+            return HttpResponseRedirect(reverse('static_pages:home'))
+        # If there's an form error, rerender with errors
+        else:
+            return render(request, 'user_accounts/signupextended.jinja', {
+                'signupextended_form': signupextended_form
+            })
+
+    def get(self, request):
+        # If it's not the user's first visit, return them to home
+        if not request.GET.get('first_visit', False) == 'true':
+            return HttpResponseRedirect(reverse('static_pages:home'))
+
+        # Otherwise, return a blank form for the user to fill out
+        return render(request, 'user_accounts/signupextended.jinja', {
+            'signupextended_form': SignUpExtendedForm()
         })
 
 
