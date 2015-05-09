@@ -2,6 +2,7 @@ from django.conf.urls import include, url
 from django.contrib import admin
 from django_jinja import views as jinja_views
 from user_accounts.api import UserProfileResource, FriendResource
+from notifications.api import NotificationResource
 
 handler400 = jinja_views.BadRequest.as_view()
 handler403 = jinja_views.PermissionDenied.as_view()
@@ -18,9 +19,12 @@ urlpatterns = [
         namespace='friends_api')),
     url(r'^api/users/', include(UserProfileResource.urls(),
         namespace='users_api')),
+    url(r'^api/notifications/', include(NotificationResource.urls(),
+        namespace='notifications_api')),
 
     # Other URLs
     url(r'^admin/', include(admin.site.urls)),
+    url(r'^notifications/', include('notifications.urls', namespace='notifications')),
     url(r'^', include('static_pages.urls', namespace='static_pages')),
     url(r'^', include('user_accounts.urls', namespace='user_accounts')),
 ]

@@ -39,6 +39,7 @@
         {# CSS - Vendor #}
         <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
         <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap-theme.min.css">
+        <link rel="stylesheet" type="text/css" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
         {% for sheet in ext_css %}
             <link rel="stylesheet" type="text/css" href="{{ sheet }}">
         {% endfor %}
@@ -80,6 +81,11 @@
         <script type="application/javascript" src="{{ static('hitmeup/js/base.js') }}"></script>
         {% for script in js %}
             <script type="application/javascript" src="{{ static(script) }}"></script>
+        {% endfor %}
+
+        {# JSX - Custom #}
+        {% for script in jsx %}
+            <script type="text/jsx" src="{{ static(script) }}"></script>
         {% endfor %}
     </body>
 </html>
