@@ -1,6 +1,6 @@
 from restless.dj import DjangoResource
 from restless.preparers import FieldsPreparer
-from restless.exceptions import Unauthorized
+from restless.exceptions import Unauthorized, BadRequest
 from django.utils.html import escape
 from .models import UserProfile, Friendship
 
@@ -114,11 +114,36 @@ class FriendResource(DjangoResource):
         return [add_friendship_fields(self.request.user.profile, f)
                 for f in self.request.user.profile.friends]
 
-    # PUT /api/friends/<pk>/
+    # POST /api/friends/<pk>/
     # Adds a friendship of current user -> 'pk'
-    def update(self, pk):
+    def create_detail(self, pk):
         other = UserProfile.objects.get(user__id=pk)
         friendship = self.request.user.profile.add_friend(other)
+        other.accepted = friendship.accepted
+        other.favorite = friendship.favorite
+        return other
+
+    # PUT /api/friends/<pk>/
+    # Edits favorite status of friend 'pk'
+    # data: {'favorite': boolean}
+    def update(self, pk):
+        other = UserProfile.objects.get(user__id=pk)
+        friendship = Friendship.objects.get(from_friend=self.request.user.profile,
+                                            to_friend=other)
+
+        if not friendship.accepted:
+            raise Unauthorized("Can't set favorite status of a user "
+                               "that isn't a friend.")
+
+        try:
+            if isinstance(self.data['favorite'], bool):
+                friendship.favorite = self.data['favorite']
+            else:
+                raise BadRequest("'favorite' is not a boolean.")
+        except KeyError:
+            raise BadRequest("'favorite' not found in sent data.")
+
+        friendship.save()
         other.accepted = friendship.accepted
         other.favorite = friendship.favorite
         return other
