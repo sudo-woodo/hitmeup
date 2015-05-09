@@ -156,6 +156,12 @@ class ApiTestCase(TestCase):
         self.assertEqual(response.status_code, 400)
         self.assertEqual(get_my_notif().read, False)
 
+        # Update my own notif - with non-bool arg
+        response = self.client.put(self.GET_DETAIL_URL(get_my_notif().id),
+                                   '{"read": "true"}')
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(get_my_notif().read, False)
+
         # Update my own notif - with true arg
         response = self.client.put(self.GET_DETAIL_URL(get_my_notif().id),
                                    '{"read": true}')
