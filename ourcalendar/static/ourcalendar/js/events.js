@@ -3,9 +3,9 @@
         return c;
     });
 
-    var prevClick;
     $(document).ready(function() {
 
+        //Displays the calendar.
         $('#calendar').fullCalendar({
             editable: true,
             header: {
@@ -13,6 +13,8 @@
                 center: 'title',
                 right: 'month,agendaWeek,agendaDay'
             },
+
+            //Shows detail when clicking an event.
             eventClick: function(event) {
                 // Use event.id to get the clicked event's id
                 $('#eventDetailModal .modal-title').text(event.title);

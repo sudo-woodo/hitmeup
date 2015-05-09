@@ -7,7 +7,8 @@ var EventModalError = React.createClass({
     }
 });
 
-
+//Event modal allows for creation of events.  Is shown whenever a user clicks
+//a day.  Collects all of the necessary information.
 var EventModal = React.createClass({
 
     //handle submission of event
@@ -19,7 +20,7 @@ var EventModal = React.createClass({
             end: React.findDOMNode(this.refs.datetime.refs.end).value.trim(),
             location: React.findDOMNode(this.refs.location).value.trim(),
             description: React.findDOMNode(this.refs.description).value.trim(),
-            calendar: 'Default'
+            calendar: 'Default'      //Necessary for ajax request
         };
 
         // Figure out way to send POST data to server.
@@ -62,12 +63,13 @@ var EventModal = React.createClass({
                 error:function (xhr, textStatus, thrownError){
                     console.log(xhr.responseText);
                 }
-                
             });
 
             //Reset the states upon submission.
             this.setState({
                 title: '',
+                start: '',
+                end: '',
                 description: '',
                 location: '',
                 errors: []
@@ -76,10 +78,12 @@ var EventModal = React.createClass({
         }
     },
 
-
+    //Initialize all of the states.
     getInitialState: function()  {
         return {
             title: '',
+            start: '',
+            end: '',
             description: '',
             location: '',
             errors: []
@@ -96,16 +100,17 @@ var EventModal = React.createClass({
     },
 
     render: function()  {
+        //Contains necessary error information to display to user.
         var errorBox = this.state.errors.map(function(error) {
            return (
                <EventModalError>
                    {error}
                </EventModalError>
            );
-
         });
 
-
+        //Responsible for rendering the event modal which consists of a form containing input fields,
+        //and date time pickers for start and end dates.
         return (
             <div id="create-event-modal" className="modal fade">
                 <div className="modal-dialog">
@@ -133,6 +138,7 @@ var EventModal = React.createClass({
     }
 });
 
+//Renders the event modal.
 var reactor = React.render(
     <EventModal />,
     document.getElementById('create-event-modal-container')

@@ -1,9 +1,6 @@
+//Represents the react class to be used for the start and end date time pickers
+//for use in the event modal.
 var DateTimeField = React.createClass({
-
-    handleSubmit: function(data)  {
-
-
-    },
 
     componentDidMount: function() {
         $('#start-picker').datetimepicker();
@@ -32,6 +29,7 @@ var DateTimeField = React.createClass({
         })
     },
 
+    //renders a bootstrap linked date time picker to choose start and end dates.
     render: function() {
        return (
             <div>
