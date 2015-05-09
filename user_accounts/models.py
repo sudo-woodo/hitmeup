@@ -44,9 +44,8 @@ class UserProfile(models.Model):
     def email(self):
         return self.user.email
 
-    @property
-    def gravatar_url(self):
-        return gravatar.gravatar_url(self.user.email)
+    def get_gravatar_url(self, size=80):
+        return gravatar.gravatar_url(self.user.email, size)
 
     @property
     def friends(self):

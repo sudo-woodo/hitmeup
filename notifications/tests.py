@@ -5,13 +5,15 @@ from django.test import TestCase
 from django.test.client import Client
 from django.utils import timezone
 from django.utils.crypto import get_random_string
-from notifications.models import Notification
-from util.factories import NotificationFactory, UserFactory
+from notifications.models import Notification, send_friend_request_notification, \
+    send_friend_accept_notification
+from user_accounts.models import UserProfile
+from util.factories import NotificationFactory, UserFactory, UserProfileFactory
 
 
 class ModelTestCase(TestCase):
     """
-    Tests if signals actually create models.
+    Tests the notification model.
     """
     def test_ordering(self):
         # Tests if models are ordered correctly.
@@ -31,6 +33,46 @@ class ModelTestCase(TestCase):
         notification = NotificationFactory(time=time)
 
         self.assertEqual(notification.natural_time, naturaltime(time))
+
+
+class SignalTestCase(TestCase):
+    """
+    Tests if signals actually create notifications.
+    """
+    def setUp(self):
+        self.from_friend = UserProfileFactory.create()
+        self.to_friend = UserProfileFactory.create()
+
+    def test_friend_request(self):
+        # Tests if the notification is created correctly on calling
+        # the request handler
+        send_friend_request_notification(UserProfile, self.from_friend,
+                                         self.to_friend)
+
+        self.assertEqual(len(self.to_friend.notifications.all()), 1)
+        notif = self.to_friend.notifications.all()[0]
+        self.assertEqual(notif.recipient, self.to_friend)
+        self.assertEqual(notif.image_url, self.from_friend.get_gravatar_url())
+        self.assertEqual(notif.action_url, '/') # TODO UPDATE WHEN AVAILABLE
+        self.assertEqual(notif.text,
+                         Notification.NOTIFICATION_STRINGS[Notification.REQUEST_FRIEND]
+                         % self.from_friend)
+
+    def test_friend_accept(self):
+        # Tests if the notification is created correctly on calling
+        # the accept handler
+        send_friend_accept_notification(UserProfile, self.from_friend,
+                                        self.to_friend)
+
+        self.assertEqual(len(self.to_friend.notifications.all()), 1)
+        notif = self.to_friend.notifications.all()[0]
+        self.assertEqual(notif.recipient, self.to_friend)
+        self.assertEqual(notif.image_url, self.from_friend.get_gravatar_url())
+        self.assertEqual(notif.action_url, '/') # TODO UPDATE WHEN AVAILABLE
+        self.assertEqual(notif.text,
+                         Notification.NOTIFICATION_STRINGS[Notification.ACCEPT_FRIEND]
+                         % self.from_friend)
+
 
 class ApiTestCase(TestCase):
     """

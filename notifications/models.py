@@ -35,8 +35,8 @@ class Notification(models.Model):
 @receiver(request_friend, sender=UserProfile)
 def send_friend_request_notification(sender, from_friend, to_friend, **kwargs):
     Notification.objects.create(
-        user=to_friend,
-        image_url=from_friend.gravatar_url,
+        recipient=to_friend,
+        image_url=from_friend.get_gravatar_url(),
         action_url='/', #TODO
         text=Notification.NOTIFICATION_STRINGS[Notification.REQUEST_FRIEND] % from_friend,
     )
@@ -44,8 +44,8 @@ def send_friend_request_notification(sender, from_friend, to_friend, **kwargs):
 @receiver(accept_friend, sender=UserProfile)
 def send_friend_accept_notification(sender, from_friend, to_friend, **kwargs):
     Notification.objects.create(
-        user=to_friend,
-        image_url=from_friend.gravatar_url,
+        recipient=to_friend,
+        image_url=from_friend.get_gravatar_url(),
         action_url='/', #TODO
         text=Notification.NOTIFICATION_STRINGS[Notification.ACCEPT_FRIEND] % from_friend,
     )
