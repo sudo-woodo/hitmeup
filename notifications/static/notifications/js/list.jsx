@@ -39,23 +39,38 @@
     ];
 
     var Notification = React.createClass({
-       handleClick:function(){
-          // this.props.data.read = true;
-          bootbox.alert("Hello world!", function() {
-  Example.show("Hello world callback");
-});
-        // $("#myModal").modal('show');  //$(this.getDOMNode()).modal({background: true, keyboard: true, show: false});
+        handleClick:function(){
+            console.log("Clicked");
+            bootbox.dialog({
+                message: this.props.data.message,
+                title: this.props.data.text,
+                buttons: {
+                    Cancel: {
+                        label: "Cancel",
+                        className: "btn-danger",
+                        callback: function() {
 
-       },
+                        }
+                    },
+                    Accept: {
+                        label: "Accept",
+                        className: "btn-success",
+                        callback: function() {
+                        }
+                    }
+                }
+            });
+
+        },
         render: function() {
             console.log('hi');
             return (
                 <div className={cx({
-                        'panel': true,
-                        'panel-default': true,
-                        'notification': true,
-                        'read': this.props.data.read
-                    })}>
+                    'panel': true,
+                    'panel-default': true,
+                    'notification': true,
+                    'read': this.props.data.read
+                })}>
                     <div className="panel-body" onClick={this.handleClick} >
                         <img className="notification-img img-circle" src={this.props.data.image} />
                         <div className="body-container" >
