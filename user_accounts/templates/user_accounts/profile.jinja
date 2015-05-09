@@ -12,7 +12,7 @@
                     <div id="username-container">
                         <h2>{{ profile.username }}</h2>
                         <div id="firstlastname-container">
-                            {{ profile.first_name }} {{ profile.last_name }}
+                            {{ profile.full_name }}
                         </div>
                     </div>
                 </div>
@@ -64,11 +64,6 @@
                 <div class="panel panel-default" id="calendar-panel">
                     <div class="panel-body">
                         <div id="calendar">
-                            <script type="text/javascript">
-                                $(document).ready(function(){
-                                    $('#calendar').fullCalendar();
-                                })
-                            </script>
                         </div>
                     </div>
                 </div>

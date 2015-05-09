@@ -145,10 +145,19 @@ class UserProfile(View):
                 profile = User.objects.get(username=username).profile
                 return render(request, 'user_accounts/profile.jinja', {
                     'ext_css': [
-                        'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.3.0/css/font-awesome.min.css'
+                        'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.3.0/css/font-awesome.min.css',
+                        'http://fullcalendar.io/js/fullcalendar-2.3.1/fullcalendar.min.css'
                     ],
                     'css': [
                         'user_accounts/css/profile.css'
+                    ],
+                    'ext_js': [
+                        'http://cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment.min.js',
+                        'http://fullcalendar.io/js/fullcalendar-2.3.1/fullcalendar.min.js'
+
+                    ],
+                    'js': [
+                        'user_accounts/js/testcalendar.js'
                     ],
                     'profile': profile
                 })
