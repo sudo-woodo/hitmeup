@@ -18,8 +18,16 @@
             eventClick: function(event) {
                 // Use event.id to get the clicked event's id
                 $('#eventDetailModal .modal-title').text(event.title);
-                $('#eventDetailModal #start-time').text(moment(event.start).format('LLL'));
-                $('#eventDetailModal #end-time').text(moment(event.end).format('LLL'));
+
+                if ( event.allDay == false )  {
+                    $('#eventDetailModal #start-time').text(moment(event.start).format('LLL'));
+                    $('#eventDetailModal #start-time').append(' -')
+                    $('#eventDetailModal #end-time').text(moment(event.end).format('LLL'));
+                }
+                else  {
+                    $('#eventDetailModal #start-time').text(moment(event.start).format('LL'));
+                    $('#eventDetailModal #end-time').text("");
+                }
                 $('#eventDetailModal #location').text(event.location);
                 $('#eventDetailModal #description').text(event.description);
                 $('#eventDetailModal').modal('show');
@@ -34,10 +42,13 @@
             select: function(start, end) {
                 console.log('select');
                 $('#start-picker').data("DateTimePicker").date(start);
-                $('#end-picker').data("DateTimePicker").date(end);
+                $('#end-picker').data("DateTimePicker").date(end);  
                 reactor.setState(reactor.getInitialState());
                 $("#create-event-modal").modal('show');
-            }
+            },
+
+            forceEventDuration: true
+
         })
     });
 })(window.jQuery, $HMU);
