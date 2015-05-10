@@ -46,5 +46,6 @@
 .panel-body:hover{
     background-color: green;
     color: white;
+    cursor: pointer;
 
 }

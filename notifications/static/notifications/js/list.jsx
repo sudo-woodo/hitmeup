@@ -95,7 +95,7 @@
     });
 
     React.render(
-        <NotificationList pollInterval={1000}/>,
+        <NotificationList />,
         document.getElementById('notification-list-container')
     );
 })(window.React, window.jQuery, window._);
