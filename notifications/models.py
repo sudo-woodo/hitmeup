@@ -30,13 +30,26 @@ class Notification(models.Model):
     def natural_time(self):
         return naturaltime(self.time)
 
+    @property
+    def serialized(self):
+        return {
+            'image': self.image_url,
+            'action': self.action_url,
+            'text': self.text,
+            'time': self.natural_time,
+            'read': self.read,
+        }
+
 
 #TODO: refactor signals to signals.py in hitmeup app
+
+IMAGE_SIZE = 125
+
 @receiver(request_friend, sender=UserProfile)
 def send_friend_request_notification(sender, from_friend, to_friend, **kwargs):
     Notification.objects.create(
         recipient=to_friend,
-        image_url=from_friend.get_gravatar_url(),
+        image_url=from_friend.get_gravatar_url(IMAGE_SIZE),
         action_url='/', #TODO
         text=Notification.NOTIFICATION_STRINGS[Notification.REQUEST_FRIEND] % from_friend,
     )
@@ -45,7 +58,7 @@ def send_friend_request_notification(sender, from_friend, to_friend, **kwargs):
 def send_friend_accept_notification(sender, from_friend, to_friend, **kwargs):
     Notification.objects.create(
         recipient=to_friend,
-        image_url=from_friend.get_gravatar_url(),
+        image_url=from_friend.get_gravatar_url(IMAGE_SIZE),
         action_url='/', #TODO
         text=Notification.NOTIFICATION_STRINGS[Notification.ACCEPT_FRIEND] % from_friend,
     )

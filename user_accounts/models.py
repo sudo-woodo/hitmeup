@@ -95,7 +95,7 @@ class UserProfile(models.Model):
         return outgoing, created
 
     def del_friend(self, other):
-        outgoing_deleted, incoming_deleted = True
+        outgoing_deleted = incoming_deleted = True
 
         # Delete the outgoing
         try:
