@@ -20,18 +20,17 @@
                     'notification': true,
                     'read': this.props.data.read
                 })}>
-                  <div className="panel-body" onClick={this.handleClick} >
-                        <img className="notification-img" src={this.props.data.image} />
-                         <div className="body-container" >
-                             <div className="notification-text">
-                                {this.props.data.text}
-                             </div>
-                             <div className="notification-time">
-                                {this.props.data.time}
-                             </div>
-                        </div>
+                    <div className="panel-body" onClick={this.handleClick} >
+                        <img className="notification-img img-thumbnail"
+                             src={this.props.data.image} />
+                        <span className="notification-text">
+                            {this.props.data.text}
+                        </span>
+                        <br />
+                        <span className="notification-time">
+                            {this.props.data.time}
+                        </span>
                     </div>
-
                 </div>
             );
         }

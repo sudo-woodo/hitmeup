@@ -7,23 +7,23 @@ body{
 }
 
 .notification {
-    -ms-word-wrap: break-word;
     word-wrap: break-word;
 }
 
 .notification.read {
-    opacity: .4;
+    opacity: .5;
     pointer-events: none;
 }
 
 .notification-img {
-    width: 100px;
-    height: 100px;
-    margin-right: 20px;
+    width: 125px;
+    height: 125px;
+    float: left;
+    margin-right: 10px;
 }
 
 .notification-text {
-    font-size: 1.5em;
+    font-size: 1.7em;
 }
 
 .notification-time {
@@ -34,26 +34,15 @@ body{
     display: inline;
 }
 
-.big-check {
-    font-size: 40px;
-    color: green;
-}
-
-.body-container {
-    display: inline-block;
-}
-
-.check-container {
-    display: inline-block;
-    float: right;
-}
 .panel-default {
     border-color: #BDBDBD;
 }
+
+.panel-body {
+    transition: background-color 0.2s ease;
+}
+
 .panel-body:hover{
-    transition: background-color 0.5s ease;
-    background-color: green;
-    color: white;
-    /*cursor: url(http://www.picgifs.com/cursors/games/maplestory/animaatjes_maplestory_icon64.png), auto;*/
+    background-color: #E5E5E5;
     cursor:pointer;
 }
