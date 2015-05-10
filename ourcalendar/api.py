@@ -60,15 +60,16 @@ class EventResource(DjangoResource):
 
         if errors:
             raise BadRequest(str(errors))
-        else:
-            event.save()
 
+        event.save()
         return event
 
     # POST /api/events/
     def create(self):
         #Error check calendar, title, start, end
         errors = defaultdict(list)
+
+        start = None  # set a default for each, so PyCharm doesn't complain
         if 'start' not in self.data:
             errors['start'].append("Start not provided")
         else:
@@ -77,6 +78,7 @@ class EventResource(DjangoResource):
             except ValueError:
                 errors['start'].append("Start not in the correct format")
 
+        end = None
         if 'end' not in self.data:
             errors['end'].append("End not provided")
         else:
@@ -85,15 +87,17 @@ class EventResource(DjangoResource):
             except ValueError:
                 errors['end'].append("End not in the correct format")
 
+        title = None
         if 'title' not in self.data:
             errors['title'].append("Title not provided")
         else:
             title=escape(self.data['title'])
 
+        calendarTitle = None
         if 'calendar' not in self.data:
             errors['calendar'].append("Calendar not provided")
         else:
-            calendarName=escape(self.data['calendar'])
+            calendarTitle=escape(self.data['calendar'])
 
         if errors:
             raise BadRequest(str(errors))
@@ -106,10 +110,11 @@ class EventResource(DjangoResource):
             # sending the POST request
             calendar=Calendar.objects.get(
                 owner=self.request.user.profile,
-                title=calendarName),
-            description=escape(self.get('description','')),
-            location=escape(self.get('location',''))
+                title=calendarTitle),
+            description=escape(self.data.get('description','')),
+            location=escape(self.data.get('location',''))
         )
+
         return event
 
     # DELETE /api/events/<pk>/
