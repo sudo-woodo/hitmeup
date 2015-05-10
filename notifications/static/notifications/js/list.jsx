@@ -1,8 +1,7 @@
 (function(React, $, _) {
     'use strict';
-  //  var transitionTo = Router.transitionTo;
     var cx = React.addons.classSet;
-
+  //  var transitionTo = Router.transitionTo;
     var fromServer = [
         {
             image: 'http://i.ytimg.com/vi/82yHd99YxnY/maxresdefault.jpg',
@@ -26,7 +25,7 @@
             message:'I have no nose so you wanna befriend with me?',
             time: '3 days ago',
             read: true,
-            action: '/notifications'
+            action: '/notifications/1'
         },
         {
             image: 'http://i0.kym-cdn.com/entries/icons/original/000/013/564/aP2dv.gif',
@@ -34,34 +33,16 @@
             message: 'wow zoom how pronounce amaze must fast very space',
             time: '500 years ago',
             read: true,
-            action: '/notifications'
+            action: '/notifications/2'
         }
     ];
 
     var Notification = React.createClass({
-        handleClick: function(){
+        handleClick: function(e){
             console.log("Clicked");
-            //transitionTo('your_route_name', query={keyword: input_value});
-
-            bootbox.dialog({
-                message: this.props.data.message,
-                title: this.props.data.text,
-                buttons: {
-                    Cancel: {
-                        label: "Cancel",
-                        className: "btn-danger",
-                        callback: function() {
-
-                        }
-                    },
-                    Accept: {
-                        label: "Accept",
-                        className: "btn-success",
-                        callback: function() {
-                        }
-                    }
-                }
-            });
+            e.preventDefault();
+            // js redirect
+            window.location.href = this.props.data.action;
         },
 
         render: function() {

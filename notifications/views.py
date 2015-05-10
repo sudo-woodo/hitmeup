@@ -14,7 +14,6 @@ def list(request):
             'react-with-addons.min.js',
             'https://cdnjs.cloudflare.com/ajax/libs/react/0.13.0/'
             'JSXTransformer.js',
-            'https://cdn.jsdelivr.net/bootbox/4.2.0/bootbox.min.js'
         ],
         'jsx': [
             'notifications/js/list.jsx'
