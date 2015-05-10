@@ -46,10 +46,7 @@
                 reactor.setState(reactor.getInitialState());
                 $("#create-event-modal").modal('show');
             },
-
             forceEventDuration: true
-
         })
     });
 })(window.jQuery, $HMU);
-

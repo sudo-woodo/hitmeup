@@ -32,3 +32,4 @@ def calendar(request):
             'calendars': [e.serialize() for e in request.user.profile.calendars.get(title='Default').events.all()],
         },
     })
+

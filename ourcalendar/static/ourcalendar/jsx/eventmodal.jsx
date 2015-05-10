@@ -64,19 +64,19 @@ var EventModal = React.createClass({
             postData.end = moment(postData.end).format('YYYY-MM-DD HH:mm');
 
             //ajax request goes here. Fix this url and function.
-            /**
             $.ajax({
                 url: '/api/events/',
                 type: "POST",
                 data: JSON.stringify(postData),
                 contentType: "application/json",
-                success:function(response){},
-                complete:function(){},
-                error:function (xhr, textStatus, thrownError){
+                success: function(response) {
+                    console.log("SUCCESS: " + response)
+                },
+                complete: function(){},
+                error: function (xhr, textStatus, thrownError) {
                     console.log(xhr.responseText);
                 }
             });
-            */
 
             //Reset the states upon submission.
             this.setState({
