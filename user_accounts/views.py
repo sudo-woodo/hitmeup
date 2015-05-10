@@ -7,6 +7,7 @@ from django.http.response import HttpResponseRedirect
 from django.shortcuts import render
 from django.views.generic import View
 from user_accounts.forms import UserForm, SignupForm, SignUpExtendedForm
+from user_accounts.models import Friendship
 
 
 class SignUpView(View):
@@ -143,6 +144,19 @@ class UserProfile(View):
         if request.user.is_authenticated():
             try:
                 profile = User.objects.get(username=username).profile
+
+                try:
+                    friendship = Friendship.objects.get(
+                        from_friend=self.request.user.profile,
+                        to_friend=profile
+                    )
+                    if friendship.accepted:
+                        status = 1
+                    else:
+                        status = 2
+                except:
+                    status = 3
+
                 return render(request, 'user_accounts/profile.jinja', {
                     'ext_css': [
                         'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/'
@@ -169,6 +183,10 @@ class UserProfile(View):
                     'jsx': [
                         'user_accounts/js/profile.jsx'
                     ],
+                    'js_data': {
+                        'profile_id': profile.pk,
+                        'status': status
+                    },
                     'profile': profile,
                     'curr_user': request.user.username
                 })
