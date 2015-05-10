@@ -21,18 +21,13 @@
         <div id="header-lower-half">
             <div class="container">
                 <div id="header-lower-half-content">
-                    <img src="http://i.ytimg.com/vi/82yHd99YxnY/maxresdefault.jpg"
+                    <img src="{{ profile.get_gravatar_url() }}"
                          alt=""
                          id ="pic"
                          class="img-thumbnail">
-                    <div id="button-container">
-                        <a href="" id="friend-button">
-                            <i class="fa fa-user-plus"></i>
-                            <span id="add-friend-text">
-                                Add as Friend
-                            </span>
-                        </a>
-                    </div>
+                    {% if curr_user != profile.username %}
+                        <div id="button-container"></div>
+                    {% endif %}
                 </div>
             </div>
         </div>
@@ -50,8 +45,10 @@
                                     {{ profile.email }}
                                 </li>
                                 <li>
-                                    <i class="fa-li fa fa-phone"></i>
-                                    {{ profile.phone }}
+                                    {% if profile.phone != '' %}
+                                        <i class="fa-li fa fa-phone"></i>
+                                        {{ profile.phone }}
+                                    {% endif %}
                                  </li>
                             </ul>
                         </li>

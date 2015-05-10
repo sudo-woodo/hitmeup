@@ -5,27 +5,19 @@
 
     var FriendButton = React.createClass({
         render: function() {
-            var friendNodes = this.props.data.map(function (friend) {
-                return (
-                    <FriendBox friend={friend}/>
-                );
-            });
-
-
             return (
-                 <div className="friends-list">
-                     <div className="container-fluid">
-                         <div className="row">
-                             {friendNodes}
-                         </div>
-                     </div>
-                 </div>
+                 <a href="" id="friend-button">
+                    <i className="fa fa-user-plus"></i>
+                    <span id="add-friend-text">
+                        Add as Friend
+                    </span>
+                </a>
              );
          }
      });
 
     React.render(
-        <FriendsList data={data}/>,
-        document.getElementById('friends-list-container')
+        <FriendButton/>,
+        document.getElementById('button-container')
     );
 })(window.React, window.jQuery, window._);
