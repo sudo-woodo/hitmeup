@@ -7,25 +7,10 @@
 {% block content %}
     <div id='calendar'></div>
 
-    <!-- This might be only HTML we need in this file. -->
+    <!-- Container for the create event modal, inserted with React -->
     <div id="create-event-modal-container"></div>
 
-    <div id="eventDetailModal" class="modal fade">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                    <h3 class="modal-title">Event Detail</h3>
-                    <i class="fa fa-clock-o"></i>&nbsp;&nbsp;<span id="start-time"></span> <span id="end-time"></span>
-                </div>
-                <div class="modal-body">
-                    <ul class="fa-ul">
-                        <li><i class="fa-li fa fa-map-marker"></i><span id="location"></span></li>
-                        <li><i class="fa-li fa fa-calendar"></i><span id="description"></span></li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </div>
+    <!-- Container for the event detail modal, inserted with React -->
+    <div id="event-detail-modal-container"></div>
 
 {% endblock %}

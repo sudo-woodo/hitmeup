@@ -26,7 +26,8 @@ def calendar(request):
         ],
         'jsx': [
             'ourcalendar/jsx/datetimefield.jsx',
-            'ourcalendar/jsx/eventmodal.jsx'
+            'ourcalendar/jsx/createeventmodal.jsx',
+            'ourcalendar/jsx/eventdetailmodal.jsx'
         ],
         'js_data': {
             'calendars': [e.serialize() for e in request.user.profile.calendars.get(title='Default').events.all()],
