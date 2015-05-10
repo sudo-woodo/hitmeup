@@ -20,7 +20,7 @@
 
                 $.ajax({
                     url:'/api/events/12/',
-                    type: "PUT",
+                    type: "DELETE",
                     data: JSON.stringify({ title: 'b'
                         /*
                         title: 'a', start: '2015-05-29 12:12',

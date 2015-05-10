@@ -118,4 +118,3 @@ class EventResource(DjangoResource):
     # DELETE /api/events/<pk>/
     def delete(self, pk):
         Event.objects.get(id=pk, calendar__owner=self.request.user.profile).delete()
-        
