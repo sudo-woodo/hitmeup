@@ -196,4 +196,5 @@ class UserProfile(View):
                 raise Http404("User does not exist")
 
         else:
+            # TODO make this page
             return HttpResponseRedirect(reverse('static_pages:home'))

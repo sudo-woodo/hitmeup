@@ -8,6 +8,7 @@
     };
 
     var PROPS = {};
+
     PROPS[STATE.CLEAN] = function(thiz) {
         return {
             icon: 'fa fa-user-plus',
@@ -19,41 +20,42 @@
                     url: '/api/friends/' + $HMU.profileId + '/',
                     method: 'POST',
                     success: function (data) {
-                        if(data.accepted) {
+                        if(data.accepted)
                             thiz.setState(PROPS[STATE.IS_FRIENDS](thiz));
-                        }
-                        else {
+                        else
                             thiz.setState(PROPS[STATE.PENDING](thiz));
-                        }
-
                     },
-                    error: function (data) {
-                        alert('Something went wrong, please try again.');
+                    error: function () {
+                        alert('Something went wrong with the friend request,' +
+                        ' please try again.');
                     }
                 });
             }
         }
     };
+
     PROPS[STATE.PENDING] = function(thiz) {
         return {
             icon: 'fa fa-pulse fa-spinner',
             button: 'friend-button pending-button',
-            text: 'Friend Request sent (Click to cancel)',
+            text: 'Friend request sent (click to cancel)',
             clickHandler: function (e) {
                 e.preventDefault();
                 $.ajax({
                     url: '/api/friends/' + $HMU.profileId,
                     method: 'DELETE',
-                    success: function (data) {
+                    success: function () {
                         thiz.setState(PROPS[STATE.CLEAN](thiz));
                     },
-                    error: function (data) {
-                        alert('Something went wrong, please try again2.');
+                    error: function () {
+                        alert('Something went wrong with cancelling the friend ' +
+                        'request, please try again.');
                     }
                 });
             }
         }
     };
+
     PROPS[STATE.IS_FRIENDS] = function(thiz) {
         return {
             icon: 'fa fa-user-times',
@@ -64,11 +66,12 @@
                 $.ajax({
                     url: '/api/friends/' + $HMU.profileId,
                     method: 'DELETE',
-                    success: function(data) {
+                    success: function() {
                         thiz.setState(PROPS[STATE.CLEAN](thiz));
                     },
-                    error: function(data) {
-                        alert('Something went wrong, please try again2.');
+                    error: function() {
+                        alert('Something went wrong with removing the friend,' +
+                        ' please try again.');
                     }
                 });
             }
@@ -97,12 +100,15 @@
             switch($HMU.status) {
                 case STATE.CLEAN:
                     return PROPS[STATE.CLEAN](this);
+                    break;
 
                 case STATE.PENDING:
                     return PROPS[STATE.PENDING](this);
+                    break;
 
                 case STATE.IS_FRIENDS:
                     return PROPS[STATE.IS_FRIENDS](this);
+                    break;
             }
         },
 
