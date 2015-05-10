@@ -1,5 +1,8 @@
 from django.contrib.auth.decorators import login_required
+from django.core.urlresolvers import reverse
+from django.http.response import HttpResponseRedirect, Http404
 from django.shortcuts import render
+from notifications.models import Notification
 
 
 @login_required
@@ -26,4 +29,21 @@ def list(request):
         }
     })
 
+@login_required
+def action(request, notification_id):
+    # Marks a notification as read, and redirects to "next" querystring param
+    try:
+        notification = request.user.profile.notifications.get(id=notification_id)
+        notification.read = True
+        notification.save()
+    except Notification.DoesNotExist:
+        raise Http404("Notification to mark read not found")
 
+    try:
+        return HttpResponseRedirect(
+            request.GET['next']
+        )
+    except KeyError:
+        return HttpResponseRedirect(
+            reverse('static_pages:home')
+        )
