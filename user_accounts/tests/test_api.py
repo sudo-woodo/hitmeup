@@ -12,6 +12,13 @@ class UserProfilesApiTestCase(TestCase):
     LIST_URL = reverse('users_api:api_userprofile_list')
     GET_DETAIL_URL = lambda self, pk: reverse(
         'users_api:api_userprofile_detail', args=[pk])
+    NEW_DATA = {
+        'phone': '25411142056',
+        'bio': 'I am an attack helicopter.',
+        'email': 'snoop@sdsu.edu',
+        'first_name': 'Snoop',
+        'last_name': 'Dogg',
+    }
 
     def setUp(self):
         # Create lots of dummy users
@@ -46,12 +53,58 @@ class UserProfilesApiTestCase(TestCase):
         # Check if we see all the users
         self.assertEqual(len(data), self.NUM_USERS + 1)
         user_ids = [user.id for user in self.other_users]
-        for user in self.other_users:
-            self.assertIn(user.id, user_ids)
+        user_ids.append(self.profile.pk)
+        for user in data:
+            self.assertIn(user['id'], user_ids)
+
+        # Make current user inactive
+        self.profile.user.is_active = False
+        self.profile.user.save()
+
+        # Ensure user not in returned list
+        response = self.client.get(self.LIST_URL)
+        data = json.loads(response.content)['objects']
+        self.assertEqual(len(data), self.NUM_USERS)
+        for user in data:
+            self.assertNotEqual(user['id'], self.profile.pk)
+
+    def test_detail(self):
+        # Tests if we can get info on the current user
+        response = self.client.get(self.GET_DETAIL_URL(self.profile.pk))
+        data = json.loads(response.content)
+
+        expected_fields = ['id', 'username', 'email', 'first_name',
+                           'last_name', 'full_name', 'bio', 'phone']
+
+        # Ensure all the fields are present
+        for field in expected_fields:
+            if field == 'id':
+                self.assertEqual(data[field], self.profile.pk)
+            else:
+                self.assertEqual(data[field], getattr(self.profile, field))
+
+    def test_update(self):
+        # Try updating another user's profile
+        response = self.client.put(self.GET_DETAIL_URL(self.other_users[0].pk),
+                                   json.dumps({'bio': self.NEW_DATA['bio']}))
+
+        # Ensure we are unauthorized to do so, and field is unchanged
+        self.assertEqual(response.status_code, 401)
+        self.assertNotEqual(self.other_users[0].profile.bio, self.NEW_DATA['bio'])
+
+        # Try updating self's profile
+        response = self.client.put(self.GET_DETAIL_URL(self.profile.pk),
+                                   json.dumps(self.NEW_DATA))
+        data = json.loads(response.content)
+
+        for field in self.NEW_DATA:
+            self.assertEqual(data[field], self.NEW_DATA[field])
+            self.assertEqual(
+                getattr(UserProfile.objects.get(pk=self.profile.pk), field),
+                self.NEW_DATA[field])
 
 
 class FriendsApiTestCase(TestCase):
-
     NUM_USERS = 5
     LIST_URL = reverse('friends_api:api_friend_list')
     GET_DETAIL_URL = lambda self, pk: reverse(
@@ -179,6 +232,10 @@ class FriendsApiTestCase(TestCase):
 
     def test_create_detail(self):
         """
+        TODO: this test fails, need to figure out why :(
+        """
+        return
+
         # Add another random user as friend
         other = self.other_users[0]
         print "self:", self.profile.pk, "other:", other.profile.pk
@@ -190,18 +247,20 @@ class FriendsApiTestCase(TestCase):
         # Correct data is returned
         print "data:", data, "code:", response.status_code
 
-        # self.assertFalse(data['accepted'])
-        # self.assertEqual(data['id'], other.profile.pk)
+        self.assertFalse(data['accepted'])
+        self.assertEqual(data['id'], other.profile.pk)
 
         # Now, have the other user accept the friend request
-        # other.profile.add_friend(self.profile)
-        # self.assertTrue(Friendship.objects.get(
-        #     from_friend=self.profile, to_friend=other.profile).accepted)
-        """
-        pass
+        other.profile.add_friend(self.profile)
+        self.assertTrue(Friendship.objects.get(
+            from_friend=self.profile, to_friend=other.profile).accepted)
 
     def test_create_detail_add_yourself(self):
         """
+        TODO: this test fails, need to figure out why :(
+        """
+        return
+
         # Add self as friend (such loneliness)
         response = self.client.post(self.FRIENDS_GET_DETAIL_URL(
             self.profile.pk), {})
@@ -212,8 +271,6 @@ class FriendsApiTestCase(TestCase):
         self.assertIn('error', data)
 
         print ">> data:", data, "code:", response.status_code
-        """
-        pass
 
     def test_update(self):
         # Make friendship (self -> random user)
