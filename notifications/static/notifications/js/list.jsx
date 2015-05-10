@@ -1,8 +1,7 @@
-(function(React, $, _) {
+(function($HMU, React, $, _) {
     'use strict';
     var cx = React.addons.classSet;
   //  var transitionTo = Router.transitionTo;
-    var fromServer = [];
 
     var Notification = React.createClass({
         handleClick: function(e){
@@ -40,13 +39,15 @@
 
     var NotificationList = React.createClass({
         getInitialState: function() {
-            return {notifications: []};
+            return {notifications: $HMU.notifications};
         },
         componentDidMount: function() {
+            /*
             this.setState({
                 notifications: fromServer
             });
             setInterval(this.loadCommentsFromServer, this.props.pollInterval);
+            */
         },
         render: function() {
             var notifications = this.state.notifications.map(function(notif) {
@@ -65,4 +66,4 @@
         <NotificationList />,
         document.getElementById('notification-list-container')
     );
-})(window.React, window.jQuery, window._);
+})(window.$HMU, window.React, window.jQuery, window._);
