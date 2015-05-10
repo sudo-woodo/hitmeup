@@ -1,0 +1,15 @@
+{% extends "base.jinja" %}
+{% block title %}
+Search
+{% endblock %}
+    {% block content %}
+    <form action="." method="get">
+        <input type="text" name="q">
+    </form>
+
+{#    {% for result in page.object_list %}#}
+{#       <p>{{ result.object.name }}</p>#}
+{#       <p>{{ result.object.body }}</p>#}
+{#    {% endfor %}#}
+{##}
+    {% endblock %}

@@ -30,6 +30,8 @@ HAYSTACK_CONNECTIONS = {
 
 if es.username:
     HAYSTACK_CONNECTIONS['default']['KWARGS'] = {"http_auth": es.username + ':' + es.password}
+
+HAYSTACK_SIGNAL_PROCESSOR = 'haystack.signals.RealtimeSignalProcessor'
 # End of Haystack settings
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
