@@ -1,3 +1,7 @@
+body{
+    background-color: #EFEFEF;
+
+}
 .main-content {
     margin-top: 20px;
 }
@@ -8,7 +12,8 @@
 }
 
 .notification.read {
-    opacity: 0.7;
+    opacity: .4;
+    pointer-events: none;
 }
 
 .notification-img {
@@ -42,10 +47,13 @@
     display: inline-block;
     float: right;
 }
-
+.panel-default {
+    border-color: #BDBDBD;
+}
 .panel-body:hover{
+    transition: background-color 0.5s ease;
     background-color: green;
     color: white;
-    cursor: pointer;
-
+    /*cursor: url(http://www.picgifs.com/cursors/games/maplestory/animaatjes_maplestory_icon64.png), auto;*/
+    cursor:pointer;
 }
