@@ -92,9 +92,7 @@ var EventModal = React.createClass({
                 postData.location = 'No location';
             if (postData.description.length === 0)
                 postData.description = 'No description';
-            var cal = $('#calendar');
-            cal.fullCalendar('renderEvent', postData, true);
-            cal.fullCalendar('unselect');
+            $('#calendar').fullCalendar('renderEvent', postData, true);
         }
     },
 
