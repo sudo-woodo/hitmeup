@@ -1,9 +1,15 @@
+import django.dispatch
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.core.validators import RegexValidator
 from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch.dispatcher import receiver
+from user_accounts.templatetags import gravatar
+
+
+request_friend = django.dispatch.Signal(providing_args=["from_friend", "to_friend"])
+accept_friend = django.dispatch.Signal(providing_args=["from_friend", "to_friend"])
 
 
 class UserProfile(models.Model):
@@ -38,6 +44,9 @@ class UserProfile(models.Model):
     def email(self):
         return self.user.email
 
+    def get_gravatar_url(self, size=80):
+        return gravatar.gravatar_url(self.user.email, size)
+
     @property
     def friends(self):
         # Only friends you have accepted AND friends that have accepted you
@@ -65,32 +74,42 @@ class UserProfile(models.Model):
 
         # If no, then create a pending outgoing friendship
         except Friendship.DoesNotExist:
-            outgoing = Friendship.objects.create(
+            outgoing, created = Friendship.objects.get_or_create(
                 from_friend=self, to_friend=other)
+            if created:
+                request_friend.send(sender=self.__class__,
+                                    from_friend=self, to_friend=other)
 
         # If yes, accept the incoming friendship
         # and make an accepted outgoing friendship
         else:
-            outgoing = Friendship.objects.get_or_create(
-                from_friend=self, to_friend=other)[0]
+            outgoing, created = Friendship.objects.get_or_create(
+                from_friend=self, to_friend=other)
             outgoing.accepted = incoming.accepted = True
             outgoing.save()
             incoming.save()
+            if created:
+                accept_friend.send(sender=self.__class__,
+                                   from_friend=self, to_friend=other)
 
-        return outgoing
+        return outgoing, created
 
     def del_friend(self, other):
+        outgoing_deleted, incoming_deleted = True
+
         # Delete the outgoing
         try:
             Friendship.objects.get(from_friend=self, to_friend=other).delete()
         except Friendship.DoesNotExist:
-            pass
+            outgoing_deleted = False
 
         # Delete the incoming
         try:
             Friendship.objects.get(from_friend=other, to_friend=self).delete()
         except Friendship.DoesNotExist:
-            pass
+            incoming_deleted = False
+
+        return outgoing_deleted, incoming_deleted
 
 
 # Auto-create a UserProfile when creating a User
