@@ -18,12 +18,6 @@ class EventResource(DjangoResource):
         'description': 'description',
     })
 
-    # POST data fields that are accepted
-    # TODO use this!
-    MODIFIABLE_FIELDS = {
-        'event': ['start', 'end', 'location', 'description', 'title'],
-    }
-
     # Authentication!
     def is_authenticated(self):
         return self.request.user.is_authenticated()
@@ -39,9 +33,9 @@ class EventResource(DjangoResource):
     # PUT /api/events/<pk>/
     def update(self, pk):
         event = Event.objects.get(id=pk, calendar__owner=self.request.user.profile)
-        #TODO How to check if data['start'] was in request
-
         errors = defaultdict(list)
+
+        #TODO BE ABLE TO CHANGE CALENDAR OF EVENT
 
         if 'start' in self.data:
             try:
@@ -64,7 +58,10 @@ class EventResource(DjangoResource):
         if 'location' in self.data:
             event.location = escape(self.data['location'])
 
-        event.save()
+        if errors:
+            raise BadRequest(str(errors))
+        else:
+            event.save()
 
         return event
 
@@ -110,8 +107,8 @@ class EventResource(DjangoResource):
             calendar=Calendar.objects.get(
                 owner=self.request.user.profile,
                 title=calendarName),
-            description=escape(self.data['description']),
-            location=escape(self.data['location'])
+            description=escape(self.get('description','')),
+            location=escape(self.get('location',''))
         )
         return event
 
