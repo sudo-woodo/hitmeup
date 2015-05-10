@@ -18,12 +18,6 @@ class EventResource(DjangoResource):
         'description': 'description',
     })
 
-    # POST data fields that are accepted
-    # TODO use this!
-    MODIFIABLE_FIELDS = {
-        'event': ['start', 'end', 'location', 'description'],
-    }
-
     # Authentication!
     def is_authenticated(self):
         return self.request.user.is_authenticated()
@@ -38,39 +32,91 @@ class EventResource(DjangoResource):
 
     # PUT /api/events/<pk>/
     def update(self, pk):
-        event = Event.objects.get(id=pk)
-        #TODO How to check if data['start'] was in request
-        event.start=escape(self.data['start']),
-        event.end=escape(self.data['end']),
-        event.title = escape(self.data['title']),
-        event.description = escape(self.data['description']),
-        event.location = escape(self.data['location'])
+        event = Event.objects.get(id=pk, calendar__owner=self.request.user.profile)
+        errors = defaultdict(list)
+
+        #TODO BE ABLE TO CHANGE CALENDAR OF EVENT
+
+        if 'start' in self.data:
+            try:
+                event.start = datetime.strptime(escape(self.data['start']), '%Y-%m-%d %H:%M')
+            except ValueError:
+                errors['start'].append("Start not in the correct format")
+
+        if 'end' in self.data:
+            try:
+                event.end = datetime.strptime(escape(self.data['end']), '%Y-%m-%d %H:%M')
+            except ValueError:
+                errors['end'].append("End not in the correct format")
+
+        if 'title' in self.data:
+            event.title = escape(self.data['title'])
+
+        if 'description' in self.data:
+            event.description = escape(self.data['description'])
+
+        if 'location' in self.data:
+            event.location = escape(self.data['location'])
+
+        if errors:
+            raise BadRequest(str(errors))
+
+        event.save()
         return event
 
     # POST /api/events/
     def create(self):
+        #Error check calendar, title, start, end
         errors = defaultdict(list)
+
+        start = None  # set a default for each, so PyCharm doesn't complain
         if 'start' not in self.data:
-            errors['start'].append("Not provided")
+            errors['start'].append("Start not provided")
         else:
             try:
                 start = datetime.strptime(escape(self.data['start']), '%Y-%m-%d %H:%M')
             except ValueError:
-                errors['start'].append("Not in the correct format")
+                errors['start'].append("Start not in the correct format")
+
+        end = None
+        if 'end' not in self.data:
+            errors['end'].append("End not provided")
+        else:
+            try:
+                end = datetime.strptime(escape(self.data['end']), '%Y-%m-%d %H:%M')
+            except ValueError:
+                errors['end'].append("End not in the correct format")
+
+        title = None
+        if 'title' not in self.data:
+            errors['title'].append("Title not provided")
+        else:
+            title=escape(self.data['title'])
+
+        calendarTitle = None
+        if 'calendar' not in self.data:
+            errors['calendar'].append("Calendar not provided")
+        else:
+            calendarTitle=escape(self.data['calendar'])
 
         if errors:
             raise BadRequest(str(errors))
 
         event = Event.objects.create(
             start=start,
-            end=datetime.strptime(escape(self.data['end']), "%Y-%m-%d %H:%M"),
-            title=escape(self.data['title']),
+            end=end,
+            title=title,
             # Get a calendar whose owner profile is linked to the user
             # sending the POST request
             calendar=Calendar.objects.get(
                 owner=self.request.user.profile,
-                title=escape(self.data['calendar'])),
-            description=escape(self.data['description']),
-            location=escape(self.data['location'])
+                title=calendarTitle),
+            description=escape(self.data.get('description','')),
+            location=escape(self.data.get('location',''))
         )
+
         return event
+
+    # DELETE /api/events/<pk>/
+    def delete(self, pk):
+        Event.objects.get(id=pk, calendar__owner=self.request.user.profile).delete()
