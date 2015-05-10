@@ -21,7 +21,7 @@ class EventResource(DjangoResource):
     # POST data fields that are accepted
     # TODO use this!
     MODIFIABLE_FIELDS = {
-        'event': ['start', 'end', 'location', 'description'],
+        'event': ['start', 'end', 'location', 'description', 'title'],
     }
 
     # Authentication!
@@ -38,38 +38,78 @@ class EventResource(DjangoResource):
 
     # PUT /api/events/<pk>/
     def update(self, pk):
-        event = Event.objects.get(id=pk)
+        event = Event.objects.get(id=pk, calendar__owner=self.request.user.profile)
         #TODO How to check if data['start'] was in request
-        event.start=escape(self.data['start']),
-        event.end=escape(self.data['end']),
-        event.title = escape(self.data['title']),
-        event.description = escape(self.data['description']),
-        event.location = escape(self.data['location'])
+
+        errors = defaultdict(list)
+
+        if 'start' in self.data:
+            try:
+                event.start = datetime.strptime(escape(self.data['start']), '%Y-%m-%d %H:%M')
+            except ValueError:
+                errors['start'].append("Start not in the correct format")
+
+        if 'end' in self.data:
+            try:
+                event.end = datetime.strptime(escape(self.data['end']), '%Y-%m-%d %H:%M')
+            except ValueError:
+                errors['end'].append("End not in the correct format")
+
+        if 'title' in self.data:
+            event.title = escape(self.data['title'])
+
+        if 'description' in self.data:
+            event.description = escape(self.data['description'])
+
+        if 'location' in self.data:
+            event.location = escape(self.data['location'])
+
+        event.save()
+
         return event
 
     # POST /api/events/
     def create(self):
+        #Error check calendar, title, start, end
         errors = defaultdict(list)
         if 'start' not in self.data:
-            errors['start'].append("Not provided")
+            errors['start'].append("Start not provided")
         else:
             try:
                 start = datetime.strptime(escape(self.data['start']), '%Y-%m-%d %H:%M')
             except ValueError:
-                errors['start'].append("Not in the correct format")
+                errors['start'].append("Start not in the correct format")
+
+        if 'end' not in self.data:
+            errors['end'].append("End not provided")
+        else:
+            try:
+                end = datetime.strptime(escape(self.data['end']), '%Y-%m-%d %H:%M')
+            except ValueError:
+                errors['end'].append("End not in the correct format")
+
+        if 'title' not in self.data:
+            errors['title'].append("Title not provided")
+        else:
+            title=escape(self.data['title'])
+
+        if 'calendar' not in self.data:
+            errors['calendar'].append("Calendar not provided")
+        else:
+            calendarName=escape(self.data['calendar'])
 
         if errors:
             raise BadRequest(str(errors))
 
         event = Event.objects.create(
             start=start,
-            end=datetime.strptime(escape(self.data['end']), "%Y-%m-%d %H:%M"),
-            title=escape(self.data['title']),
+            end=end,
+            title=title,
             # Get a calendar whose owner profile is linked to the user
             # sending the POST request
             calendar=Calendar.objects.get(
                 owner=self.request.user.profile,
-                title=escape(self.data['calendar'])),
+                title=calendarName),
             description=escape(self.data['description']),
             location=escape(self.data['location'])
         )
