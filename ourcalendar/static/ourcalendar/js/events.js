@@ -19,14 +19,15 @@
                 prevClick = this;
 
                 $.ajax({
-                    url:'/calendar/api/events/',
+                    url:'/api/events/',
                     type: "POST",
                     data: JSON.stringify({title: 'a', start: '2015-05-29 12:12',
                         end: '1990-12-12 12:13', calendar:'Default',
                         description: 'new des', location: ''}),
                     contentType: "application/json",
-                    success:function(response){},
-                    complete:function(){},
+                    success:function(data){
+                        console.log(data);
+                    },
                     error:function (xhr, textStatus, thrownError){
                         console.log(xhr.responseText);
                     }
