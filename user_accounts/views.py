@@ -5,6 +5,7 @@ from django.core.urlresolvers import reverse
 from django.http import Http404
 from django.http.response import HttpResponseRedirect
 from django.shortcuts import render
+from django.utils.html import escape
 from django.views.generic import View
 from user_accounts.forms import UserForm, SignupForm, SignUpExtendedForm
 from user_accounts.models import Friendship
@@ -100,7 +101,12 @@ class LoginView(View):
                 # if the user is active, log them in and redirect to home
                 if user.is_active:
                     login(request, user)
-                    return HttpResponseRedirect(reverse('static_pages:home'))
+                    destination = request.GET.get(
+                        'next',
+                        reverse('static_pages:home')
+                    )
+                    return HttpResponseRedirect(escape(destination))
+
                 else:
                     return render(request, 'user_accounts/login.jinja', {
                         'login_form': login_form,
@@ -190,11 +196,60 @@ class UserProfile(View):
                         'status': status
                     },
                     'profile': profile,
-                    'curr_user': request.user.username
+                    'curr_user': request.user.username,
+                    'censor': False
                 })
             except User.DoesNotExist:
                 raise Http404("User does not exist")
 
         else:
-            # TODO make this page
-            return HttpResponseRedirect(reverse('static_pages:home'))
+            profile = {
+                'username': username,
+                'full_name': '***** *********',
+                'email': '*******@*****.***',
+                'phone': '**********',
+                'bio': ''
+            }
+
+            return_url = reverse('user_accounts:login')
+            return_url += '?next='
+            return_url += reverse(
+                'user_accounts:user_profile',
+                args={username}
+            )
+
+            return render(request, 'user_accounts/profile.jinja', {
+                'ext_css': [
+                    'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/'
+                    '4.3.0/css/font-awesome.min.css',
+                    'http://fullcalendar.io/js/fullcalendar-2.3.1/'
+                    'fullcalendar.min.css'
+                ],
+                'css': [
+                    'user_accounts/css/profile.css'
+                ],
+                'ext_js': [
+                    'http://cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/'
+                    'moment.min.js',
+                    'http://fullcalendar.io/js/fullcalendar-2.3.1/'
+                    'fullcalendar.min.js',
+                    #'https://cdnjs.cloudflare.com/ajax/libs/react/0.13.2/'
+                    #'react-with-addons.min.js',
+                    'https://fb.me/react-with-addons-0.13.3.js',
+                    'https://cdnjs.cloudflare.com/ajax/libs/react/0.13.0/'
+                    'JSXTransformer.js',
+                ],
+                'js': [
+                    'user_accounts/js/testcalendar.js'
+                ],
+                'jsx': [
+                    'user_accounts/js/profile.jsx'
+                ],
+                'js_data': {
+                    'showFriendButton': False
+                },
+                'profile': profile,
+                'curr_user': request.user.username,
+                'censor': True,
+                'return_url': return_url
+            })

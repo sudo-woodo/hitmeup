@@ -1,6 +1,26 @@
 body {
     background-color: #e0e0e0;
 }
+
+.gray-out {
+    position: fixed;
+    display: block;
+    height: 100%;
+    width: 100%;
+    background-color: black;
+    opacity: .95;
+    z-index: 15;
+    text-align: center;
+}
+
+.censor-button-div {
+    margin: 0 30px 0 30px;
+}
+.censor-button {
+    margin-top: 100px;
+    white-space: normal;
+}
+
 #header {
     background-color: white;
 }
@@ -45,6 +65,10 @@ body {
     z-index: 10;
 }
 
+.pic-censored {
+    background-color: black;
+}
+
 #button-container {
     position: absolute;
     right: 0;
@@ -60,6 +84,8 @@ body {
     height: 40px;
     text-align: center;
     padding: 0 10px 0 10px;
+    /*animation-name: enter;
+    animation-duration: .9s;*/
 }
 
 .friend-button:hover {
@@ -74,9 +100,33 @@ body {
     margin-top: 30px;
     margin-bottom: 0;
     border-color: #bdbdbd;
+    /*animation: popout;
+    animation-duration: 1s;
+    animation-timing-function: ease-out;*/
 }
 
 #calendar-panel {
     margin-top: 30px;
     border-color: #bdbdbd;
+    /*animation: popout;
+    animation-duration: 1s;
+    animation-delay: .5s;
+    animation-timing-function: ease-out;*/
+}
+
+@keyframes enter {
+    from{opacity: 0;}
+    to{opacity: 1;}
+}
+
+@keyframes popout {
+    from{transform:scale(0)}
+    80%{transform:scale(1.05)}
+    to{transform:scale(1)}
+}
+
+@-webkit-keyframes popout {
+    from{-webkit-transform:scale(0)}
+    80%{-webkit-transform:scale(1.05)}
+    to{-webkit-transform:scale(1)}
 }

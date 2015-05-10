@@ -5,6 +5,20 @@
 {% endblock %}
 
 {% block content %}
+    {% if censor %}
+        <div class="gray-out">
+            <div class="censor-button-div">
+                <button
+                    type="button"
+                    class="btn btn-success btn-lg censor-button"
+                    onClick="window.location.href = '{{ return_url }}'"
+                >
+                    Please login to view profile pages.
+                </button>
+            </div>
+        </div>
+    {% endif %}
+
     <div id="header">
         <div id="header-upper-half">
             <div class="container">
@@ -21,10 +35,17 @@
         <div id="header-lower-half">
             <div class="container">
                 <div id="header-lower-half-content">
-                    <img src="{{ profile.get_gravatar_url() }}"
-                         alt=""
-                         id ="pic"
-                         class="img-thumbnail">
+                    <img
+                        {% if not censor %}
+                            src="{{ profile.get_gravatar_url(125) }}"
+                        {% endif %}
+                        alt=""
+                        id ="pic"
+                        class="img-thumbnail
+                            {% if censor %}
+                                pic-censored
+                            {% endif %}
+                        ">
                         <div id="button-container"></div>
                 </div>
             </div>

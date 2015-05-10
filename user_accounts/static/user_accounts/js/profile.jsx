@@ -1,6 +1,8 @@
 (function($HMU, React, $, _) {
     'use strict';
 
+    var ReactCSSTransitionGroup = React.addons.CSSTransitionGroup;
+
     var STATE = {
         CLEAN: 0,
         PENDING: 1,
@@ -82,6 +84,7 @@
          render: function() {
              return (
                  <div
+                     key={this.props.button}
                      id="friend-button"
                      className={this.props.button}
                      onClick={this.props.clickHandler}

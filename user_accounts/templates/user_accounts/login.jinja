@@ -32,7 +32,11 @@
             {% endif %}
         {% endfor %}
 
-        <form id="login_form" method="post" action="{{ url('user_accounts:login') }}">
+        {% if request.GET.next %}
+            <form id="login_form" method="post" action="{{ url('user_accounts:login') }}?next={{ request.GET.next }}">
+        {% else %}
+            <form id="login_form" method="post" action="{{ url('user_accounts:login') }}">
+        {%  endif %}
 
             {% csrf_token %}
 
