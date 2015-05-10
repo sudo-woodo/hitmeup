@@ -50,26 +50,26 @@ body {
     right: 0;
 }
 
-#friend-button {
-    outline: 0;
+.friend-button {
+    cursor: pointer;
     line-height: 40px;
-    text-decoration: none;
     color: #616161;
     border-left: solid #bdbdbd 1px;
     border-right: solid #bdbdbd 1px;
     display: block;
     height: 40px;
-    width: 140px;
     text-align: center;
+    padding: 0 10px 0 10px;
 }
 
-#friend-button:hover {
+.friend-button:hover {
     background-color: #e0e0e0;
 }
 
-#add-friend-text {
+#friend-button-text {
     padding-left: 5px;
 }
+
 #info-panel {
     margin-top: 30px;
     margin-bottom: 0;

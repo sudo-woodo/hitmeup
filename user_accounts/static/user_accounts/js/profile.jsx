@@ -1,8 +1,6 @@
 (function($HMU, React, $, _) {
     'use strict';
 
-    var cx = React.addons.classSet;
-
     var STATE = {
         CLEAN: 0,
         PENDING: 1,
@@ -10,110 +8,121 @@
     };
 
     var PROPS = {};
-    PROPS[STATE.CLEAN] = {
-        icon: 'fa fa-user-plus',
-        button: 'add-friend-button',
-        status: STATE.CLEAN,
-        clickHandler: this.addFriendHandler
+    PROPS[STATE.CLEAN] = function(thiz) {
+        return {
+            icon: 'fa fa-user-plus',
+            button: 'friend-button add-friend-button',
+            text: 'Add Friend',
+            clickHandler: function (e) {
+                e.preventDefault();
+                $.ajax({
+                    url: '/api/friends/' + $HMU.profileId + '/',
+                    method: 'POST',
+                    success: function (data) {
+                        if(data.accepted) {
+                            thiz.setState(PROPS[STATE.IS_FRIENDS](thiz));
+                        }
+                        else {
+                            thiz.setState(PROPS[STATE.PENDING](thiz));
+                        }
+
+                    },
+                    error: function (data) {
+                        alert('Something went wrong, please try again.');
+                    }
+                });
+            }
+        }
     };
-    PROPS[STATE.PENDING] = {
-        icon: 'fa fa-spin fa-spinner',
-        button: 'pending-button',
-        status: STATE.PENDING
+    PROPS[STATE.PENDING] = function(thiz) {
+        return {
+            icon: 'fa fa-pulse fa-spinner',
+            button: 'friend-button pending-button',
+            text: 'Friend Request sent (Click to cancel)',
+            clickHandler: function (e) {
+                e.preventDefault();
+                $.ajax({
+                    url: '/api/friends/' + $HMU.profileId,
+                    method: 'DELETE',
+                    success: function (data) {
+                        thiz.setState(PROPS[STATE.CLEAN](thiz));
+                    },
+                    error: function (data) {
+                        alert('Something went wrong, please try again2.');
+                    }
+                });
+            }
+        }
     };
-    PROPS[STATE.IS_FRIENDS] = {
-        icon: 'fa fa-user-times',
-        button: 'remove-button',
-        status: STATE.IS_FRIENDS,
-        clickHandler: this.removeFriendHandler
+    PROPS[STATE.IS_FRIENDS] = function(thiz) {
+        return {
+            icon: 'fa fa-user-times',
+            button: 'friend-button remove-button',
+            text: 'Remove as friend',
+            clickHandler: function(e) {
+                e.preventDefault();
+                $.ajax({
+                    url: '/api/friends/' + $HMU.profileId,
+                    method: 'DELETE',
+                    success: function(data) {
+                        thiz.setState(PROPS[STATE.CLEAN](thiz));
+                    },
+                    error: function(data) {
+                        alert('Something went wrong, please try again2.');
+                    }
+                });
+            }
+        }
     };
+
+    var ActionButton = React.createClass({
+         render: function() {
+             return (
+                 <div
+                     id="friend-button"
+                     className={this.props.button}
+                     onClick={this.props.clickHandler}
+                 >
+                     <i className={this.props.icon}></i>
+                     <span id="friend-button-text">
+                         {this.props.children}
+                     </span>
+                 </div>
+             );
+         }
+    });
 
     var FriendButton = React.createClass({
         getInitialState: function() {
-            if ($HMU.status == STATE.CLEAN) {
-                return PROPS[STATE.CLEAN]
+            switch($HMU.status) {
+                case STATE.CLEAN:
+                    return PROPS[STATE.CLEAN](this);
+
+                case STATE.PENDING:
+                    return PROPS[STATE.PENDING](this);
+
+                case STATE.IS_FRIENDS:
+                    return PROPS[STATE.IS_FRIENDS](this);
             }
-            if ($HMU.status == STATE.PENDING) {
-                return PROPS[STATE.PENDING]
-            }
-            if ($HMU.status == STATE.IS_FRIENDS) {
-                return PROPS[STATE.IS_FRIENDS]
-            }
-        },
-
-        addFriendHandler: function(e) {
-            e.preventDefault();
-            $.ajax({
-                url: '/api/friends/' + $HMU.profile_id,
-                method: 'POST',
-                success: function(data) {
-                    if(data.accepted) {
-                        this.setState(PROPS[STATE.IS_FRIENDS]);
-                    }
-
-                    else {
-                        this.setState(PROPS[STATE.PENDING])
-                    }
-                },
-                error: function(data) {
-                    this.setState(PROPS[STATE.CLEAN])
-                }
-            });
-        },
-
-        removeFriendHandler: function(e) {
-            e.preventDefault();
-
-        },
-        componentDidMount: function() {
-            $.ajax({
-                url: '/api/friends/' + $HMU.profile_id,
-                method: 'GET',
-                success: function(data) {
-                    if(data.accepted) {
-                        this.setState(PROPS[STATE.IS_FRIENDS]);
-                    }
-
-                    else {
-                        this.setState(PROPS[STATE.PENDING])
-                    }
-                },
-                error: function(data) {
-                    this.setState(PROPS[STATE.CLEAN])
-                }
-            });
         },
 
         render: function() {
             return (
                 <ActionButton
-                    buttonClasses={this.state.button}
-                    iconClasses={this.state.icon}
+                    button={this.state.button}
+                    icon={this.state.icon}
                     clickHandler={this.state.clickHandler}
                 >
                     {this.state.text}
                 </ActionButton>
-            )
+            );
          }
     });
 
-    var ActionButton = React.createClass({
-         render: function() {
-             return (
-                 <a href="#" id="friend-button" class={this.props.button} onClick={this.props.clickHandler}>
-                    <i className={this.props.icon}></i>
-                    <span id="friend-button-text">
-                        {this.props.children}
-                    </span>
-                </a>
-             )
-         }
-
-
-    });
-
-    React.render(
-        <FriendButton/>,
-        document.getElementById('button-container')
-    );
+    if($HMU.showFriendButton) {
+        React.render(
+            <FriendButton/>,
+            document.getElementById('button-container')
+        );
+    }
 })(window.$HMU, window.React, window.jQuery, window._);

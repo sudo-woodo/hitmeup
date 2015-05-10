@@ -151,11 +151,11 @@ class UserProfile(View):
                         to_friend=profile
                     )
                     if friendship.accepted:
-                        status = 1
-                    else:
                         status = 2
-                except:
-                    status = 3
+                    else:
+                        status = 1
+                except Friendship.DoesNotExist:
+                    status = 0
 
                 return render(request, 'user_accounts/profile.jinja', {
                     'ext_css': [
@@ -172,8 +172,9 @@ class UserProfile(View):
                         'moment.min.js',
                         'http://fullcalendar.io/js/fullcalendar-2.3.1/'
                         'fullcalendar.min.js',
-                        'https://cdnjs.cloudflare.com/ajax/libs/react/0.13.2/'
-                        'react-with-addons.min.js',
+                        #'https://cdnjs.cloudflare.com/ajax/libs/react/0.13.2/'
+                        #'react-with-addons.min.js',
+                        'https://fb.me/react-with-addons-0.13.3.js',
                         'https://cdnjs.cloudflare.com/ajax/libs/react/0.13.0/'
                         'JSXTransformer.js',
                     ],
@@ -184,7 +185,8 @@ class UserProfile(View):
                         'user_accounts/js/profile.jsx'
                     ],
                     'js_data': {
-                        'profile_id': profile.pk,
+                        'showFriendButton': request.user.id != profile.pk,
+                        'profileId': profile.pk,
                         'status': status
                     },
                     'profile': profile,
