@@ -114,6 +114,17 @@ class FriendResource(DjangoResource):
         return [add_friendship_fields(self.request.user.profile, f)
                 for f in self.request.user.profile.friends]
 
+    # GET /api/friends/<pk>/
+    # Gets info on a specific user or friend.
+    # If no friendship from current user -> 'pk', responds with 404.
+    def detail(self, pk):
+        other = UserProfile.objects.get(user__id=pk)
+        friendship = Friendship.objects.get(from_friend=self.request.user.profile,
+                                            to_friend=other)
+        other.accepted = friendship.accepted
+        other.favorite = friendship.favorite
+        return other
+
     # POST /api/friends/<pk>/
     # Adds a friendship of current user -> 'pk'
     def create_detail(self, pk):
