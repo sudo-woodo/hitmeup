@@ -37,12 +37,12 @@
             height: 600,
             scrollTime: "08:00:00",
             selectable: true,
+            eventLimit: true,
             selectHelper: true,
             unselectCancel: "#create-event-modal",
             select: function(start, end) {
-                console.log('select');
                 $('#start-picker').data("DateTimePicker").date(start);
-                $('#end-picker').data("DateTimePicker").date(end);  
+                $('#end-picker').data("DateTimePicker").date(end);
                 reactor.setState(reactor.getInitialState());
                 $("#create-event-modal").modal('show');
             },
