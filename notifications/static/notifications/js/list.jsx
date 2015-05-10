@@ -58,11 +58,11 @@
                         <img className="notification-img" src={this.props.data.image} />
                          <div className="body-container" >
                              <div className="notification-text">
-                                 {this.props.data.text}
-                            </div>
-                            <div className="notification-time">
+                                {this.props.data.text}
+                             </div>
+                             <div className="notification-time">
                                 {this.props.data.time}
-                            </div>
+                             </div>
                         </div>
                     </div>
 
