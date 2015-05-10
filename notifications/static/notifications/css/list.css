@@ -12,7 +12,6 @@ body{
 
 .notification.read {
     opacity: .5;
-    pointer-events: none;
 }
 
 .notification-img {

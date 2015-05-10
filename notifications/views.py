@@ -7,6 +7,15 @@ from notifications.models import Notification
 
 @login_required
 def list(request):
+    notifications = request.user.profile.notifications.all()
+
+    # Mark all notifications as read, but revert (not save) for display
+    for n in notifications:
+        if not n.read:
+            n.read = True
+            n.save()
+            n.read = False
+
     return render(request, 'notifications/list.jinja', {
         'ext_css': [
             '//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css'
@@ -24,8 +33,7 @@ def list(request):
             'notifications/js/list.jsx',
         ],
         'js_data': {
-            'notifications': [n.serialized for n in
-                              request.user.profile.notifications.all()]
+            'notifications': [n.serialized for n in notifications]
         }
     })
 
