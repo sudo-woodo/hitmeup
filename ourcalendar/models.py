@@ -35,6 +35,7 @@ def hour_from_now():
 class Event(models.Model):
     calendar = models.ForeignKey(Calendar, related_name='events')
     title = models.CharField(max_length=200, default='New Event')
+    # TODO: validate start < end
     start = models.DateTimeField(default=timezone.now)
     end = models.DateTimeField(default=hour_from_now)
     location = models.CharField(max_length=200, blank=True)

@@ -43,6 +43,7 @@ INSTALLED_APPS = (
 
     # Vendor
     'django_jinja',
+    'restless',
 
     # Custom
     'hitmeup',
@@ -50,6 +51,7 @@ INSTALLED_APPS = (
     'static_pages',
     'user_accounts',
     'ourcalendar',
+    'notifications',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -77,6 +79,7 @@ CONTEXT_PROCESSORS = [
 
     # Custom
     'dynamic_components.context_processors.navbar',
+    'notifications.context_processors.notification_count',
 ]
 
 TEMPLATES = [

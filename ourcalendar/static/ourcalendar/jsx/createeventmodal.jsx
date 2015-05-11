@@ -48,6 +48,17 @@ var EventModal = React.createClass({
             });
         }
         else {
+
+            var startMoment = moment(postData.start);
+            var endMoment = moment(postData.end);
+
+            if ( endMoment.diff(startMoment, 'days' ) == 1 &&
+                 startMoment.hour() == 0 && endMoment.hour() == 0 &&
+                 startMoment.minute() == 0 && endMoment.minute() == 0 )  {
+
+                postData.allDay = true;
+            }
+
             //Format the dates to send the ajax request
             postData.start = moment(postData.start).format('YYYY-MM-DD HH:mm');
             postData.end = moment(postData.end).format('YYYY-MM-DD HH:mm');
@@ -58,9 +69,11 @@ var EventModal = React.createClass({
                 type: "POST",
                 data: JSON.stringify(postData),
                 contentType: "application/json",
-                success:function(response){},
-                complete:function(){},
-                error:function (xhr, textStatus, thrownError){
+                success: function(response) {
+                    console.log("SUCCESS: " + response)
+                },
+                complete: function(){},
+                error: function (xhr, textStatus, thrownError) {
                     console.log(xhr.responseText);
                 }
             });
@@ -79,9 +92,7 @@ var EventModal = React.createClass({
                 postData.location = 'No location';
             if (postData.description.length === 0)
                 postData.description = 'No description';
-            var cal = $('#calendar');
-            cal.fullCalendar('renderEvent', postData, true);
-            cal.fullCalendar('unselect');
+            $('#calendar').fullCalendar('renderEvent', postData, true);
         }
     },
 
@@ -131,10 +142,10 @@ var EventModal = React.createClass({
                                 {errorBox}
                             </div>
                             <form id="event-form" onSubmit={this.handleSubmit}>
-                                <p><input type="text" className="form-control" placeholder="Title" value={this.state.title} ref="title" onChange={this.handleInput} /></p>
+                                <p><input type="text" maxLength="200" className="form-control" placeholder="Title" value={this.state.title} ref="title" onChange={this.handleInput} /></p>
                                 <p><DateTimeField ref="datetime" /></p>
-                                <p><input type="text" className="form-control" placeholder="Location" value={this.state.location} ref="location" onChange={this.handleInput} /></p>
-                                <p><textArea className="form-control" placeholder="Description" value={this.state.description} ref="description" onChange={this.handleInput}/></p>
+                                <p><input type="text" maxLength="200" className="form-control" placeholder="Location" value={this.state.location} ref="location" onChange={this.handleInput} /></p>
+                                <p><textArea maxLength="600" className="form-control" placeholder="Description" value={this.state.description} ref="description" onChange={this.handleInput} /></p>
                                 <button type="submit" className="btn btn-primary pull-right" id="submit">Save changes</button>
                             </form>
                         </div>

@@ -1,0 +1,11 @@
+{% for entry in navbar_entries %}
+    <li class="
+    {% if entry.active %}
+        active
+    {% endif %}
+    ">
+        <a href="{{ url(entry.view) }}">
+            {{ entry.name }}
+        </a>
+    </li>
+{% endfor %}

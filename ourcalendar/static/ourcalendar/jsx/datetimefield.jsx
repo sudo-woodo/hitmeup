@@ -25,7 +25,8 @@ var DateTimeField = React.createClass({
             $('#start-picker').data("DateTimePicker").maxDate(false);
             $('#end-picker').data("DateTimePicker").minDate(false);
             $('#event-form')[0].reset();
-        })
+            $('#calendar').fullCalendar('unselect');
+        });
     },
 
     //renders a bootstrap linked date time picker to choose start and end dates.
