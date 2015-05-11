@@ -1,6 +1,6 @@
 from restless.dj import DjangoResource
 from restless.preparers import FieldsPreparer
-from restless.exceptions import Unauthorized
+from restless.exceptions import Unauthorized, BadRequest
 from django.utils.html import escape
 from .models import UserProfile, Friendship
 
@@ -114,11 +114,45 @@ class FriendResource(DjangoResource):
         return [add_friendship_fields(self.request.user.profile, f)
                 for f in self.request.user.profile.friends]
 
-    # PUT /api/friends/<pk>/
+    # GET /api/friends/<pk>/
+    # Gets info on a specific user or friend.
+    # If no friendship from current user -> 'pk', responds with 404.
+    def detail(self, pk):
+        other = UserProfile.objects.get(user__id=pk)
+        friendship = self.request.user.profile.get_friendship(other)
+        other.accepted = friendship.accepted
+        other.favorite = friendship.favorite
+        return other
+
+    # POST /api/friends/<pk>/
     # Adds a friendship of current user -> 'pk'
+    def create_detail(self, pk):
+        other = UserProfile.objects.get(user__id=pk)
+        friendship, created = self.request.user.profile.add_friend(other)
+        other.accepted = friendship.accepted
+        other.favorite = friendship.favorite
+        return other
+
+    # PUT /api/friends/<pk>/
+    # Edits favorite status of friend 'pk'
+    # data: {'favorite': boolean}
     def update(self, pk):
         other = UserProfile.objects.get(user__id=pk)
-        friendship = self.request.user.profile.add_friend(other)
+        friendship = self.request.user.profile.get_friendship(other)
+
+        if not friendship.accepted:
+            raise Unauthorized("Can't set favorite status of a user "
+                               "that isn't a friend.")
+
+        try:
+            if isinstance(self.data['favorite'], bool):
+                friendship.favorite = self.data['favorite']
+            else:
+                raise BadRequest("'favorite' is not a boolean.")
+        except KeyError:
+            raise BadRequest("'favorite' not found in sent data.")
+
+        friendship.save()
         other.accepted = friendship.accepted
         other.favorite = friendship.favorite
         return other

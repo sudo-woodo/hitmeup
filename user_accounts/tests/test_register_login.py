@@ -6,6 +6,8 @@ from util.factories import UserFactory
 
 
 SIGNUP_URL = reverse('user_accounts:signup')
+SIGNUP_EXTENDED_URL = reverse('user_accounts:extended_signup')
+SIGNUP_EXTENDED_URL += '?first_visit=true'
 LOGIN_URL = reverse('user_accounts:login')
 HOME_URL = reverse('static_pages:home')
 
@@ -37,7 +39,7 @@ class SignUpTestCase(TestCase):
 
         # Tests the auto login and redirect
         self.assertEqual(int(self.client.session['_auth_user_id']), user.pk, "User was not logged in")
-        self.assertRedirects(response, HOME_URL)
+        self.assertRedirects(response, SIGNUP_EXTENDED_URL)
 
     def test_existing_user(self):
         # Tests registering with the same username

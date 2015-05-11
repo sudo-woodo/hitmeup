@@ -155,11 +155,13 @@ STATIC_ROOT = 'staticroot'
 
 STATIC_URL = '/static/'
 
+
 # Navigation
 
 from navigation import entries
 
 NAVBAR_ENTRIES = entries
+
 
 # Scaffold command
 
@@ -177,5 +179,7 @@ SCAFFOLDAPP_FILES = [
     (os.path.join('{app}', 'urls.py'), "describes {app}'s routes"),
 ]
 
+
 # Authentication
 LOGIN_URL = '/login/'
+CSRF_FAILURE_VIEW = 'hitmeup.views.csrf_failure'
