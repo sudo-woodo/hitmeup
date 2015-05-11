@@ -17,11 +17,13 @@ urlpatterns = [
     # REST APIs
     url(r'^api/notifications/', include(NotificationResource.urls(),
         namespace='notifications_api')),
+    url(r'^api/events/', include(EventResource.urls(),
+        namespace='events_api')),
+
 
     url(r'^admin/', include(admin.site.urls)),
     url(r'^notifications/', include('notifications.urls', namespace='notifications')),
     url(r'^', include('static_pages.urls', namespace='static_pages')),
     url(r'^', include('user_accounts.urls', namespace='user_accounts')),
     url(r'^calendar/', include('ourcalendar.urls', namespace='calendar')),
-    url(r'^api/events/', include(EventResource.urls(), namespace='events_api')),
 ]

@@ -15,8 +15,6 @@ class CalendarTestCase(TestCase):
         self.assertIsNotNone(self.calendar)
 
         # Test the default values of the calendar are correct
-        self.assertEqual(self.calendar.title, 'Default')
-        self.assertEqual(self.calendar.color, '#267F00')
         self.assertEqual(self.calendar.owner, self.profile)
         self.assertEqual(self.calendar.privacy, 0)
         self.assertEqual(str(self.calendar),
@@ -94,3 +92,9 @@ class EventTestCase(TestCase):
                 pass
             else:
                 self.assertEqual(getattr(event, field), serialized_data[field])
+
+        # Test unicode representation
+        self.assertEqual(
+            "%s -> %s -> %s" % (event.calendar.owner, event.calendar, event.title),
+            unicode(event)
+        )
