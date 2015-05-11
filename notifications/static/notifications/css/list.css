@@ -20,9 +20,9 @@ a.panel {
     transition: background-color 0.2s ease;
 }
 
-.panel-body:hover{
+.panel-body:hover {
     background-color: #E5E5E5;
-    cursor:pointer;
+    cursor: pointer;
 }
 
 .notification {
@@ -34,18 +34,21 @@ a.panel {
 }
 
 .notification-img {
-    width: 125px;
-    height: 125px;
-    float: left;
-    margin-right: 10px;
+    width: 100px;
+    height: 100px;
+    position: absolute;
     border: solid darkgray 1px;
 }
 
 .notification-text {
+    margin-left: 110px;
+    min-height: 100px;
     font-size: 1.7em;
 }
 
 .notification-time {
+    text-align: right;
+    margin-top: 10px;
     font-size: 1em;
 }
 

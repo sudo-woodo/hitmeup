@@ -49,7 +49,7 @@ class Notification(models.Model):
 
 #TODO: refactor signals to signals.py in hitmeup app
 
-IMAGE_SIZE = 125
+IMAGE_SIZE = 200
 
 @receiver(request_friend, sender=UserProfile)
 def send_friend_request_notification(sender, from_friend, to_friend, **kwargs):
