@@ -1,8 +1,9 @@
 from django.forms import ModelForm
 from django import forms
-from ourcalendar.models import Calendar, Event, User
+from ourcalendar.models import Calendar, Event
 from functools import partial
 DateInput = partial(forms.DateInput, {'class': 'datepicker'})
+
 
 class EventForm(ModelForm):
     title = forms.CharField(max_length=200, help_text="Event title:")

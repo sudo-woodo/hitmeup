@@ -5,7 +5,7 @@
 
     $(document).ready(function() {
 
-        //Displays the calendar.
+        // Displays the calendar.
         $('#calendar').fullCalendar({
             editable: true,
             header: {
@@ -14,23 +14,38 @@
                 right: 'month,agendaWeek,agendaDay'
             },
 
-            //Shows detail when clicking an event.
+            // Shows detail when clicking an event.
             eventClick: function(event) {
-                // Use event.id to get the clicked event's id
-                $('#eventDetailModal .modal-title').text(event.title);
+                // Dev tip: can use event.id to get the clicked event's id
+                var eventDetailModal = $('#eventDetailModal');
+                eventDetailModal.find('.modal-title').text(event.title);
 
-                if ( event.allDay == false )  {
-                    $('#eventDetailModal #start-time').text(moment(event.start).format('LLL'));
-                    $('#eventDetailModal #start-time').append(' -')
-                    $('#eventDetailModal #end-time').text(moment(event.end).format('LLL'));
+                if (event.allDay == false) {
+                    eventDetailModal.find('#start-time').text(moment(event.start).format('LLL'));
+                    eventDetailModal.find('#start-time').append(' -');
+                    eventDetailModal.find('#end-time').text(moment(event.end).format('LLL'));
                 }
-                else  {
-                    $('#eventDetailModal #start-time').text(moment(event.start).format('LL'));
-                    $('#eventDetailModal #end-time').text("");
+                else {
+                    eventDetailModal.find('#start-time').text(moment(event.start).format('LL'));
+                    eventDetailModal.find('#end-time').text('');
                 }
-                $('#eventDetailModal #location').text(event.location);
-                $('#eventDetailModal #description').text(event.description);
-                $('#eventDetailModal').modal('show');
+
+                //If there is no location, simply show "No Location"
+                if ( event.location.length == 0 )  {
+                    eventDetailModal.find('#location').text("No Location");
+                }
+                else {
+                    eventDetailModal.find('#location').text(event.location);
+                }
+
+                //If there is no description, simply show "No Description"
+                if ( event.description.length == 0 ) {
+                    eventDetailModal.find('#description').text("No Description");
+                }
+                else {
+                    eventDetailModal.find('#description').text(event.description);
+                }
+                eventDetailModal.modal('show');
             },
             events: events,
             fixedWeekCount: false,
