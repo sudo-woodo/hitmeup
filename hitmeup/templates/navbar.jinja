@@ -30,6 +30,16 @@
                         </a>
                     </li>
                 {% endfor %}
+
+                <li class="
+                    {% if view == 'user_accounts:friendsList' %}
+                        active
+                    {% endif %}
+                ">
+                <a href="{{ url('user_accounts:friendsList') }}">
+                    <i class="fa fa-users"></i>&nbsp;
+                        My Friends
+                </a>
             </ul>
 
             <ul class="nav navbar-nav navbar-right">

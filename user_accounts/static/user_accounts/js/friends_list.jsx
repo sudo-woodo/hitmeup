@@ -3,82 +3,27 @@
 
     var cx = React.addons.classSet;
 
-    var data = [
-        {
-            'name': 'Gary Gillespie',
-            'picture_url': 'https://media.licdn.com/mpr/mpr/shrink_200_200/p/2/000/0db/205/1492be8.jpg',
-            'free': true,
-            'email': 'coconutwaterlvrTESTINGTHEOVERFLOW@hotmail.com',
-            'phone': '800-124-1457',
-            'fav': true
-        },
-        {
-            'name': 'RickyOrd',
-            'picture_url': 'http://cseweb.ucsd.edu/~ricko/images/Rick-Headshot.jpg',
-            'free': false,
-            'email': 'CAFEBABE@msn.com',
-            'phone': '812-463-7334',
-            'fav': true
-        },
-        {
-            'name': 'Massimiliano "MAX" Menarini',
-            'picture_url':
-                'https://sosa.ucsd.edu/confluence/download/attachments/1212424/mmenarini_tn.jpg?version=1&modificationDate=1255626677000',
-            'free': false,
-            'email': 'agile@aim.net',
-            'phone': '134-643-8754',
-            'fav': false
-        },
-        {
-            'name': 'Papa Phil',
-            'picture_url':
-                'http://users.sdsc.edu/~phil/images/phil.jpg',
-            'free': false,
-            'email': 'vimenthusiast@yahoo.com',
-            'phone': '942-325-2678',
-            'fav': true
-        },
-        {
-            'name': 'Barack Obama',
-            'picture_url':
-                'http://api.ning.com/files/2R8JQXTOEkNOw74rkMxAns-rsBoRXm3osCtTiAzhQXMv5rjfjMHGEW6oTxHBdSrHBCb1Y2T20Yjmnx0ZjS*EYsk1msNWH-9f/ObamaFunnyFace.jpg',
-            'free': true,
-            'email': 'change@whitehouse.gov',
-            'phone': '321-542-YUME',
-            'fav': false
-        },
-        {
-            'name': 'Snoop Dogg',
-            'picture_url':
-                'http://assets.rollingstone.com/assets/images/story/snoop-dogg-talks-holograms-2pac-and-chronic-in-web-chat-20130509/snoop-624-1368121236.jpg',
-            'free': false,
-            'email': 'snoop@sdsu.edu',
-            'phone': '568-234-3800',
-            'fav': false
-        },
-        {
-            'name': 'Phreak',
-            'picture_url':
-                'http://i.ytimg.com/vi/RAIq5V6LqPM/maxresdefault.jpg',
-            'free': true,
-            'email': 'tonsofdamage@gmail.com',
-            'phone': '123-855-8933',
-            'fav': false
-        },
-        {
-            'name': 'Joseph Joestar',
-            'picture_url':
-                'http://www.learnspanishtoday.com/img/businessman.jpg',
-            'free': false,
-            'email': 'hamon@gmail.com',
-            'phone': '847-664-8436',
-            'fav': true
-        }
-    ];
-
     var FriendsList = React.createClass({
+        getFriends: function() {
+            $.ajax({
+                url: '/api/friends/',
+                method: 'GET',
+                success: function (data) {
+                    return data;
+                },
+                error: function () {
+                    alert('Something went wrong with getting your friends ' +
+                    'request, please try again.');
+                }
+            });
+        },
+
+        getInitialState: function() {
+            friends: this.getFriends()
+        },
+
         render: function() {
-            var friendNodes = this.props.data.map(function (friend) {
+            var friendNodes = this.props.friends.map(function (friend) {
                 return (
                     <FriendBox friend={friend}/>
                 );
@@ -165,7 +110,6 @@
                         {item.info}
                     </FriendInfo>
                 );
-            });
 
             return (
                 <div className="friend-box">
@@ -207,7 +151,7 @@
     });
 
     React.render(
-        <FriendsList data={data}/>,
+        <FriendsList/>,
         document.getElementById('friends-list-container')
     );
 })(window.React, window.jQuery, window._);
