@@ -2,7 +2,7 @@ body {
     background-color: #e0e0e0;
 }
 
-.gray-out {
+.censor-overlay {
     position: fixed;
     display: block;
     height: 100%;
@@ -16,6 +16,7 @@ body {
 .censor-button-div {
     margin: 0 30px 0 30px;
 }
+
 .censor-button {
     margin-top: 100px;
     white-space: normal;
@@ -74,21 +75,26 @@ body {
     background-color: black;
 }
 
-#button-container {
+.friend-button-set {
+    height: 100%;
+}
+
+#friend-button-container {
     position: absolute;
     right: 0;
+    top: 0;
+    bottom: 0;
 }
 
 #friend-button {
     cursor: pointer;
-    line-height: 40px;
     color: #616161;
     border-left: solid #bdbdbd 1px;
     border-right: solid #bdbdbd 1px;
     display: inline-block;
-    height: 40px;
+    height: 100%;
     text-align: center;
-    padding: 0 10px 0 10px;
+    padding: 10px 10px 0 10px;
     /*animation-name: enter;
     animation-duration: .9s;*/
 }

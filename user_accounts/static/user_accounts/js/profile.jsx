@@ -15,7 +15,7 @@
     PROPS[STATE.CLEAN] = function(thiz) {
         return {
             status: STATE.CLEAN,
-            icon: 'fa fa-user-plus',
+            iconClasses: 'fa fa-user-plus',
             button: 'friend-button add-friend-button',
             text: ' Add Friend',
             clickHandler: function (e) {
@@ -41,7 +41,7 @@
     PROPS[STATE.PENDING] = function(thiz) {
         return {
             status: STATE.PENDING,
-            icon: 'fa fa-remove',
+            iconClasses: 'fa fa-remove',
             button: 'friend-button pending-button',
             text: null,
             clickHandler: function (e) {
@@ -64,7 +64,7 @@
     PROPS[STATE.IS_FRIENDS] = function(thiz) {
         return {
             status: STATE.IS_FRIENDS,
-            icon: 'fa fa-user-times',
+            iconClasses: 'fa fa-user-times',
             button: 'friend-button remove-button',
             text: ' Remove as friend',
             clickHandler: function(e) {
@@ -92,10 +92,8 @@
                      className={this.props.button}
                      onClick={this.props.clickHandler}
                  >
-                     <i className={this.props.icon}></i>
-                     <span id="friend-button-text">
+                     <i className={this.props.iconClasses}></i>
                          {this.props.children}
-                     </span>
                  </div>
              )
          }
@@ -123,18 +121,18 @@
             if (this.state.status == STATE.PENDING) {
                 pendingMessage =
                     <div className="pending-message">
-                        <i className="fa fa-spin fa-spinner"></i>
+                        <i className="fa fa-pulse fa-spinner"></i>
                         <span id="pending-text">
                             Pending
                         </span>
                     </div>
             }
             return (
-                <div>
+                <div className="friend-button-set">
                     <ActionButton
                         key={this.state.button}
                         button={this.state.button}
-                        icon={this.state.icon}
+                        iconClasses={this.state.iconClasses}
                         clickHandler={this.state.clickHandler}
                         status={this.state.status}
                     >
@@ -149,7 +147,7 @@
     if($HMU.showFriendButton) {
         React.render(
             <FriendButton/>,
-            document.getElementById('button-container')
+            document.getElementById('friend-button-container')
         );
     }
 })(window.$HMU, window.React, window.jQuery, window._);

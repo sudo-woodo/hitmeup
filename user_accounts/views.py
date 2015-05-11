@@ -53,14 +53,14 @@ class SignUpExtended(View):
             user = request.user
             updatedFields = []
             if bool(dict):
-                for key in signup_extended_form.cleaned_data:
-                    if signup_extended_form.cleaned_data[key] != u'':
+                for key, val in signup_extended_form.cleaned_data.iteritems():
+                    if val != u'':
                         if key == 'first_name' or key == 'last_name':
                             updatedFields.append(key)
                             setattr(
                                 user,
                                 key,
-                                signup_extended_form.cleaned_data[key]
+                                val
                             )
 
                         else:
@@ -68,7 +68,7 @@ class SignUpExtended(View):
                             setattr(
                                 user.profile,
                                 key,
-                                signup_extended_form.cleaned_data[key]
+                                val
                             )
             user.save()
             user.profile.save()
