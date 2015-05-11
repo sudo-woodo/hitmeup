@@ -11,6 +11,7 @@ def navbar(request):
         {
             'name': string,
             'view': string,
+            'auth_required': bool,
         },
         ...
     ]
@@ -21,7 +22,12 @@ def navbar(request):
 
     # Get navbar config
     entries = copy.deepcopy(getattr(settings, 'NAVBAR_ENTRIES', []))
-
+    auth_entries = {
+        navbar_entries: entries[navbar_entries]
+        for navbar_entries in navbar_entries
+        if entries[navbar_entries]['auth_required'] and
+        request.user.is_authenticated()
+    }
     # Mark the active view
     try:
         active = resolve(request.path).view_name
