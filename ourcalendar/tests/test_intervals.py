@@ -30,6 +30,9 @@ class IntervalTestCase(TestCase):
         with self.assertRaises(ValueError):
             Interval(self.t1, self.t0)
 
+    # Don't mind the "unresolve attribute references"
+    # I'm doing some metaprogramming :^)
+
     def test_operators(self):
         self.assertEqual(self.t0_t1, self.t0_t1)
         self.assertNotEqual(self.t0_t0, self.t1_t2)
@@ -53,7 +56,7 @@ class IntervalTestCase(TestCase):
         self.assertEqual(self.t0_t2.join(self.t2_t3), self.t0_t3)
         self.assertEqual(self.t0_t2.join(self.t1_t3), self.t0_t3)
 
-    def test_union(self):
+    def test_flatten(self):
         # No intervals
         self.assertEqual(Interval.flatten_intervals([]), [])
 
@@ -91,3 +94,16 @@ class IntervalTestCase(TestCase):
         ]), [
             self.t0_t1,
         ])
+
+    def test_complement(self):
+        # No intervals
+        self.assertEqual(Interval.complement_intervals([], self.t0, self.t4),
+                         self.t0_t4)
+
+        # Invalid start
+        with self.assertRaises(ValueError):
+            Interval.complement_intervals([self.t0_t3], self.t1, self.t4)
+
+        # Invalid end
+        with self.assertRaises(ValueError):
+            Interval.complement_intervals([self.t1_t4], self.t0, self.t3)

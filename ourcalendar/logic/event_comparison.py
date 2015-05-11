@@ -107,7 +107,7 @@ class Interval:
         return flattened_stack
 
     @classmethod
-    def complement_list(cls, intervals, start, end):
+    def complement_intervals(cls, intervals, start, end):
         """
         Returns the complement of a list of intervals, provided a start
         boundary and an end boundary.
@@ -119,6 +119,10 @@ class Interval:
         :param end: The end boundary of the complement
         :return: The list of intervals, complemented
         """
+        # If no intervals, just return an interval start -> end
+        if len(intervals) == 0:
+            return Interval(start, end)
+
         # Sort ascending, use as a queue
         interval_queue = cls.flatten_intervals(intervals)
 
