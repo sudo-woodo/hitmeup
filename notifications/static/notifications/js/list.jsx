@@ -6,24 +6,26 @@
     var Notification = React.createClass({
         render: function() {
             return (
-                <a className={cx({
-                    'panel': true,
-                    'panel-default': true,
-                    'notification': true,
-                    'read': this.props.data.read
-                })} href={this.props.data.action}>
-                    <div className="panel-body">
-                        <img className="notification-img img-thumbnail"
-                             src={this.props.data.image} />
-                        <span className="notification-text">
-                            {this.props.data.text}
-                        </span>
-                        <br />
-                        <span className="notification-time">
-                            {this.props.data.time}
-                        </span>
-                    </div>
-                </a>
+                <div className="col-xs-12 col-md-6">
+                    <a className={cx({
+                        'panel': true,
+                        'panel-default': true,
+                        'notification': true,
+                        'read': this.props.data.read
+                    })} href={this.props.data.action}>
+                        <div className="panel-body">
+                            <img className="notification-img img-thumbnail"
+                                 src={this.props.data.image} />
+                            <span className="notification-text">
+                                {this.props.data.text}
+                            </span>
+                            <br />
+                            <span className="notification-time">
+                                {this.props.data.time}
+                            </span>
+                        </div>
+                    </a>
+                </div>
             );
         }
     });
@@ -40,7 +42,9 @@
 
             return (
                 <div className="container notification-list">
-                    {notifications}
+                    <div className="row">
+                        {notifications}
+                    </div>
                 </div>
             );
         }
