@@ -1,0 +1,91 @@
+{% extends "base.jinja" %}
+
+{% block title %}
+    Profile
+{% endblock %}
+
+{% block content %}
+    {% if censor %}
+        <div class="censor-overlay">
+            <div class="censor-button-div">
+                <a
+                    class="btn btn-success btn-lg censor-button"
+                    href={{ return_url }}
+                >
+                    Please login to view profile pages.
+                </a>
+            </div>
+        </div>
+    {% endif %}
+
+    <div id="header">
+        <div id="header-upper-half">
+            <div class="container">
+                <div id="header-upper-half-content">
+                    <div id="username-container">
+                        <h2>{{ profile.username }}</h2>
+                        <div id="firstlastname-container">
+                            {{ profile.full_name }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="header-lower-half">
+            <div class="container">
+                <div id="header-lower-half-content">
+                    <img
+                        {% if not censor %}
+                            src="{{ profile.get_gravatar_url(125) }}"
+                        {% endif %}
+                        alt=""
+                        id ="pic"
+                        class="img-thumbnail
+                            {% if censor %}
+                                pic-censored
+                            {% endif %}
+                        ">
+                        <div id="friend-button-container"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container" id="profile-body">
+        <div class="row">
+            <div class="col-xs-12 col-sm-12 col-md-3">
+                <div class="panel panel-default" id="info-panel">
+                    <ul class="list-group">
+                        <li class="list-group-item">
+                            <ul class="fa-ul">
+                                <li>
+                                    <i class="fa-li fa fa-envelope"></i>
+                                    {{ profile.email }}
+                                </li>
+                                <li>
+                                    {% if profile.phone != '' %}
+                                        <i class="fa-li fa fa-phone"></i>
+                                        {{ profile.phone }}
+                                    {% endif %}
+                                 </li>
+                            </ul>
+                        </li>
+                        {% if profile.bio != '' %}
+                            <li class="list-group-item">
+                                <em>{{ profile.bio }}</em>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </div>
+            </div>
+            <div class="col-xs-12 col-sm-12 col-md-9">
+                <div class="panel panel-default" id="calendar-panel">
+                    <div class="panel-body">
+                        <div id="calendar">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

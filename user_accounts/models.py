@@ -19,8 +19,7 @@ class UserProfile(models.Model):
                                               related_name='incoming_friends')
     phone_regex = RegexValidator(
         regex=r'^\+?\d{10,15}$',
-        message="Phone number must be entered in the format: "
-                "'+999999999'. Up to 15 digits allowed.")
+        message="Phone number must be between 10 to 15 digits.")
     phone = models.CharField(max_length=16, validators=[phone_regex], blank=True)
     bio = models.TextField(max_length=300, blank=True)
 
@@ -28,6 +27,10 @@ class UserProfile(models.Model):
         return self.user.username
 
     # Word of caution: none of these attributes are "settable."
+    @property
+    def username(self):
+        return self.user.username
+
     @property
     def first_name(self):
         return self.user.first_name
@@ -65,8 +68,16 @@ class UserProfile(models.Model):
         return self.outgoing_friends.filter(
             incoming_friendships__accepted=False)
 
-    # Throws IntegrityError if friendship already exists
+    def get_friendship(self, other):
+        return Friendship.objects.get(from_friend=self, to_friend=other)
+
     def add_friend(self, other):
+        """
+        Adds a friend.
+        :param other: The friend to add
+        :return: A tuple consisting of the Friendship and whether or not it was
+        created.
+        """
         # Check if an incoming friendship exists
         try:
             incoming = Friendship.objects.get(
@@ -95,6 +106,12 @@ class UserProfile(models.Model):
         return outgoing, created
 
     def del_friend(self, other):
+        """
+        Deletes a friend, both ways.
+        :param other: The friend to delete
+        :return: A tuple consisting of whether the incoming friendship
+        was deleted, and whether the outgoing friendship was deleted.
+        """
         outgoing_deleted = incoming_deleted = True
 
         # Delete the outgoing
@@ -126,6 +143,7 @@ class Friendship(models.Model):
     to_friend = models.ForeignKey(UserProfile,
                                   related_name='incoming_friendships')
     accepted = models.BooleanField(default=False)
+    favorite = models.BooleanField(default=False)
 
     class Meta:
         unique_together = ('from_friend', 'to_friend')
