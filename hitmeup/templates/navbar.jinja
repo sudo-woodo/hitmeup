@@ -31,6 +31,12 @@
                             {{ user.username }} <span class="caret"></span>
                         </a>
                         <ul class="dropdown-menu dropdown-menu-right" role="menu">
+                            <li>
+                                <a href="{{ url('user_accounts:user_profile', user.username) }}">
+                                    My Profile
+                                </a>
+                            </li>
+                            <li role="presentation" class="divider"></li>
                             <li><a href="{{ url('user_accounts:logout') }}">Logout</a></li>
                         </ul>
                     </li>
