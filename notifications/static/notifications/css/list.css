@@ -33,6 +33,12 @@ body{
     display: inline;
 }
 
+a.panel {
+    display: block;
+    text-decoration: none;
+    color: black;
+}
+
 .panel-default {
     border-color: #BDBDBD;
 }

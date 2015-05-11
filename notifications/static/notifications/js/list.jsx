@@ -4,22 +4,15 @@
     var cx = React.addons.classSet;
 
     var Notification = React.createClass({
-        handleClick: function(e){
-            e.preventDefault();
-
-            // js redirect
-            window.location.href = this.props.data.action;
-        },
-
         render: function() {
             return (
-                <div className={cx({
+                <a className={cx({
                     'panel': true,
                     'panel-default': true,
                     'notification': true,
                     'read': this.props.data.read
-                })}>
-                    <div className="panel-body" onClick={this.handleClick} >
+                })} href={this.props.data.action}>
+                    <div className="panel-body">
                         <img className="notification-img img-thumbnail"
                              src={this.props.data.image} />
                         <span className="notification-text">
@@ -30,7 +23,7 @@
                             {this.props.data.time}
                         </span>
                     </div>
-                </div>
+                </a>
             );
         }
     });
