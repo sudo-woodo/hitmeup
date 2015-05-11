@@ -3,9 +3,9 @@ from django.db.models.signals import post_save
 from django.dispatch.dispatcher import receiver
 from django.utils import timezone
 from django.db import models
-from user_accounts.logic.event_comparison import Interval
-from user_accounts.models import UserProfile
 from django.conf import settings
+from ourcalendar.logic.event_comparison import Interval
+from user_accounts.models import UserProfile
 
 
 class Calendar(models.Model):

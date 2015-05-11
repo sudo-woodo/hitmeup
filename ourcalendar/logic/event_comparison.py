@@ -13,13 +13,17 @@ class Interval:
         :param end: The end time (datetime)
         """
         # An interval can't end before it starts
-        if self.end < self.start:
+        if end < start:
             raise ValueError("Interval ends before it starts")
 
         self.start = start
         self.end = end
 
     # Compares by start time.
+    def __eq__(self, other):
+        return self.start == other.start and self.end == other.end
+    def __ne__(self, other):
+        return not (self == other)
     def __lt__(self, other):
         return self.start < other.start
     def __le__(self, other):
@@ -30,7 +34,8 @@ class Interval:
         return self.start >= other.start
 
     # Serializes the interval for fullcalendar
-    def serialize(self):
+    @property
+    def serialized(self):
         return {
             'start': self.start.strftime(getattr(settings, 'TIME_FMT',
                                                  self.DEFAULT_TIME_FMT)),
@@ -40,8 +45,10 @@ class Interval:
 
     def overlaps(self, other):
         # Returns whether or not two intervals overlap.
-        # i.e. if the intervals are disjoint.
-        return self.end < other.start or self.start > other.end
+        # i.e. if the intervals are not disjoint.
+        return not (
+            self.start > other.end or
+            self.end < other.start)
 
     def join(self, other):
         # Joins two intervals.
