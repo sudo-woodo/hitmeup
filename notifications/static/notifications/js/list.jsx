@@ -31,12 +31,8 @@
     });
 
     var NotificationList = React.createClass({
-        getInitialState: function() {
-            return {notifications: $HMU.notifications};
-        },
-
         render: function() {
-            var notifications = this.state.notifications.map(function(notif) {
+            var notifications = this.props.notifications.map(function(notif) {
                 return <Notification data={notif} />
             });
 
@@ -51,7 +47,7 @@
     });
 
     React.render(
-        <NotificationList />,
+        <NotificationList notifications={$HMU.notifications} />,
         document.getElementById('notification-list-container')
     );
 })(window.$HMU, window.React, window.jQuery, window._);
