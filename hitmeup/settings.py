@@ -50,6 +50,7 @@ INSTALLED_APPS = (
     'dynamic_components',
     'static_pages',
     'user_accounts',
+    'notifications',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -77,6 +78,7 @@ CONTEXT_PROCESSORS = [
 
     # Custom
     'dynamic_components.context_processors.navbar',
+    'notifications.context_processors.notification_count',
 ]
 
 TEMPLATES = [

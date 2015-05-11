@@ -19,42 +19,19 @@
         <div class="collapse navbar-collapse" id="navbar-main">
 
             <ul class="nav navbar-nav">
-                {% for entry in navbar_entries %}
-                    <li class="
-                    {% if entry.active %}
-                        active
-                    {% endif %}
-                    ">
-                        <a href="{{ url(entry.view) }}">
-                            {{ entry.name }}
-                        </a>
-                    </li>
-                {% endfor %}
-
-                <li class="
-                    {% if view == 'user_accounts:friendsList' %}
-                        active
-                    {% endif %}
-                ">
-                <a href="{{ url('user_accounts:friendsList') }}">
-                    <i class="fa fa-users"></i>&nbsp;
-                        My Friends
-                </a>
+                {% include 'dynamic_components/navbar_entries.jinja' %}
             </ul>
 
             <ul class="nav navbar-nav navbar-right">
                 {% if user.is_authenticated() %}
+                    {% include 'notifications/navbar_entry.jinja' %}
+
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
                             {{ user.username }} <span class="caret"></span>
                         </a>
                         <ul class="dropdown-menu dropdown-menu-right" role="menu">
-                            <li>
-                                <a href="{{ url('user_accounts:logout') }}">
-                                    <i class="fa fa-sign-out fa-fw"></i>&nbsp;
-                                        Logout
-                                </a>
-                            </li>
+                            <li><a href="{{ url('user_accounts:logout') }}">Logout</a></li>
                         </ul>
                     </li>
 
