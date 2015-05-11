@@ -19,6 +19,12 @@ class Interval:
         self.start = start
         self.end = end
 
+    def __str__(self):
+        return '[%s, %s]' % (self.start, self.end)
+
+    def __repr__(self):
+        return str(self)
+
     # Compares by start time.
     def __eq__(self, other):
         return self.start == other.start and self.end == other.end
@@ -68,8 +74,12 @@ class Interval:
         :param intervals: The list of intervals to union
         :return: The list of intervals, union-list-ified
         """
+        # If too few intervals, no need to union
+        if len(intervals) <= 1:
+            return intervals
+
         # Sort descending, use as a stack
-        interval_stack = sorted((i.interval for i in intervals), reverse=True)
+        interval_stack = sorted(intervals, reverse=True)
 
         # Set up the return stack
         union_stack = []
@@ -94,7 +104,7 @@ class Interval:
         return union_stack
 
     @classmethod
-    def complement(cls, intervals, start, end):
+    def complement_list(cls, intervals, start, end):
         """
         Returns the complement of a list of intervals, provided a start
         boundary and an end boundary. If start or end occurs within
@@ -105,7 +115,7 @@ class Interval:
         :return: The list of intervals, complemented
         """
         # Sort ascending, use as a queue
-        interval_queue = sorted(i.interval for i in intervals)
+        interval_queue = sorted(intervals)
 
         # Do the bounds check out?
         try:

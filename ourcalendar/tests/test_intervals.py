@@ -11,6 +11,17 @@ class IntervalTestCase(TestCase):
         self.t3 = self.t0 + timezone.timedelta(hours=3)
         self.t4 = self.t0 + timezone.timedelta(hours=4)
 
+        times = [self.t0, self.t1, self.t2, self.t3, self.t4]
+
+        # Generate the ranges
+        for start in range(4):
+            for end in range(4):
+                try:
+                    setattr(self, 't%s_t%s' % (start, end),
+                            Interval(times[start], times[end]))
+                except ValueError:
+                    pass
+
     def test_validation(self):
         # Test if class validation works
         Interval(self.t0, self.t1)
@@ -20,40 +31,46 @@ class IntervalTestCase(TestCase):
             Interval(self.t1, self.t0)
 
     def test_operators(self):
-        t0_t0 = Interval(self.t0, self.t0)
-        t0_t1 = Interval(self.t0, self.t1)
-        t0_t2 = Interval(self.t0, self.t2)
-        t1_t2 = Interval(self.t1, self.t2)
-
-        self.assertEqual(t0_t1, t0_t1)
-        self.assertNotEqual(t0_t0, t1_t2)
-        self.assertLess(t0_t1, t1_t2)
-        self.assertLessEqual(t0_t1, t0_t0)
-        self.assertLessEqual(t0_t1, t1_t2)
-        self.assertGreater(t1_t2, t0_t2)
-        self.assertGreaterEqual(t1_t2, t1_t2)
-        self.assertGreaterEqual(t1_t2, t0_t2)
+        self.assertEqual(self.t0_t1, self.t0_t1)
+        self.assertNotEqual(self.t0_t0, self.t1_t2)
+        self.assertLess(self.t0_t1, self.t1_t2)
+        self.assertLessEqual(self.t0_t1, self.t0_t0)
+        self.assertLessEqual(self.t0_t1, self.t1_t2)
+        self.assertGreater(self.t1_t2, self.t0_t2)
+        self.assertGreaterEqual(self.t1_t2, self.t1_t2)
+        self.assertGreaterEqual(self.t1_t2, self.t0_t2)
 
     def test_overlaps(self):
-        t0_t1 = Interval(self.t0, self.t1)
-        t0_t2 = Interval(self.t0, self.t2)
-        t2_t3 = Interval(self.t2, self.t3)
-        t1_t3 = Interval(self.t1, self.t3)
-
-        self.assertFalse(t0_t1.overlaps(t2_t3))
-        self.assertFalse(t2_t3.overlaps(t0_t1))
-        self.assertTrue(t0_t2.overlaps(t2_t3))
-        self.assertTrue(t2_t3.overlaps(t0_t2))
-        self.assertTrue(t0_t2.overlaps(t1_t3))
-        self.assertTrue(t1_t3.overlaps(t0_t2))
+        self.assertFalse(self.t0_t1.overlaps(self.t2_t3))
+        self.assertFalse(self.t2_t3.overlaps(self.t0_t1))
+        self.assertTrue(self.t0_t2.overlaps(self.t2_t3))
+        self.assertTrue(self.t2_t3.overlaps(self.t0_t2))
+        self.assertTrue(self.t0_t2.overlaps(self.t1_t3))
+        self.assertTrue(self.t1_t3.overlaps(self.t0_t2))
 
     def test_join(self):
-        t0_t1 = Interval(self.t0, self.t1)
-        t0_t2 = Interval(self.t0, self.t2)
-        t2_t3 = Interval(self.t2, self.t3)
-        t0_t3 = Interval(self.t0, self.t3)
-        t1_t3 = Interval(self.t1, self.t3)
+        self.assertEqual(self.t0_t1.join(self.t0_t2), self.t0_t2)
+        self.assertEqual(self.t0_t2.join(self.t2_t3), self.t0_t3)
+        self.assertEqual(self.t0_t2.join(self.t1_t3), self.t0_t3)
 
-        self.assertEqual(t0_t1.join(t0_t2), t0_t2)
-        self.assertEqual(t0_t2.join(t2_t3), t0_t3)
-        self.assertEqual(t0_t2.join(t1_t3), t0_t3)
+    def test_union(self):
+        # Normal case
+        self.assertItemsEqual(Interval.union_list([
+            self.t0_t1, self.t1_t2, self.t2_t3,
+        ]), [
+            self.t0_t3,
+        ])
+
+        # Single interval case
+        self.assertItemsEqual(Interval.union_list([
+            self.t0_t3,
+        ]), [
+            self.t0_t3,
+        ])
+
+        # FIXME
+        self.assertItemsEqual(Interval.union_list([
+            self.t0_t1, self.t2_t3,
+        ]), [
+            self.t0_t1, self.t2_t3,
+        ])
