@@ -43,7 +43,6 @@ class ApiTestCase(TestCase):
     def test_list(self):
         # Tests if list api works
         response = self.client.get(self.FRIENDS_LIST_URL)
-        print self.FRIENDS_LIST_URL, json.loads(response.content)
         data = json.loads(response.content)['objects']
 
         # Initially, user should have no friends :(
