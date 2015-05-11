@@ -14,8 +14,8 @@ class IntervalTestCase(TestCase):
         times = [self.t0, self.t1, self.t2, self.t3, self.t4]
 
         # Generate the ranges
-        for start in range(4):
-            for end in range(4):
+        for start in range(5):
+            for end in range(5):
                 try:
                     setattr(self, 't%s_t%s' % (start, end),
                             Interval(times[start], times[end]))
@@ -54,23 +54,40 @@ class IntervalTestCase(TestCase):
         self.assertEqual(self.t0_t2.join(self.t1_t3), self.t0_t3)
 
     def test_union(self):
-        # Normal case
-        self.assertItemsEqual(Interval.union_list([
+        # No intervals
+        self.assertEqual(Interval.flatten_intervals([]), [])
+
+        # Single interval
+        self.assertEqual(Interval.flatten_intervals([
+            self.t0_t3,
+        ]), [
+            self.t0_t3,
+        ])
+
+        # Non-unionable intervals
+        self.assertEqual(Interval.flatten_intervals([
+            self.t0_t1, self.t2_t3,
+        ]), [
+            self.t0_t1, self.t2_t3,
+        ])
+
+        # Unionable intervals
+        self.assertEqual(Interval.flatten_intervals([
+            self.t0_t1, self.t1_t2, self.t3_t4,
+        ]), [
+            self.t0_t2, self.t3_t4,
+        ])
+
+        # Union to single interval
+        self.assertEqual(Interval.flatten_intervals([
             self.t0_t1, self.t1_t2, self.t2_t3,
         ]), [
             self.t0_t3,
         ])
 
-        # Single interval case
-        self.assertItemsEqual(Interval.union_list([
-            self.t0_t3,
+        # Identical intervals
+        self.assertEqual(Interval.flatten_intervals([
+            self.t0_t1, self.t0_t1,
         ]), [
-            self.t0_t3,
-        ])
-
-        # FIXME
-        self.assertItemsEqual(Interval.union_list([
-            self.t0_t1, self.t2_t3,
-        ]), [
-            self.t0_t1, self.t2_t3,
+            self.t0_t1,
         ])

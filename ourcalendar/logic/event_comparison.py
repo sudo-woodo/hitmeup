@@ -68,11 +68,11 @@ class Interval:
         return Interval(start, end)
 
     @classmethod
-    def union_list(cls, intervals):
+    def flatten_intervals(cls, intervals):
         """
-        Returns the union list of a list of intervals.
-        :param intervals: The list of intervals to union
-        :return: The list of intervals, union-list-ified
+        Flattens a list of intervals - it joins any intervals that overlap.
+        :param intervals: The list of intervals to flatten
+        :return: The list of intervals, flattened
         """
         # If too few intervals, no need to union
         if len(intervals) <= 1:
