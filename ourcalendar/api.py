@@ -23,19 +23,22 @@ class EventResource(DjangoResource):
         return self.request.user.is_authenticated()
 
     # GET /api/events/
+    # Gets a list of events that belong to the current user.
     def list(self):
         return Event.objects.filter(calendar__owner=self.request.user.profile)
 
     # GET /api/events/<pk>/
+    # Gets detail on a specific event.
     def detail(self, pk):
         return Event.objects.get(id=pk, calendar__owner=self.request.user.profile)
 
     # PUT /api/events/<pk>/
+    # Updates some fields on a specified event.
     def update(self, pk):
         event = Event.objects.get(id=pk, calendar__owner=self.request.user.profile)
         errors = defaultdict(list)
 
-        #TODO BE ABLE TO CHANGE CALENDAR OF EVENT
+        # TODO BE ABLE TO CHANGE CALENDAR OF EVENT
 
         if 'start' in self.data:
             try:
@@ -65,8 +68,9 @@ class EventResource(DjangoResource):
         return event
 
     # POST /api/events/
+    # Create an event for the given user.
     def create(self):
-        #Error check calendar, title, start, end
+        # Error check calendar, title, start, end
         errors = defaultdict(list)
 
         start = None  # set a default for each, so PyCharm doesn't complain
@@ -91,13 +95,13 @@ class EventResource(DjangoResource):
         if 'title' not in self.data:
             errors['title'].append("Title not provided")
         else:
-            title=escape(self.data['title'])
+            title = escape(self.data['title'])
 
-        calendarTitle = None
+        calendar_title = None
         if 'calendar' not in self.data:
             errors['calendar'].append("Calendar not provided")
         else:
-            calendarTitle=escape(self.data['calendar'])
+            calendar_title = escape(self.data['calendar'])
 
         if errors:
             raise BadRequest(str(errors))
@@ -106,17 +110,16 @@ class EventResource(DjangoResource):
             start=start,
             end=end,
             title=title,
-            # Get a calendar whose owner profile is linked to the user
-            # sending the POST request
             calendar=Calendar.objects.get(
                 owner=self.request.user.profile,
-                title=calendarTitle),
-            description=escape(self.data.get('description','')),
-            location=escape(self.data.get('location',''))
+                title=calendar_title),
+            description=escape(self.data.get('description', '')),
+            location=escape(self.data.get('location', ''))
         )
 
         return event
 
     # DELETE /api/events/<pk>/
+    # Deletes a specified event.
     def delete(self, pk):
         Event.objects.get(id=pk, calendar__owner=self.request.user.profile).delete()
