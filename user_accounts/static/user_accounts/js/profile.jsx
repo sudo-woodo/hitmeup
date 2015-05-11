@@ -15,8 +15,8 @@
     PROPS[STATE.CLEAN] = function(thiz) {
         return {
             status: STATE.CLEAN,
-            iconClasses: 'fa fa-user-plus',
-            button: 'friend-button add-friend-button',
+            iconClasses: 'fa-user-plus',
+            buttonClasses: 'friend-button add-friend-button',
             text: ' Add Friend',
             clickHandler: function (e) {
                 e.preventDefault();
@@ -41,8 +41,8 @@
     PROPS[STATE.PENDING] = function(thiz) {
         return {
             status: STATE.PENDING,
-            iconClasses: 'fa fa-remove',
-            button: 'friend-button pending-button',
+            iconClasses: 'fa-remove',
+            buttonClasses: 'friend-button pending-button',
             text: null,
             clickHandler: function (e) {
                 e.preventDefault();
@@ -64,8 +64,8 @@
     PROPS[STATE.IS_FRIENDS] = function(thiz) {
         return {
             status: STATE.IS_FRIENDS,
-            iconClasses: 'fa fa-user-times',
-            button: 'friend-button remove-button',
+            iconClasses: 'fa-user-times',
+            buttonClasses: 'friend-button remove-button',
             text: ' Remove as friend',
             clickHandler: function(e) {
                 e.preventDefault();
@@ -85,18 +85,23 @@
     };
 
     var ActionButton = React.createClass({
-         render: function() {
-             return (
-                 <div
-                     id="friend-button"
-                     className={this.props.button}
-                     onClick={this.props.clickHandler}
-                 >
-                     <i className={this.props.iconClasses}></i>
-                         {this.props.children}
-                 </div>
-             )
-         }
+        render: function() {
+            return (
+                <div
+                    className={cx({
+                        'action-button ': true
+                        }) + this.props.buttonClasses
+                    }
+                    onClick={this.props.clickHandler}
+                >
+                    <i className={cx({
+                        'fa ': true
+                        }) + this.props.iconClasses
+                    }></i>
+                    {this.props.children}
+                </div>
+            )
+        }
     });
 
     var FriendButton = React.createClass({
@@ -119,19 +124,20 @@
         render: function() {
             var pendingMessage = null;
             if (this.state.status == STATE.PENDING) {
-                pendingMessage =
+                pendingMessage = (
                     <div className="pending-message">
                         <i className="fa fa-pulse fa-spinner"></i>
                         <span id="pending-text">
                             Pending
                         </span>
                     </div>
+                );
             }
             return (
                 <div className="friend-button-set">
                     <ActionButton
                         key={this.state.button}
-                        button={this.state.button}
+                        buttonClasses={this.state.button}
                         iconClasses={this.state.iconClasses}
                         clickHandler={this.state.clickHandler}
                         status={this.state.status}

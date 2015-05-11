@@ -86,7 +86,7 @@ body {
     bottom: 0;
 }
 
-#friend-button {
+.action-button {
     cursor: pointer;
     color: #616161;
     border-left: solid #bdbdbd 1px;
@@ -99,7 +99,7 @@ body {
     animation-duration: .9s;*/
 }
 
-#friend-button:hover {
+.action-button:hover {
     background-color: #e0e0e0;
 }
 

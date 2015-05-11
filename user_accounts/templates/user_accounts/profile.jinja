@@ -8,13 +8,12 @@
     {% if censor %}
         <div class="censor-overlay">
             <div class="censor-button-div">
-                <button
-                    type="button"
+                <a
                     class="btn btn-success btn-lg censor-button"
-                    onClick="window.location.href = '{{ return_url }}'"
+                    href={{ return_url }}
                 >
                     Please login to view profile pages.
-                </button>
+                </a>
             </div>
         </div>
     {% endif %}

@@ -52,24 +52,23 @@ class SignUpExtended(View):
             # if the form is valid, update userprofile model
             user = request.user
             updatedFields = []
-            if bool(dict):
-                for key, val in signup_extended_form.cleaned_data.iteritems():
-                    if val != u'':
-                        if key == 'first_name' or key == 'last_name':
-                            updatedFields.append(key)
-                            setattr(
-                                user,
-                                key,
-                                val
-                            )
+            for key, val in signup_extended_form.cleaned_data.iteritems():
+                if val != u'':
+                    if key == 'first_name' or key == 'last_name':
+                        updatedFields.append(key)
+                        setattr(
+                            user,
+                            key,
+                            val
+                        )
 
-                        else:
-                            updatedFields.append(key)
-                            setattr(
-                                user.profile,
-                                key,
-                                val
-                            )
+                    else:
+                        updatedFields.append(key)
+                        setattr(
+                            user.profile,
+                            key,
+                            val
+                        )
             user.save()
             user.profile.save()
             return HttpResponseRedirect(reverse('static_pages:home'))
@@ -149,8 +148,6 @@ class UserProfile(View):
     def get(self, request, username):
         context = {
             'ext_css': [
-                'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/'
-                '4.3.0/css/font-awesome.min.css',
                 'http://fullcalendar.io/js/fullcalendar-2.3.1/'
                 'fullcalendar.min.css'
             ],
