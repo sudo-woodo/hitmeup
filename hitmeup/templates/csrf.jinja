@@ -1,0 +1,15 @@
+{% extends 'base.jinja' %}
+
+{% block title %}
+    Error - 404
+{% endblock %}
+
+{% block content %}
+    <div class="jumbotron">
+        <div class="container">
+            <h1>Verification Error</h1>
+            <h2>Please submit your form again.</h2>
+            <h4>(Reason: {{ reason }})</h4>
+        </div>
+    </div>
+{% endblock %}

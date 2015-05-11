@@ -19,8 +19,7 @@ class UserProfile(models.Model):
                                               related_name='incoming_friends')
     phone_regex = RegexValidator(
         regex=r'^\+?\d{10,15}$',
-        message="Phone number must be entered in the format: "
-                "'+999999999'. Up to 15 digits allowed.")
+        message="Phone number must be between 10 to 15 digits.")
     phone = models.CharField(max_length=16, validators=[phone_regex], blank=True)
     bio = models.TextField(max_length=300, blank=True)
 

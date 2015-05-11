@@ -178,4 +178,4 @@ SCAFFOLDAPP_FILES = [
 
 # Authentication
 LOGIN_URL = '/login/'
-CSRF_FAILURE_VIEW = '' #TODO
+CSRF_FAILURE_VIEW = 'hitmeup.views.csrf_failure'

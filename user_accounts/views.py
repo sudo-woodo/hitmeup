@@ -147,9 +147,48 @@ def logout(request):
 
 class UserProfile(View):
     def get(self, request, username):
+        context = {
+            'ext_css': [
+                'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/'
+                '4.3.0/css/font-awesome.min.css',
+                'http://fullcalendar.io/js/fullcalendar-2.3.1/'
+                'fullcalendar.min.css'
+            ],
+            'css': [
+                'user_accounts/css/profile.css'
+            ],
+            'ext_js': [
+                'http://cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/'
+                'moment.min.js',
+                'http://fullcalendar.io/js/fullcalendar-2.3.1/'
+                'fullcalendar.min.js',
+                'https://cdnjs.cloudflare.com/ajax/libs/react/0.13.2/'
+                'react-with-addons.min.js',
+                'https://cdnjs.cloudflare.com/ajax/libs/react/0.13.0/'
+                'JSXTransformer.js',
+            ],
+            'js': [
+                'user_accounts/js/testcalendar.js'
+            ],
+            'jsx': [
+                'user_accounts/js/profile.jsx'
+            ],
+            'js_data': {}
+        }
+
         if request.user.is_authenticated():
+            state = {
+                'CLEAN': 0,
+                'PENDING': 1,
+                'IS_FRIENDS': 2
+            }
+
             try:
                 profile = User.objects.get(username=username).profile
+                context['profile'] = profile
+                context['js_data']['showFriendButton'] = request.user.id != profile.pk
+                context['js_data']['profileId'] = profile.pk
+                context['censor'] = False
 
                 try:
                     friendship = Friendship.objects.get(
@@ -157,53 +196,16 @@ class UserProfile(View):
                         to_friend=profile
                     )
                     if friendship.accepted:
-                        status = 2
+                        context['js_data']['status'] = state['IS_FRIENDS']
                     else:
-                        status = 1
+                        context['js_data']['status'] = state['PENDING']
                 except Friendship.DoesNotExist:
-                    status = 0
+                    context['js_data']['status'] = state['CLEAN']
 
-                return render(request, 'user_accounts/profile.jinja', {
-                    'ext_css': [
-                        'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/'
-                        '4.3.0/css/font-awesome.min.css',
-                        'http://fullcalendar.io/js/fullcalendar-2.3.1/'
-                        'fullcalendar.min.css'
-                    ],
-                    'css': [
-                        'user_accounts/css/profile.css'
-                    ],
-                    'ext_js': [
-                        'http://cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/'
-                        'moment.min.js',
-                        'http://fullcalendar.io/js/fullcalendar-2.3.1/'
-                        'fullcalendar.min.js',
-                        #'https://cdnjs.cloudflare.com/ajax/libs/react/0.13.2/'
-                        #'react-with-addons.min.js',
-                        'https://fb.me/react-with-addons-0.13.3.js',
-                        'https://cdnjs.cloudflare.com/ajax/libs/react/0.13.0/'
-                        'JSXTransformer.js',
-                    ],
-                    'js': [
-                        'user_accounts/js/testcalendar.js'
-                    ],
-                    'jsx': [
-                        'user_accounts/js/profile.jsx'
-                    ],
-                    'js_data': {
-                        'showFriendButton': request.user.id != profile.pk,
-                        'profileId': profile.pk,
-                        'status': status
-                    },
-                    'profile': profile,
-                    'curr_user': request.user.username,
-                    'censor': False
-                })
             except User.DoesNotExist:
                 raise Http404("User does not exist")
-
         else:
-            profile = {
+            context['profile'] = {
                 'username': username,
                 'full_name': '***** *********',
                 'email': '*******@*****.***',
@@ -218,38 +220,8 @@ class UserProfile(View):
                 args={username}
             )
 
-            return render(request, 'user_accounts/profile.jinja', {
-                'ext_css': [
-                    'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/'
-                    '4.3.0/css/font-awesome.min.css',
-                    'http://fullcalendar.io/js/fullcalendar-2.3.1/'
-                    'fullcalendar.min.css'
-                ],
-                'css': [
-                    'user_accounts/css/profile.css'
-                ],
-                'ext_js': [
-                    'http://cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/'
-                    'moment.min.js',
-                    'http://fullcalendar.io/js/fullcalendar-2.3.1/'
-                    'fullcalendar.min.js',
-                    #'https://cdnjs.cloudflare.com/ajax/libs/react/0.13.2/'
-                    #'react-with-addons.min.js',
-                    'https://fb.me/react-with-addons-0.13.3.js',
-                    'https://cdnjs.cloudflare.com/ajax/libs/react/0.13.0/'
-                    'JSXTransformer.js',
-                ],
-                'js': [
-                    'user_accounts/js/testcalendar.js'
-                ],
-                'jsx': [
-                    'user_accounts/js/profile.jsx'
-                ],
-                'js_data': {
-                    'showFriendButton': False
-                },
-                'profile': profile,
-                'curr_user': request.user.username,
-                'censor': True,
-                'return_url': return_url
-            })
+            context['return_url'] = return_url
+            context['js_data']['showFriendButton'] = False
+            context['censor'] = True
+
+        return render(request, 'user_accounts/profile.jinja', context)

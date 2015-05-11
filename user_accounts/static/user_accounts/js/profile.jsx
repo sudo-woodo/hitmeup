@@ -1,6 +1,7 @@
 (function($HMU, React, $, _) {
     'use strict';
 
+    var cx = React.addons.classSet;
     var ReactCSSTransitionGroup = React.addons.CSSTransitionGroup;
 
     var STATE = {
@@ -13,9 +14,10 @@
 
     PROPS[STATE.CLEAN] = function(thiz) {
         return {
+            status: STATE.CLEAN,
             icon: 'fa fa-user-plus',
             button: 'friend-button add-friend-button',
-            text: 'Add Friend',
+            text: ' Add Friend',
             clickHandler: function (e) {
                 e.preventDefault();
                 $.ajax({
@@ -38,13 +40,14 @@
 
     PROPS[STATE.PENDING] = function(thiz) {
         return {
-            icon: 'fa fa-pulse fa-spinner',
+            status: STATE.PENDING,
+            icon: 'fa fa-remove',
             button: 'friend-button pending-button',
-            text: 'Friend request sent (click to cancel)',
+            text: null,
             clickHandler: function (e) {
                 e.preventDefault();
                 $.ajax({
-                    url: '/api/friends/' + $HMU.profileId,
+                    url: '/api/friends/' + $HMU.profileId + '/',
                     method: 'DELETE',
                     success: function () {
                         thiz.setState(PROPS[STATE.CLEAN](thiz));
@@ -60,13 +63,14 @@
 
     PROPS[STATE.IS_FRIENDS] = function(thiz) {
         return {
+            status: STATE.IS_FRIENDS,
             icon: 'fa fa-user-times',
             button: 'friend-button remove-button',
-            text: 'Remove as friend',
+            text: ' Remove as friend',
             clickHandler: function(e) {
                 e.preventDefault();
                 $.ajax({
-                    url: '/api/friends/' + $HMU.profileId,
+                    url: '/api/friends/' + $HMU.profileId + '/',
                     method: 'DELETE',
                     success: function() {
                         thiz.setState(PROPS[STATE.CLEAN](thiz));
@@ -84,7 +88,6 @@
          render: function() {
              return (
                  <div
-                     key={this.props.button}
                      id="friend-button"
                      className={this.props.button}
                      onClick={this.props.clickHandler}
@@ -94,7 +97,7 @@
                          {this.props.children}
                      </span>
                  </div>
-             );
+             )
          }
     });
 
@@ -116,16 +119,31 @@
         },
 
         render: function() {
+            var pendingMessage = null;
+            if (this.state.status == STATE.PENDING) {
+                pendingMessage =
+                    <div className="pending-message">
+                        <i className="fa fa-spin fa-spinner"></i>
+                        <span id="pending-text">
+                            Pending
+                        </span>
+                    </div>
+            }
             return (
-                <ActionButton
-                    button={this.state.button}
-                    icon={this.state.icon}
-                    clickHandler={this.state.clickHandler}
-                >
-                    {this.state.text}
-                </ActionButton>
+                <div>
+                    <ActionButton
+                        key={this.state.button}
+                        button={this.state.button}
+                        icon={this.state.icon}
+                        clickHandler={this.state.clickHandler}
+                        status={this.state.status}
+                    >
+                        {this.state.text}
+                    </ActionButton>
+                    { pendingMessage }
+                </div>
             );
-         }
+        }
     });
 
     if($HMU.showFriendButton) {

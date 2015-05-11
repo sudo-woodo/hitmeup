@@ -1,18 +1,18 @@
 from django.contrib.auth.models import User
 from django import forms
-from django.core.validators import RegexValidator
+from user_accounts.models import UserProfile
 
 
 class UserForm(forms.Form):
     username = forms.CharField(widget=forms.TextInput(attrs={
         'class': 'form-control',
-        'placeholder': 'Enter Username',
+        'placeholder': 'Username',
         'id': 'user',
         'name': 'Username'
     }))
     password = forms.CharField(widget=forms.PasswordInput(attrs={
         'class': 'form-control',
-        'placeholder': 'Enter Password',
+        'placeholder': 'Password',
         'id': 'password',
         'name': 'Password'
     }))
@@ -21,7 +21,7 @@ class UserForm(forms.Form):
 class SignupForm(forms.ModelForm, UserForm):
     email = forms.CharField(widget=forms.EmailInput(attrs={
         'class': 'form-control',
-        'placeholder': 'Enter Email',
+        'placeholder': 'Email',
         'id': 'email',
         'name': 'email'
     }))
@@ -32,21 +32,16 @@ class SignupForm(forms.ModelForm, UserForm):
 
 
 class SignUpExtendedForm(forms.Form):
-
-    phone_regex = RegexValidator(
-        regex=r'^\+?\d{10,15}$',
-        message="Phone number must be between 10-15 digits")
-
     first_name = forms.CharField(required=False, widget=forms.TextInput(attrs={
         'class': 'form-control',
-        'placeholder': 'Enter Your First Name',
+        'placeholder': 'First name',
         'id': 'firstname',
         'name': 'firstname'
     }))
 
     last_name = forms.CharField(required=False, widget=forms.TextInput(attrs={
         'class': 'form-control',
-        'placeholder': 'Enter Your Last Name',
+        'placeholder': 'Last name',
         'id': 'lastname',
         'name': 'lastname'
     }))
@@ -54,11 +49,11 @@ class SignUpExtendedForm(forms.Form):
     phone = forms.CharField(
         required=False,
         max_length=15,
-        validators=[phone_regex],
+        validators=[UserProfile.phone_regex],
         widget=forms.TextInput(
             attrs={
                 'class': 'form-control',
-                'placeholder': 'Enter Your Phone Number',
+                'placeholder': 'Phone number',
                 'id': 'phone',
                 'name': 'phone'
             }
@@ -71,7 +66,7 @@ class SignUpExtendedForm(forms.Form):
         widget=forms.Textarea(
             attrs={
                 'class': 'form-control',
-                'placeholder': 'Write about a quick bio about yourself :^)',
+                'placeholder': 'Write a short bio about yourself.',
                 'id': 'bio',
                 'name': 'bio'
             }
