@@ -40,6 +40,12 @@ class Notification(models.Model):
             'read': self.read,
         }
 
+    def refresh(self):
+        # Marks as unread and updates the time
+        self.read = False
+        self.time = timezone.now()
+        self.save()
+
 
 #TODO: refactor signals to signals.py in hitmeup app
 
@@ -47,19 +53,26 @@ IMAGE_SIZE = 125
 
 @receiver(request_friend, sender=UserProfile)
 def send_friend_request_notification(sender, from_friend, to_friend, **kwargs):
-    Notification.objects.create(
+    # Don't duplicate notifications
+    notification, created = Notification.objects.get_or_create(
         recipient=to_friend,
         image_url=from_friend.get_gravatar_url(IMAGE_SIZE),
         action_url='/', #TODO
         text=Notification.NOTIFICATION_STRINGS[Notification.REQUEST_FRIEND] % from_friend,
     )
 
+    if not created:
+        notification.refresh()
+
 @receiver(accept_friend, sender=UserProfile)
 def send_friend_accept_notification(sender, from_friend, to_friend, **kwargs):
-    Notification.objects.create(
+    # Don't duplicate notifications
+    notification, created = Notification.objects.get_or_create(
         recipient=to_friend,
         image_url=from_friend.get_gravatar_url(IMAGE_SIZE),
         action_url='/', #TODO
         text=Notification.NOTIFICATION_STRINGS[Notification.ACCEPT_FRIEND] % from_friend,
     )
 
+    if not created:
+        notification.refresh()

@@ -6,33 +6,6 @@ body{
     margin-top: 20px;
 }
 
-.notification {
-    word-wrap: break-word;
-}
-
-.notification.read {
-    opacity: .5;
-}
-
-.notification-img {
-    width: 125px;
-    height: 125px;
-    float: left;
-    margin-right: 10px;
-}
-
-.notification-text {
-    font-size: 1.7em;
-}
-
-.notification-time {
-    font-size: 1em;
-}
-
-.body-container {
-    display: inline;
-}
-
 a.panel {
     display: block;
     text-decoration: none;
@@ -51,3 +24,28 @@ a.panel {
     background-color: #E5E5E5;
     cursor:pointer;
 }
+
+.notification {
+    word-wrap: break-word;
+}
+
+.notification.read {
+    opacity: .5;
+}
+
+.notification-img {
+    width: 125px;
+    height: 125px;
+    float: left;
+    margin-right: 10px;
+    border: solid darkgray 1px;
+}
+
+.notification-text {
+    font-size: 1.7em;
+}
+
+.notification-time {
+    font-size: 1em;
+}
+
