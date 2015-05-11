@@ -112,8 +112,7 @@ class FriendsApiTestCase(TestCase):
 
     def setUp(self):
         # Create lots of dummy users
-        self.other_users = [UserFactory(password=get_random_string())
-                            for _ in range(self.NUM_USERS)]
+        self.other_users = [UserFactory() for _ in range(self.NUM_USERS)]
 
         # Pick one user for main testing
         password = get_random_string()
@@ -231,21 +230,11 @@ class FriendsApiTestCase(TestCase):
         self.assertIn('error', data)
 
     def test_create_detail(self):
-        """
-        TODO: this test fails, need to figure out why :(
-        """
-        return
-
         # Add another random user as friend
         other = self.other_users[0]
-        print "self:", self.profile.pk, "other:", other.profile.pk
-        print "path:", self.FRIENDS_GET_DETAIL_URL(other.profile.pk)
-        response = self.client.post(self.FRIENDS_GET_DETAIL_URL(
-            other.profile.pk))
+        response = self.client.post(self.GET_DETAIL_URL(other.id),
+                                    content_type='text/json')
         data = json.loads(response.content)
-
-        # Correct data is returned
-        print "data:", data, "code:", response.status_code
 
         self.assertFalse(data['accepted'])
         self.assertEqual(data['id'], other.profile.pk)
@@ -256,21 +245,14 @@ class FriendsApiTestCase(TestCase):
             from_friend=self.profile, to_friend=other.profile).accepted)
 
     def test_create_detail_add_yourself(self):
-        """
-        TODO: this test fails, need to figure out why :(
-        """
-        return
-
         # Add self as friend (such loneliness)
-        response = self.client.post(self.FRIENDS_GET_DETAIL_URL(
-            self.profile.pk), {})
+        response = self.client.post(self.GET_DETAIL_URL(self.profile.pk),
+                                    content_type='text/json')
         data = json.loads(response.content)
 
         # Ensure 500 is raised and error is returned
         self.assertEqual(response.status_code, 500)
         self.assertIn('error', data)
-
-        print ">> data:", data, "code:", response.status_code
 
     def test_update(self):
         # Make friendship (self -> random user)
