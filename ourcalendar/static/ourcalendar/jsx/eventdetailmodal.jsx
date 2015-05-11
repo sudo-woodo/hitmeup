@@ -1,5 +1,16 @@
 var EventDetailModal = React.createClass({
 
+    handleEdit: function()  {
+        //On edit, need to render a new form with all of the previous inputs already in place.
+    },
+
+    handleDelete: function()  {
+        //On delete, need to render a confirmation popup and then of course delete the event.
+
+        $('#eventDetailModal').modal('hide');
+    },
+
+
     //dummy get initial state for the time being.
     getInitialState: function()  {
         return  {};
@@ -20,6 +31,10 @@ var EventDetailModal = React.createClass({
                                 <li><i className="fa-li fa fa-map-marker"></i><span id="location"></span></li>
                                 <li><i className="fa-li fa fa-calendar"></i><span id="description"></span></li>
                             </ul>
+                        </div>
+                        <div className="modal-footer">
+                            <button type="button" className="btn btn-danger" onClick={this.handleDelete}>Delete Event</button>
+                            <button type="button" className="btn btn-primary" onClick={this.handleEdit} >Edit Event</button>
                         </div>
                     </div>
                 </div>

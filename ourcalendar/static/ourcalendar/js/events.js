@@ -29,8 +29,22 @@
                     eventDetailModal.find('#start-time').text(moment(event.start).format('LL'));
                     eventDetailModal.find('#end-time').text('');
                 }
-                eventDetailModal.find('#location').text(event.location);
-                eventDetailModal.find('#description').text(event.description);
+
+                //If there is no location, simply show "No Location"
+                if ( event.location.length == 0 )  {
+                    eventDetailModal.find('#location').text("No Location");
+                }
+                else {
+                    eventDetailModal.find('#location').text(event.location);
+                }
+
+                //If there is no description, simply show "No Description"
+                if ( event.description.length == 0 ) {
+                    eventDetailModal.find('#description').text("No Description");
+                }
+                else {
+                    eventDetailModal.find('#description').text(event.description);
+                }
                 eventDetailModal.modal('show');
             },
             events: events,
