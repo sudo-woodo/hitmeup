@@ -70,7 +70,10 @@ class Interval:
     @classmethod
     def flatten_intervals(cls, intervals):
         """
-        Flattens a list of intervals - it joins any intervals that overlap.
+        Sorts and flattens a list of intervals:
+        i.e. it joins any intervals that overlap,
+        turning it into a disjoint list.
+
         :param intervals: The list of intervals to flatten
         :return: The list of intervals, flattened
         """
@@ -107,24 +110,40 @@ class Interval:
     def complement_list(cls, intervals, start, end):
         """
         Returns the complement of a list of intervals, provided a start
-        boundary and an end boundary. If start or end occurs within
-        the complement range, just use the complement range.
+        boundary and an end boundary.
+
+        Raises a ValueError if start or end is contained in the interval list.
+
         :param intervals: The list of intervals to complement
         :param start: The start boundary of the complement
         :param end: The end boundary of the complement
         :return: The list of intervals, complemented
         """
         # Sort ascending, use as a queue
-        interval_queue = sorted(intervals)
+        interval_queue = cls.flatten_intervals(intervals)
 
         # Do the bounds check out?
+        if start > interval_queue[0].start:
+            raise ValueError("Start contained in interval list")
+        if end < interval_queue[-1].end:
+            raise ValueError("End contained in interval list")
 
-        """
         # Set up the return stack
         complement_stack = []
-        complement_stack.append(Interval(start_bound, interval_queue[0].start))
+        complement_stack.append(Interval(start, interval_queue[0].start))
 
+        # While queue not empty
         while interval_queue:
-            # Push Interval(cur.end, next.start)
-            pass
-        """
+            # Push Interval(cur_end, next_start)
+            cur_end = interval_queue.pop(0).end
+
+            try:
+                next_start = interval_queue[0].start
+
+            # We've reached the end
+            except IndexError:
+                next_start = end
+
+            complement_stack.append(Interval(cur_end, next_start))
+
+        return complement_stack
