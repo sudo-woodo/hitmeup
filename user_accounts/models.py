@@ -69,8 +69,16 @@ class UserProfile(models.Model):
         return self.outgoing_friends.filter(
             incoming_friendships__accepted=False)
 
-    # Throws IntegrityError if friendship already exists
+    def get_friendship(self, other):
+        return Friendship.objects.get(from_friend=self, to_friend=other)
+
     def add_friend(self, other):
+        """
+        Adds a friend.
+        :param other: The friend to add
+        :return: A tuple consisting of the Friendship and whether or not it was
+        created.
+        """
         # Check if an incoming friendship exists
         try:
             incoming = Friendship.objects.get(
@@ -99,6 +107,12 @@ class UserProfile(models.Model):
         return outgoing, created
 
     def del_friend(self, other):
+        """
+        Deletes a friend, both ways.
+        :param other: The friend to delete
+        :return: A tuple consisting of whether the incoming friendship
+        was deleted, and whether the outgoing friendship was deleted.
+        """
         outgoing_deleted = incoming_deleted = True
 
         # Delete the outgoing

@@ -119,8 +119,7 @@ class FriendResource(DjangoResource):
     # If no friendship from current user -> 'pk', responds with 404.
     def detail(self, pk):
         other = UserProfile.objects.get(user__id=pk)
-        friendship = Friendship.objects.get(from_friend=self.request.user.profile,
-                                            to_friend=other)
+        friendship = self.request.user.profile.get_friendship(other)
         other.accepted = friendship.accepted
         other.favorite = friendship.favorite
         return other
@@ -129,9 +128,9 @@ class FriendResource(DjangoResource):
     # Adds a friendship of current user -> 'pk'
     def create_detail(self, pk):
         other = UserProfile.objects.get(user__id=pk)
-        friendship = self.request.user.profile.add_friend(other)
-        other.accepted = friendship[0].accepted
-        other.favorite = friendship[0].favorite
+        friendship, created = self.request.user.profile.add_friend(other)
+        other.accepted = friendship.accepted
+        other.favorite = friendship.favorite
         return other
 
     # PUT /api/friends/<pk>/
@@ -139,8 +138,7 @@ class FriendResource(DjangoResource):
     # data: {'favorite': boolean}
     def update(self, pk):
         other = UserProfile.objects.get(user__id=pk)
-        friendship = Friendship.objects.get(from_friend=self.request.user.profile,
-                                            to_friend=other)
+        friendship = self.request.user.profile.get_friendship(other)
 
         if not friendship.accepted:
             raise Unauthorized("Can't set favorite status of a user "
