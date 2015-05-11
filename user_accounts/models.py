@@ -60,6 +60,16 @@ class UserProfile(models.Model):
         return self.outgoing_friends.filter(
             incoming_friendships__accepted=False)
 
+    @property
+    def basic_serialized(self):
+        return {
+            'username': self.username,
+            'first_name': self.first_name,
+            'last_name': self.last_name,
+            'email': self.email,
+            'phone': self.phone,
+        }
+
     # Throws IntegrityError if friendship already exists
     def add_friend(self, other):
         # Check if an incoming friendship exists

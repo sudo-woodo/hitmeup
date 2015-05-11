@@ -1,27 +1,10 @@
-(function(React, $, _) {
+(function($HMU, React, $, _) {
     'use strict';
 
     var cx = React.addons.classSet;
 
+
     var FriendsList = React.createClass({
-        getFriends: function() {
-            $.ajax({
-                url: '/api/friends/',
-                method: 'GET',
-                success: function (data) {
-                    return data;
-                },
-                error: function () {
-                    alert('Something went wrong with getting your friends ' +
-                    'request, please try again.');
-                }
-            });
-        },
-
-        getInitialState: function() {
-            friends: this.getFriends()
-        },
-
         render: function() {
             var friendNodes = this.props.friends.map(function (friend) {
                 return (
@@ -63,38 +46,32 @@
         render: function() {
             var infoItems = [
                 {
-                    icon:
-                        this.props.friend.fav ? 'fa-heart' : 'fa-heart-o'
+                    icon: this.props.friend.fav ? 'fa-heart' : 'fa-heart-o'
                     ,
-                    info:
-                        <span className="info">
-                            <strong>{this.props.friend.name}</strong>
-                        </span>
+                    info: <span className="info">
+                        <strong>{this.props.friend.name}</strong>
+                    </span>
                 },
                 {
-                    icon:
-                        this.props.friend.free ? 'fa-check-circle' : 'fa-clock-o'
+                    icon: this.props.friend.free ? 'fa-check-circle' : 'fa-clock-o'
                     ,
-                    info:
-                        <span className={'info ' +
-                            (this.props.friend.free ? 'free' : 'busy')
+                    info: <span className={'info ' +
+                    (this.props.friend.free ? 'free' : 'busy')
                         }>
                             {this.props.friend.free ? 'Free' : 'Busy'}
-                        </span>
+                    </span>
                 },
                 {
                     icon: 'fa-envelope',
-                    info:
-                        <span className="info">
+                    info: <span className="info">
                             {this.props.friend.email}
-                        </span>
+                    </span>
                 },
                 {
                     icon: 'fa-phone',
-                    info:
-                        <span className="info">
+                    info: <span className="info">
                             {this.props.friend.phone}
-                        </span>
+                    </span>
                 },
                 {
                     icon: 'fa-calendar-o',
@@ -104,12 +81,13 @@
                 }
             ];
 
-            var infoNodes = infoItems.map(function(item) {
+            var infoNodes = infoItems.map(function (item) {
                 return (
                     <FriendInfo icon={item.icon}>
                         {item.info}
                     </FriendInfo>
                 );
+            });
 
             return (
                 <div className="friend-box">
@@ -151,9 +129,9 @@
     });
 
     React.render(
-        <FriendsList/>,
+        <FriendsList friends={$HMU.friends}/>,
         document.getElementById('friends-list-container')
     );
-})(window.React, window.jQuery, window._);
+})(window.$HMU, window.React, window.jQuery, window._);
 
 

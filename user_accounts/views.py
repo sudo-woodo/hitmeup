@@ -101,11 +101,16 @@ def friends_list(request):
         'ext_js': [
             #'https://cdnjs.cloudflare.com/ajax/libs/react/0.13.2/'
             #'react-with-addons.min.js',
-            'https://fb.me/react-with-addons-0.13.3.js'
+            'https://fb.me/react-with-addons-0.13.3.js',
             'https://cdnjs.cloudflare.com/ajax/libs/react/0.13.0/'
             'JSXTransformer.js',
         ],
         'jsx': [
             'user_accounts/js/friends_list.jsx',
         ],
+        'js_data': {
+            'friends': [f.basic_serialized for f in
+                            request.user.profile.friends]
+        },
+
     })
