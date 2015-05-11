@@ -46,14 +46,15 @@
         render: function() {
             var infoItems = [
                 {
-                    icon: this.props.friend.fav ? 'fa-heart' : 'fa-heart-o'
+                    icon: this.props.friend.fav ? 'fa-heart' : 'fa-heart-o' +
+                        ' fav-icon'
                     ,
                     info: <span className="info">
-                        <strong>{this.props.friend.name}</strong>
+                        <strong>{this.props.friend.username}</strong>
                     </span>
                 },
                 {
-                    icon: this.props.friend.free ? 'fa-check-circle' : 'fa-clock-o'
+                    icon: this.props.friend.free ? 'fa-check-circle free-icon' : 'fa-clock-o busy-icon'
                     ,
                     info: <span className={'info ' +
                     (this.props.friend.free ? 'free' : 'busy')
@@ -70,13 +71,13 @@
                 {
                     icon: 'fa-phone',
                     info: <span className="info">
-                            {this.props.friend.phone}
+                            {this.props.friend.phone || '—'}
                     </span>
                 },
                 {
-                    icon: 'fa-calendar-o',
+                    icon: 'fa-user',
                     info: <a href="" className="calendar-link info">
-                        View my Calendar
+                        View my Profile
                     </a>
                 }
             ];
@@ -122,7 +123,7 @@
                 <img
                     src={ this.props.pic }
                     alt="Picture was not found"
-                    className="profile-pic img-circle"
+                    className="profile-pic img-thumbnail"
                 />
             );
         }

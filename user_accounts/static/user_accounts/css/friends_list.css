@@ -86,14 +86,14 @@ body {
 .calendar-link:hover {
     text-decoration: none;
 }
-.fa-heart, .fa-heart-o {
+.fav-icon {
     color: #ff4081;
 }
 
-.free, .fa-check-circle {
+.free, .free-icon {
     color: #42ED51;
 }
 
-.busy, .fa-clock-o {
+.busy, .busy-icon {
     color: #d50000;
 }
