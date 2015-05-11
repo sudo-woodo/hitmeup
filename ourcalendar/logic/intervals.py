@@ -107,29 +107,27 @@ class Interval:
         return flattened_stack
 
     @classmethod
-    def complement_intervals(cls, intervals, start, end):
+    def complement_intervals(cls, intervals, complement_range):
         """
-        Returns the complement of a list of intervals, provided a start
-        boundary and an end boundary.
+        Returns the complement of a list of intervals, provided an Interval range.
 
-        Raises a ValueError if start or end is contained in the interval list.
+        Raises a ValueError if Interval list is not fully contained in range.
 
         :param intervals: The list of intervals to complement
-        :param start: The start boundary of the complement
-        :param end: The end boundary of the complement
+        :param complement_range: The Interval range over which to complement
         :return: The list of intervals, complemented
         """
         # If no intervals, just return an interval start -> end
         if len(intervals) == 0:
-            return Interval(start, end)
+            return complement_range
 
         # Sort ascending, use as a queue
         interval_queue = cls.flatten_intervals(intervals)
 
         # Do the bounds check out?
-        if start > interval_queue[0].start:
+        if complement_range.start > interval_queue[0].start:
             raise ValueError("Start contained in interval list")
-        if end < interval_queue[-1].end:
+        if complement_range.end < interval_queue[-1].end:
             raise ValueError("End contained in interval list")
 
         # Set up the return stack
@@ -137,7 +135,8 @@ class Interval:
 
         # Only make an interval if nonempty
         try:
-            complement_stack.append(Interval(start, interval_queue[0].start))
+            complement_stack.append(Interval(complement_range.start,
+                                             interval_queue[0].start))
         except ValueError:
             pass
 
@@ -151,7 +150,7 @@ class Interval:
 
             # We've reached the end
             except IndexError:
-                next_start = end
+                next_start = complement_range.end
 
             # Only make an interval if nonempty
             try:

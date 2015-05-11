@@ -5,7 +5,9 @@ from django.core.validators import RegexValidator
 from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch.dispatcher import receiver
+from ourcalendar.logic.intervals import Interval
 from user_accounts.templatetags import gravatar
+from django.utils import timezone
 
 
 request_friend = django.dispatch.Signal(providing_args=["from_friend", "to_friend"])
@@ -46,6 +48,44 @@ class UserProfile(models.Model):
 
     def get_gravatar_url(self, size=80):
         return gravatar.gravatar_url(self.user.email, size)
+
+    # Calendar helpers
+
+    # Intersects your free times with another user's
+    def intersect_free(self, other, complement_range):
+        """
+        Intersects this profile's free times with another profile's.
+
+        :param other: The other profile
+        :param range: The complement range Interval
+        :return: The complemented list of Intervals
+        """
+        # Grab valid events
+        from ourcalendar.models import Event
+
+        self_events = Event.objects.filter(calendar__ownder=self,
+                                           start__gt=complement_range.start,
+                                           end__lt=complement_range.end)
+        other_events = Event.objects.filter(calendar__ownder=other,
+                                            start__gt=complement_range.start,
+                                            end__lt=complement_range.end)
+
+        # Flatten into one list
+        all_events = Interval.flatten_intervals(
+            [e.interval for e in self_events] +
+            [e.interval for e in other_events]
+        )
+
+        # Return the complement
+        return Interval.complement_intervals(all_events, complement_range)
+
+    # Whether or not this user is available right now
+    @property
+    def is_free(self):
+        for event in Event.objects.filter(calendar__owner=self):
+            if event.happens_when(timezone.now()):
+                return False
+        return True
 
     # Friendship helpers
 
@@ -94,12 +134,6 @@ class UserProfile(models.Model):
                                    from_friend=self, to_friend=other)
 
         return outgoing, created
-
-    # Calendar helpers
-
-    # TODO
-    def intersect_free(self, other):
-        pass
 
     def del_friend(self, other):
         outgoing_deleted, incoming_deleted = True

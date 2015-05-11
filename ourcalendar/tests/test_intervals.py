@@ -105,27 +105,27 @@ class IntervalTestCase(TestCase):
     def test_complement(self):
         # Invalid start
         with self.assertRaises(ValueError):
-            Interval.complement_intervals([self.t0_t3], self.t1, self.t4)
+            Interval.complement_intervals([self.t0_t3], Interval(self.t1, self.t4))
 
         # Invalid end
         with self.assertRaises(ValueError):
-            Interval.complement_intervals([self.t1_t4], self.t0, self.t3)
+            Interval.complement_intervals([self.t1_t4], Interval(self.t0, self.t3))
 
         # No intervals
-        self.assertEqual(Interval.complement_intervals([], self.t0, self.t4),
+        self.assertEqual(Interval.complement_intervals([], Interval(self.t0, self.t4)),
             self.t0_t4)
 
         # One interval
         self.assertEqual(Interval.complement_intervals([
             self.t1_t3,
-        ], self.t0, self.t4),[
+        ], Interval(self.t0, self.t4)),[
             self.t0_t1, self.t3_t4
         ])
 
         # Identical intervals
         self.assertEqual(Interval.complement_intervals([
             self.t1_t3, self.t1_t3
-        ], self.t0, self.t4),[
+        ], Interval(self.t0, self.t4)),[
             self.t0_t1, self.t3_t4
         ])
 
@@ -133,18 +133,18 @@ class IntervalTestCase(TestCase):
         # Overlapping intervals
         self.assertEqual(Interval.complement_intervals([
             self.t2_t5, self.t4_t7
-        ], self.t0, self.t9),[
+        ], Interval(self.t0, self.t9)),[
             self.t0_t2, self.t7_t9
         ])
 
         # Disjiont intervals
         self.assertEqual(Interval.complement_intervals([
             self.t2_t4, self.t6_t8
-        ], self.t0, self.t9),[
+        ], Interval(self.t0, self.t9)),[
             self.t0_t2, self.t4_t6, self.t8_t9
         ])
 
         # All intervals
         self.assertEqual(Interval.complement_intervals([
             self.t0_t9,
-        ], self.t0, self.t9),[])
+        ], Interval(self.t0, self.t9)),[])

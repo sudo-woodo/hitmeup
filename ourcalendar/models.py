@@ -63,3 +63,7 @@ class Event(models.Model):
     @property
     def interval(self):
         return Interval(self.start, self.end)
+
+    # Returns whether or not a datetime is in the range of the event
+    def happens_when(self, time):
+        return self.start < time < self.end
