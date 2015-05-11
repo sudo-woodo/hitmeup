@@ -12,9 +12,9 @@ class Interval:
         :param start: The start time (datetime)
         :param end: The end time (datetime)
         """
-        # An interval can't end before it starts
-        if end < start:
-            raise ValueError("Interval ends before it starts")
+        # An interval can't end before it starts or be empty
+        if end <= start:
+            raise ValueError("Interval ends before or when it starts")
 
         self.start = start
         self.end = end
@@ -134,7 +134,12 @@ class Interval:
 
         # Set up the return stack
         complement_stack = []
-        complement_stack.append(Interval(start, interval_queue[0].start))
+
+        # Only make an interval if nonempty
+        try:
+            complement_stack.append(Interval(start, interval_queue[0].start))
+        except ValueError:
+            pass
 
         # While queue not empty
         while interval_queue:
@@ -148,6 +153,10 @@ class Interval:
             except IndexError:
                 next_start = end
 
-            complement_stack.append(Interval(cur_end, next_start))
+            # Only make an interval if nonempty
+            try:
+                complement_stack.append(Interval(cur_end, next_start))
+            except ValueError:
+                pass
 
         return complement_stack

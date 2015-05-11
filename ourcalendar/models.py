@@ -4,7 +4,7 @@ from django.dispatch.dispatcher import receiver
 from django.utils import timezone
 from django.db import models
 from django.conf import settings
-from ourcalendar.logic.event_comparison import Interval
+from ourcalendar.logic.intervals import Interval
 from user_accounts.models import UserProfile
 
 
