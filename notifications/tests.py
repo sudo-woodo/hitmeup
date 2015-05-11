@@ -68,7 +68,8 @@ class SignalTestCase(TestCase):
         self.assertEqual(notif.image_url, self.from_friend.get_gravatar_url(
             IMAGE_SIZE
         ))
-        self.assertEqual(notif.action_url, '/') # TODO UPDATE WHEN AVAILABLE
+        self.assertEqual(notif.action_url, reverse('user_accounts:user_profile',
+                                                   args=(self.from_friend.username,)))
         self.assertEqual(notif.text,
                          Notification.NOTIFICATION_STRINGS[Notification.REQUEST_FRIEND]
                          % self.from_friend)
@@ -85,7 +86,8 @@ class SignalTestCase(TestCase):
         self.assertEqual(notif.image_url, self.from_friend.get_gravatar_url(
             IMAGE_SIZE
         ))
-        self.assertEqual(notif.action_url, '/') # TODO UPDATE WHEN AVAILABLE
+        self.assertEqual(notif.action_url, reverse('user_accounts:user_profile',
+                                                   args=(self.from_friend.username,)))
         self.assertEqual(notif.text,
                          Notification.NOTIFICATION_STRINGS[Notification.ACCEPT_FRIEND]
                          % self.from_friend)
