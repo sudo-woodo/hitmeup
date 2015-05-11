@@ -82,26 +82,26 @@ class Interval:
         interval_stack = sorted(intervals, reverse=True)
 
         # Set up the return stack
-        union_stack = []
-        union_stack.append(interval_stack.pop())
+        flattened_stack = []
+        flattened_stack.append(interval_stack.pop())
 
         # While stack not empty
         while interval_stack:
             # Get the last unioned interval and next un-unioned interval
-            prev = union_stack.pop()
+            prev = flattened_stack.pop()
             next = interval_stack.pop()
 
             # Attempt to join
             try:
-                union_stack.append(prev.join(next))
+                flattened_stack.append(prev.join(next))
 
-            # If we can't join, just push both to the union_stack
+            # If we can't join, just push both to the flattened_stack
             except ValueError:
-                union_stack.append(prev)
-                union_stack.append(next)
+                flattened_stack.append(prev)
+                flattened_stack.append(next)
 
         # We done, boyz
-        return union_stack
+        return flattened_stack
 
     @classmethod
     def complement_list(cls, intervals, start, end):
@@ -118,26 +118,8 @@ class Interval:
         interval_queue = sorted(intervals)
 
         # Do the bounds check out?
-        try:
-            # Check the start bound
-            if start < interval_queue[0].end:
-                start_bound = start
-            else:
-                # Toss the first interval
-                start_bound = interval_queue.pop(0).end
 
-            # Check the end bound
-            if end > interval_queue[-1].start:
-                end_bound = end
-            else:
-                # Toss the last interval
-                end_bound = interval_queue.pop().start
-
-        # If we can't get anything, we have an empty interval list.
-        # Complement of nothing start -> end.
-        except IndexError:
-            return Interval(start, end)
-
+        """
         # Set up the return stack
         complement_stack = []
         complement_stack.append(Interval(start_bound, interval_queue[0].start))
@@ -145,3 +127,4 @@ class Interval:
         while interval_queue:
             # Push Interval(cur.end, next.start)
             pass
+        """
