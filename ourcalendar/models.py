@@ -60,10 +60,12 @@ class Event(models.Model):
         }
 
     # Returns an Interval for comparison operations
+    # TODO TEST ME
     @property
     def interval(self):
         return Interval(self.start, self.end)
 
     # Returns whether or not a datetime is in the range of the event
+    # TODO TEST ME
     def happens_when(self, time):
         return self.start < time < self.end
