@@ -19,7 +19,7 @@ class Interval:
         self.start = start
         self.end = end
 
-    def __str__(self):
+    def __unicode__(self):
         return '[%s, %s]' % (self.start, self.end)
 
     def __repr__(self):
