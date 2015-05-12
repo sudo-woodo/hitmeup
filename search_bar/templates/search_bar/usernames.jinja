@@ -1,9 +1,10 @@
-{#{% extends "base.jinja" %}#}
+{% extends "base.jinja" %}
 {% block title %}
     Usernames
 {% endblock %}
 {% block content %}
-    {% for username in usernames %}
+    {{ username }}
+    {% for name in username %}
         <h1>{{ username.username }}</h1>
         <p>
             {{ username.username }}

@@ -17,16 +17,18 @@ from .forms import UserSearchForm
 
 class Search(View):
     def post(self, request):
-        print "sup"
         print request.POST
         form = UserSearchForm(data=request.POST)
         print form
-        username = form.search()
+        user = form.search() # form.search() returns a SearchQuerySet
+        print user
+
+        # best_match() will get the SearchResult, then you get the user and the username
+        username = user.best_match().object.get_username()
         print username
-        return render_to_response('search_bar/usernames.jinja', {'username': username})
+        return render(request, 'search_bar/usernames.jinja', {'username': username})
 
 def SearchBase(request):
-    print "looka da flick a da wrist"
     #results = search #nonworking example
     #return render(request, 'search_bar/search.jinja', {'search': results})
     return render(request, 'search_bar/search.jinja')
