@@ -5,7 +5,7 @@ var EventDetailModal = React.createClass({
     },
 
     handleDelete: function()  {
-        //On delete, need to render a confirmation popup and then of course delete the event.
+        //On delete, need to render a confirmation popup (not sure if necessary yet) and then delete the event.
 
         $('#eventDetailModal').modal('hide');
     },
@@ -33,7 +33,9 @@ var EventDetailModal = React.createClass({
                             </ul>
                         </div>
                         <div className="modal-footer">
-                            <button type="button" className="btn btn-danger" onClick={this.handleDelete}>Delete Event</button>
+                            <div className="pull-left">
+                                <button type="button" className="btn btn-danger" onClick={this.handleDelete}>Delete Event</button>
+                            </div>
                             <button type="button" className="btn btn-primary" onClick={this.handleEdit} >Edit Event</button>
                         </div>
                     </div>
