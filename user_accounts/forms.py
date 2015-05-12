@@ -1,4 +1,5 @@
 from django.contrib.auth.models import User
+from django.core.validators import RegexValidator
 from django import forms
 
 
@@ -30,32 +31,69 @@ class SignupForm(forms.ModelForm, UserForm):
         fields = ('email', 'username', 'password')
 
 
-class PasswordForm(forms.Form):
-    current_password = forms.CharField(widget=forms.PasswordInput(attrs={
+class EditForm(forms.Form):
+    first_name = forms.CharField(required=False, widget=forms.TextInput(attrs={
+        'class': 'form-control',
+        'placeholder': 'Enter Your First Name',
+        'id': 'first_name',
+        'name': 'First Name'
+    }))
+
+    last_name = forms.CharField(required=False, widget=forms.TextInput(attrs={
+        'class': 'form-control',
+        'placeholder': 'Enter Your Last Name',
+        'id': 'last_name',
+        'name': 'Last Name'
+    }))
+
+    current_password = forms.CharField(required=False, widget=forms.PasswordInput(attrs={
         'class': 'form-control',
         'placeholder': 'Enter Current Password',
         'id': 'current_password',
         'name': 'Current Password'
     }))
 
-    new_password = forms.CharField(widget=forms.PasswordInput(attrs={
+    new_password = forms.CharField(required=False, widget=forms.PasswordInput(attrs={
         'class': 'form-control',
         'placeholder': 'Enter New Password',
         'id': 'new_password',
         'name': 'New Password'
     }))
 
-
-class EmailForm(forms.Form):
-    email = forms.CharField(widget=forms.EmailInput(attrs={
+    email = forms.CharField(required=False, widget=forms.EmailInput(attrs={
         'class': 'form-control',
         'placeholder': 'Enter Email',
         'id': 'email',
         'name': 'Email'
     }))
 
+    bio = forms.CharField(
+        required=False,
+        max_length=300,
+        widget=forms.Textarea(
+            attrs={
+                'class': 'form-control',
+                'placeholder': 'Write about a quick bio about yourself :^)',
+                'id': 'bio',
+                'name': 'Bio'
+            }
+        )
+    )
 
-class EditForm(forms.ModelForm, PasswordForm, EmailForm):
-    class Meta:
-        model = User
-        fields = ('current_password', 'new_password', 'email')
+    phone_regex = RegexValidator(
+        regex=r'^\+?\d{10,15}$',
+        message="Phone number must be between 10-15 digits")
+
+    phone = forms.CharField(
+        required=False,
+        max_length=15,
+        validators=[phone_regex],
+        widget=forms.TextInput(
+            attrs={
+                'class': 'form-control',
+                'placeholder': 'Enter Your Phone Number',
+                'id': 'phone',
+                'name': 'Phone'
+            }
+        )
+    )
