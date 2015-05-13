@@ -1,22 +1,19 @@
 from django.test import TestCase
 from django.utils import timezone
-from ourcalendar.models import Calendar, Event
-from util.factories import UserProfileFactory
+from util.factories import CalendarFactory, EventFactory
 
 
 class CalendarTestCase(TestCase):
 
     def setUp(self):
-        self.profile = UserProfileFactory()
-        self.calendar = Calendar.objects.get(owner=self.profile)
+        self.calendar = CalendarFactory()
+        self.profile = self.calendar.owner
 
     def test_default(self):
         # Ensure default calendar exists when user profile is created
         self.assertIsNotNone(self.calendar)
 
         # Test the default values of the calendar are correct
-        self.assertEqual(self.calendar.title, 'Default')
-        self.assertEqual(self.calendar.color, '#267F00')
         self.assertEqual(self.calendar.owner, self.profile)
         self.assertEqual(self.calendar.privacy, 0)
         self.assertEqual(str(self.calendar),
@@ -32,7 +29,7 @@ class CalendarTestCase(TestCase):
         }
 
         # Create the calendar with the given data
-        calendar = Calendar.objects.create(
+        calendar = CalendarFactory(
             owner=data['owner'],
             title=data['title'],
             color=data['color'],
@@ -47,8 +44,8 @@ class CalendarTestCase(TestCase):
 class EventTestCase(TestCase):
 
     def setUp(self):
-        self.profile = UserProfileFactory()
-        self.calendar = Calendar.objects.get(owner=self.profile)
+        self.calendar = CalendarFactory()
+        self.profile = self.calendar.owner
 
     def test_create(self):
         # Valid data for an event
@@ -65,7 +62,7 @@ class EventTestCase(TestCase):
         }
 
         # Create the event
-        event = Event.objects.create(
+        event = EventFactory(
             calendar=data['calendar'],
             title=data['title'],
             start=data['start'],
@@ -94,3 +91,9 @@ class EventTestCase(TestCase):
                 pass
             else:
                 self.assertEqual(getattr(event, field), serialized_data[field])
+
+        # Test unicode representation
+        self.assertEqual(
+            "%s -> %s -> %s" % (event.calendar.owner, event.calendar, event.title),
+            unicode(event)
+        )

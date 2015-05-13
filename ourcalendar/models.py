@@ -23,7 +23,7 @@ class Calendar(models.Model):
 
 
 @receiver(post_save, sender=UserProfile)
-def create_user_profile(sender, instance, created, **kwargs):
+def create_calendar(sender, instance, created, **kwargs):
     if created:
         Calendar.objects.create(owner=instance, title='Default', color='#267F00')
 

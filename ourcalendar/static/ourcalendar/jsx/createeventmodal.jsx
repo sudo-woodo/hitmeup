@@ -105,7 +105,6 @@ var EventModal = React.createClass({
             description: '',
             location: '',
             errors: []
-
         };
     },
 
