@@ -19,9 +19,7 @@ class Search(View):
     def post(self, request):
         print request.POST
         form = UserSearchForm(data=request.POST)
-        print form
         user = form.search() # form.search() returns a SearchQuerySet
-        print user
 
         # best_match() will get the SearchResult, then you get the user and the username
         username = user.best_match().object.get_username()
@@ -29,6 +27,4 @@ class Search(View):
         return render(request, 'search_bar/usernames.jinja', {'username': username})
 
 def SearchBase(request):
-    #results = search #nonworking example
-    #return render(request, 'search_bar/search.jinja', {'search': results})
     return render(request, 'search_bar/search.jinja')
