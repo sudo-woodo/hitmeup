@@ -59,9 +59,9 @@
                 $('#start-picker').data("DateTimePicker").date(start);
                 $('#end-picker').data("DateTimePicker").date(end);
                 reactor.setState(reactor.getInitialState());
-                console.log( "hi" );
-                console.log( reactor.state );
                 $("#create-event-modal").modal('show');
+                console.log("I bet no one will read this pull request.");
+                console.log("Prize to whoever finds this");
             },
             forceEventDuration: true
         })

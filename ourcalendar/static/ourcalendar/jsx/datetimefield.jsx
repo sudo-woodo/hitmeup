@@ -3,29 +3,24 @@
 var DateTimeField = React.createClass({
 
     componentDidMount: function() {
-        $('#start-picker').datetimepicker();
-        $('#end-picker').datetimepicker();
+        var start_picker = $('#start-picker');
+        var end_picker = $('#end-picker');
+
+        start_picker.datetimepicker();
+        end_picker.datetimepicker();
 
         // Linking start, end datetime pickers
-        $("#start-picker").on("dp.change", function (e) {
+        start_picker.on("dp.change", function (e) {
             if (e.date)
                 $('#end-picker').data("DateTimePicker").minDate(e.date);
             else
                 $('#end-picker').data("DateTimePicker").minDate(false);
         });
-        $("#end-picker").on("dp.change", function (e) {
+        end_picker.on("dp.change", function (e) {
             if (e.date)
                 $('#start-picker').data("DateTimePicker").maxDate(e.date);
             else
                 $('#start-picker').data("DateTimePicker").maxDate(false);
-        });
-
-        // Reset min, max dates when event creation modal is dismissed
-        $('#create-event-modal').on('hidden.bs.modal', function (e) {
-            $('#start-picker').data("DateTimePicker").maxDate(false);
-            $('#end-picker').data("DateTimePicker").minDate(false);
-            $('#event-form')[0].reset();
-            $('#calendar').fullCalendar('unselect');
         });
     },
 

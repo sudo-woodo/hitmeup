@@ -96,6 +96,17 @@ var EventModal = React.createClass({
         }
     },
 
+    componentDidMount: function()  {
+        // Reset min, max dates when event creation modal is dismissed
+        $('#create-event-modal').on('hidden.bs.modal', function (e) {
+            $('#start-picker').data("DateTimePicker").maxDate(false);
+            $('#end-picker').data("DateTimePicker").minDate(false);
+            $('#event-form')[0].reset();
+            $('#calendar').fullCalendar('unselect');
+        });
+    },
+
+
     //Initialize all of the states.
     getInitialState: function()  {
         return {
