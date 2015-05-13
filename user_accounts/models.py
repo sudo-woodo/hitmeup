@@ -81,6 +81,8 @@ class UserProfile(models.Model):
     # TODO TEST ME
     @property
     def is_free(self):
+        from ourcalendar.models import Event
+
         for event in Event.objects.filter(calendar__owner=self):
             if event.happens_when(timezone.now()):
                 return False
