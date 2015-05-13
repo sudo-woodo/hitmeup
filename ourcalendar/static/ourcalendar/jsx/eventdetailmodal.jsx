@@ -46,7 +46,7 @@ var EventDetailModal = React.createClass({
 });
 
 //Renders the event detail modal.
-var reactor = React.render(
+var detailReactor = React.render(
     <EventDetailModal />,
     document.getElementById('event-detail-modal-container')
 );
