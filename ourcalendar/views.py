@@ -27,11 +27,12 @@ def calendar(request):
         ],
         'jsx': [
             'ourcalendar/jsx/datetimefield.jsx',
+            'ourcalendar/jsx/inputform.jsx',    #Will be form used for editing and creating events.
             'ourcalendar/jsx/createeventmodal.jsx',
             'ourcalendar/jsx/eventdetailmodal.jsx'
         ],
         'js_data': {
-            'calendars': [e.serialize() for e in request.user.profile.calendars.get(title='Default').events.all()],
+            'events': [e.serialize() for e in request.user.profile.calendars.get(title='Default').events.all()],
         },
     })
 

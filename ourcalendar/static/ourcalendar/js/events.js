@@ -1,7 +1,5 @@
 (function($, $HMU) {
-    var events = $.map($HMU.calendars, function(c) {
-        return c;
-    });
+    var events = $HMU.events;
 
     $(document).ready(function() {
 
