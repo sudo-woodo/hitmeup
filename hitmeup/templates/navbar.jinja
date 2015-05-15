@@ -32,6 +32,8 @@
                 {% endfor %}
             </ul>
 
+          {%  include ['search_bar/search.jinja', 'search_bar/usernames.jinja'] %}
+
             <ul class="nav navbar-nav navbar-right">
                 {% if user.is_authenticated() %}
                     <li class="dropdown">
