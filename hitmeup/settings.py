@@ -172,3 +172,16 @@ SCAFFOLDAPP_FILES = [
 
 # Authentication
 LOGIN_URL = '/login/'
+
+# Email setuo
+EMAIL_HOST = 'mail.optonline.net'
+EMAIL_HOST_USER = 'aarong4743'
+EMAIL_HOST_PASSWORD = 'triple3'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = False
+
+#EMAIL_BACKEND = 'django.core.mail.backends.dummy.EmailBackend'
+
+# SMS Setup
+#SENDSMS_BACKEND = 'myapp.mysmsbackend.SmsBackend'
+SENDSMS_BACKEND = 'sendsms.backends.console.SmsBackend'
