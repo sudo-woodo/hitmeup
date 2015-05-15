@@ -19,7 +19,7 @@ class Calendar(models.Model):
     def __unicode__(self):
         return "%s -> %s" % (self.owner, self.title)
 
-
+# TODO here to refactor to signals.py
 @receiver(post_save, sender=UserProfile)
 def create_calendar(sender, instance, created, **kwargs):
     if created:

@@ -11,3 +11,7 @@
 .fa-ul {
     margin-bottom: 0px;
 }
+
+#desc-loc-container {
+    word-wrap: break-word;
+}

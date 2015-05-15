@@ -1,4 +1,4 @@
-//Error messages when user does not input all required fields.
+// Error messages when user does not input all required fields.
 var EventModalError = React.createClass({
     render: function()  {
         return (
@@ -7,39 +7,41 @@ var EventModalError = React.createClass({
     }
 });
 
-//Event modal allows for creation of events.  Is shown whenever a user clicks
-//a day.  Collects all of the necessary information.
+// Event modal allows for creation of events.  Is shown whenever a user clicks
+// a day.  Collects all of the necessary information.
 var EventModal = React.createClass({
 
-    //handle submission of event
+    // Handle submission of event
     handleSubmit: function(data) {
         data.preventDefault();
         var postData = {
-            title: React.findDOMNode(this.refs.title).value.trim(),
-            start: React.findDOMNode(this.refs.datetime.refs.start).value.trim(),
-            end: React.findDOMNode(this.refs.datetime.refs.end).value.trim(),
-            location: React.findDOMNode(this.refs.location).value.trim(),
-            description: React.findDOMNode(this.refs.description).value.trim(),
-            calendar: 'Default'      //Necessary for ajax request
+            title: React.findDOMNode(this.refs.inputForm.refs.title).value.trim(),
+            start: React.findDOMNode(this.refs.inputForm.refs.datetime.refs.start).value.trim(),
+            end: React.findDOMNode(this.refs.inputForm.refs.datetime.refs.end).value.trim(),
+            location: React.findDOMNode(this.refs.inputForm.refs.location).value.trim(),
+            description: React.findDOMNode(this.refs.inputForm.refs.description).value.trim(),
+            calendar: 'Default'      // Necessary for AJAX request
         };
 
         // Figure out way to send POST data to server.
         console.log('SUBMIT with data:');
         console.log(postData);
 
-        //Error checking to ensure user put in required fields.
+        // Error checking to ensure user put in required fields.
         var arr = [];
         if (postData.end.length === 0 )  {
             arr.unshift('End time is required.');
-            this.refs.datetime.refs.end.getDOMNode().focus();
+            this.refs.inputForm.refs.datetime.refs.end.getDOMNode().focus();
         }
+
         if (postData.start.length === 0 )  {
             arr.unshift('Start time is required.');
-            this.refs.datetime.refs.start.getDOMNode().focus();
+            this.refs.inputForm.refs.datetime.refs.start.getDOMNode().focus();
         }
+
         if (postData.title.length === 0 ) {
             arr.unshift('Title is required.');
-            this.refs.title.getDOMNode().focus();
+            this.refs.inputForm.refs.title.getDOMNode().focus();
         }
 
         if (arr.length > 0 )  {
@@ -48,10 +50,10 @@ var EventModal = React.createClass({
             });
         }
         else {
-
             var startMoment = moment(postData.start);
             var endMoment = moment(postData.end);
 
+            // TODO remove support for allDay events.
             if ( endMoment.diff(startMoment, 'days' ) == 1 &&
                  startMoment.hour() == 0 && endMoment.hour() == 0 &&
                  startMoment.minute() == 0 && endMoment.minute() == 0 )  {
@@ -59,11 +61,11 @@ var EventModal = React.createClass({
                 postData.allDay = true;
             }
 
-            //Format the dates to send the ajax request
+            // Format the dates to send the ajax request
             postData.start = moment(postData.start).format('YYYY-MM-DD HH:mm');
             postData.end = moment(postData.end).format('YYYY-MM-DD HH:mm');
 
-            //ajax request goes here. Fix this url and function.
+            // AJAX request goes here.
             $.ajax({
                 url: '/api/events/',
                 type: "POST",
@@ -78,15 +80,6 @@ var EventModal = React.createClass({
                 }
             });
 
-            //Reset the states upon submission.
-            this.setState({
-                title: '',
-                start: '',
-                end: '',
-                description: '',
-                location: '',
-                errors: []
-            });
             $('#create-event-modal').modal('hide');
             if (postData.location.length === 0)
                 postData.location = 'No location';
@@ -106,29 +99,18 @@ var EventModal = React.createClass({
         });
     },
 
-
-    //Initialize all of the states.
+    // Initialize all of the states. These are separate from inputForm.  Do they still need
+    // to be reset like this?  What can be done differently?
     getInitialState: function()  {
+
+        // Reset the error box.
         return {
-            title: '',
-            start: '',
-            end: '',
-            description: '',
-            location: '',
             errors: []
         };
     },
 
-    handleInput: function()  {
-        this.setState({
-            title: this.refs.title.getDOMNode().value,
-            description: this.refs.description.getDOMNode().value,
-            location: this.refs.location.getDOMNode().value
-        });
-    },
-
     render: function()  {
-        //Contains necessary error information to display to user.
+        // Contains necessary error information to display to user.
         var errorBox = this.state.errors.map(function(error) {
            return (
                <EventModalError>
@@ -137,8 +119,8 @@ var EventModal = React.createClass({
            );
         });
 
-        //Responsible for rendering the event modal which consists of a form containing input fields,
-        //and date time pickers for start and end dates.
+        // Responsible for rendering the event modal which consists of a form containing input fields,
+        // and date time pickers for start and end dates.
         return (
             <div id="create-event-modal" className="modal fade">
                 <div className="modal-dialog">
@@ -152,11 +134,8 @@ var EventModal = React.createClass({
                                 {errorBox}
                             </div>
                             <form id="event-form" onSubmit={this.handleSubmit}>
-                                <p><input type="text" maxLength="200" className="form-control" placeholder="Title" value={this.state.title} ref="title" onChange={this.handleInput} /></p>
-                                <p><DateTimeField ref="datetime" /></p>
-                                <p><input type="text" maxLength="200" className="form-control" placeholder="Location" value={this.state.location} ref="location" onChange={this.handleInput} /></p>
-                                <p><textArea maxLength="600" className="form-control" placeholder="Description" value={this.state.description} ref="description" onChange={this.handleInput} /></p>
-                                <button type="submit" className="btn btn-primary pull-right" id="submit">Save changes</button>
+                                <InputForm ref="inputForm" />
+                                <button type="submit" className="btn btn-primary pull-right" id="submit">Save Changes</button>
                             </form>
                         </div>
                     </div>
@@ -166,7 +145,7 @@ var EventModal = React.createClass({
     }
 });
 
-//Renders the event modal.
+// Renders the event modal.
 var reactor = React.render(
     <EventModal />,
     document.getElementById('create-event-modal-container')

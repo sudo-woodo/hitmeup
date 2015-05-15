@@ -3,10 +3,11 @@
 var DateTimeField = React.createClass({
 
     componentDidMount: function() {
-        var start_picker = $('#start-picker');
-        var end_picker = $('#end-picker');
-
+        var start_picker = $(this.refs.startpicker.getDOMNode());
         start_picker.datetimepicker();
+        var end_picker = $(this.refs.endpicker.getDOMNode());
+
+        //start_picker.datetimepicker();
         end_picker.datetimepicker();
 
         // Linking start, end datetime pickers
@@ -29,7 +30,7 @@ var DateTimeField = React.createClass({
        return (
             <div>
                 <div className="form-group">
-                    <div className='input-group date' id='start-picker'>
+                    <div className='input-group date' ref="startpicker" id='start-picker'>
                         <input type='text' ref="start" className="form-control" placeholder="Start time" />
                             <span className="input-group-addon">
                             <span className="glyphicon glyphicon-calendar"></span>
@@ -37,7 +38,7 @@ var DateTimeField = React.createClass({
                     </div>
                 </div>
                 <div className="form-group">
-                    <div className='input-group date' id='end-picker'>
+                    <div className='input-group date' ref="endpicker" id='end-picker'>
                         <input type='text' ref="end" className="form-control" placeholder="End time" />
                         <span className="input-group-addon">
                             <span className="glyphicon glyphicon-calendar"></span>
