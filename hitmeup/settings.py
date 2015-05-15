@@ -43,12 +43,14 @@ INSTALLED_APPS = (
 
     # Vendor
     'django_jinja',
+    'restless',
 
     # Custom
     'hitmeup',
     'dynamic_components',
     'static_pages',
     'user_accounts',
+    'notifications',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -76,6 +78,7 @@ CONTEXT_PROCESSORS = [
 
     # Custom
     'dynamic_components.context_processors.navbar',
+    'notifications.context_processors.notification_count',
 ]
 
 TEMPLATES = [
@@ -148,11 +151,13 @@ STATIC_ROOT = 'staticroot'
 
 STATIC_URL = '/static/'
 
+
 # Navigation
 
 from navigation import entries
 
 NAVBAR_ENTRIES = entries
+
 
 # Scaffold command
 
@@ -170,10 +175,12 @@ SCAFFOLDAPP_FILES = [
     (os.path.join('{app}', 'urls.py'), "describes {app}'s routes"),
 ]
 
+
 # Authentication
 LOGIN_URL = '/login/'
+CSRF_FAILURE_VIEW = 'hitmeup.views.csrf_failure'
 
-# Email setuo
+# Emails
 EMAIL_HOST = 'mail.optonline.net'
 EMAIL_HOST_USER = 'aarong4743'
 EMAIL_HOST_PASSWORD = 'triple3'

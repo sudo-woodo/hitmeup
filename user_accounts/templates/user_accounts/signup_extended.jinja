@@ -1,14 +1,18 @@
 {% extends "base.jinja" %}
 
 {% block title %}
-    Signup
+    SignupExtended
 {% endblock %}
 
 {% block content %}
     <div class="container">
-        <h1>Sign Up for HitMeUp!</h1>
+        <h1>Tell us more about yourself.</h1>
+        <p>
+            Don't worry, this is optional. You can change this information
+            at anytime in your Edit Profile page.
+        </p>
 
-        {% for field in signup_form %}
+        {% for field in signup_extended_form %}
             {% if field.errors %}
                 {% for error in field.errors %}
                     <div class="form-error alert alert-danger alert-dismissible" role="alert">
@@ -21,19 +25,18 @@
             {% endif %}
         {% endfor %}
 
-        <form id="signup_form" method="post" action="{{ url('user_accounts:signup') }}"
-              enctype="multipart/form-data">
-            
+        <form id="signup_extended_form" method="post" enctype="multipart/form-data">
+
             {% csrf_token %}
 
-            {% for field in signup_form %}
+            {% for field in signup_extended_form %}
                 <div class="form-group">
                     {{ field }}
                 </div>
             {% endfor %}
 
             <button type="submit" name="submit" class="btn btn-default">
-                Sign Up
+                Let's go!
             </button>
         </form>
     </div>
