@@ -1,3 +1,4 @@
+from django.core.urlresolvers import reverse
 import django.dispatch
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
@@ -49,6 +50,10 @@ class UserProfile(models.Model):
 
     def get_gravatar_url(self, size=80):
         return gravatar.gravatar_url(self.user.email, size)
+
+    @property
+    def profile_url(self):
+        return reverse('user_accounts:user_profile', args=(self.username,))
 
     @property
     def friends(self):
