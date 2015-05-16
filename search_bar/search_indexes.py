@@ -1,5 +1,3 @@
-__author__ = 'goodoldbob'
-
 from haystack import indexes
 # from hitmeup.models import Something
 from django.contrib.auth.models import User

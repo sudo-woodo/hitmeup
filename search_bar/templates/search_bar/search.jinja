@@ -1,17 +1,8 @@
-{#{% extends "base.jinja" #}
-{% block title %}
-Search
-{% endblock %}
+
 {% block content %}
     <form id="search_form" method="post" action="{{ url('search_bar:search') }}" >
         {% csrf_token %}
         <input type="text" name="q">
         <button type="submit">Search</button>
     </form>
-
-{#    {% for result in page.object_list %}#}
-{#       <p>{{ result.object.name }}</p>#}
-{#       <p>{{ result.object.body }}</p>#}
-{#    {% endfor %}#}
-{##}
 {% endblock %}
