@@ -1,9 +1,9 @@
 from django.contrib.auth import authenticate, login
-from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import logout_then_login
 from django.core.urlresolvers import reverse
 from django.http.response import HttpResponseRedirect
 from django.shortcuts import render
+from django.utils.html import escape
 from django.views.generic import View
 from user_accounts.forms import UserForm, SignupForm
 
@@ -48,10 +48,12 @@ class LoginView(View):
             user = authenticate(username=login_form.cleaned_data['username'],
                                 password=login_form.cleaned_data['password'])
             if user:
-                # if the user is active, log them in and redirect to home
+                # If the user is active, log them in and redirect to next
+                # destination if specified; if not, redirect to home
                 if user.is_active:
                     login(request, user)
-                    return HttpResponseRedirect(reverse('static_pages:home'))
+                    destination = request.GET.get('next', '/')
+                    return HttpResponseRedirect(escape(destination))
                 else:
                     return render(request, 'user_accounts/login.jinja', {
                         'login_form': login_form,

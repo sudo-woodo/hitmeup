@@ -43,12 +43,15 @@ INSTALLED_APPS = (
 
     # Vendor
     'django_jinja',
+    'restless',
 
     # Custom
     'hitmeup',
     'dynamic_components',
     'static_pages',
     'user_accounts',
+    'ourcalendar',
+    'notifications',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -76,6 +79,7 @@ CONTEXT_PROCESSORS = [
 
     # Custom
     'dynamic_components.context_processors.navbar',
+    'notifications.context_processors.notification_count',
 ]
 
 TEMPLATES = [
@@ -132,17 +136,21 @@ DATABASES = {
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'America/Los_Angeles'
 
 USE_I18N = True
 
 USE_L10N = True
 
-USE_TZ = True
+USE_TZ = False
 
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.8/howto/static-files/
+
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR, 'static'),
+)
 
 STATIC_ROOT = 'staticroot'
 
