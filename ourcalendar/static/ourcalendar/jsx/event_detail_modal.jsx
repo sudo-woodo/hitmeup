@@ -18,18 +18,78 @@ var detailReactor = (function(React, $) {
 
     var EventDetailModal = React.createClass({
 
+        componentDidUpdate: function()  {
+            //If edit is now true, update the inputForm.
+            if ( this.state.edit == true ) {
+                this.refs.inputForm.setState({
+                    title: this.state.title,
+                    location: this.state.location,
+                    description: this.state.description,
+                    start: this.state.start,
+                    end: this.state.end
+                });
+
+                $(this.refs.inputForm.refs.datetime.refs.startpicker.getDOMNode()).data("DateTimePicker").date(moment(this.state.start));
+                $(this.refs.inputForm.refs.datetime.refs.endpicker.getDOMNode()).data("DateTimePicker").date(moment(this.state.end));
+            }
+
+        },
+
         handleEdit: function()  {
             // TODO On edit, need to render a new form with all of the previous inputs already in place.
             this.setState({edit: true});
+
+
         },
 
         handleDelete: function()  {
             // TODO On delete and then delete the event.
+
+
             $('#eventDetailModal').modal('hide');
         },
 
         handleSubmit: function()  {
             // TODO actually do this
+            var putData = {
+                title: React.findDOMNode(this.refs.inputForm.refs.title).value.trim(),
+                start: React.findDOMNode(this.refs.inputForm.refs.datetime.refs.start).value.trim(),
+                end: React.findDOMNode(this.refs.inputForm.refs.datetime.refs.end).value.trim(),
+                location: React.findDOMNode(this.refs.inputForm.refs.location).value.trim(),
+                description: React.findDOMNode(this.refs.inputForm.refs.description).value.trim(),
+                calendar: 'Default'      // Necessary for AJAX request
+            };
+
+            // Will need to do error checking in the future. Copy format of create_event_modal.
+
+            var startMoment = moment(putData.start);
+            var endMoment = moment(putData.end);
+
+            putData.start = moment(putData.start).format('YYYY-MM-DD HH:mm');
+            putData.end = moment(putData.end).format('YYYY-MM-DD HH:mm');
+
+            // AJAX request to edit the event
+            $.ajax({
+                url: '/api/events/' + this.state.id + '/',
+                type: "PUT",
+                data: JSON.stringify(putData),
+                contentType: "application/json",
+                success: function(response) {},
+                complete: function() {},
+                error: function (xhr, textStatus, thrownError) {
+                    // TODO handle error case?
+                    console.log(xhr.responseText);
+                }
+            });
+
+            var result = $('#calendar').fullCalendar('clientEvents', this.state.id )[0];
+            result.title = putData.title;
+            result.start = startMoment;
+            result.end = endMoment;
+            result.description = putData.description;
+            result.location = putData.location;
+
+            $('#calendar').fullCalendar('updateEvent', result);
             $('#eventDetailModal').modal('hide');
         },
 
@@ -45,7 +105,8 @@ var detailReactor = (function(React, $) {
                 description: "",
                 start: "",
                 end: "",
-                edit: false
+                edit: false,
+                id: -1
             };
         },
 

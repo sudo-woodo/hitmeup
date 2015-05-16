@@ -20,7 +20,8 @@
                     location: event.location,
                     description: event.description,
                     start: moment(event.start).format('LLL'),
-                    end: moment(event.end).format('LLL')
+                    end: moment(event.end).format('LLL'),
+                    id: event.id
                 });
 
                 // Dev tip: can use event.id to get the clicked event's id
