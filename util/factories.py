@@ -48,6 +48,6 @@ class NotificationFactory(DjangoModelFactory):
         model = Notification
 
     recipient = factory.SubFactory(UserProfileFactory)
-    image_url = static('/hitmeup/img/hitmeup_square.png')
+    image_url = static('hitmeup/img/hitmeup_square.png')
     action_url = 'https://www.google.com/'
     text = factory.Sequence(lambda n: "Notification %s" % n)
