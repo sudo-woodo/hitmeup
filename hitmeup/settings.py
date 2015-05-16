@@ -31,7 +31,9 @@ HAYSTACK_CONNECTIONS = {
 if es.username:
     HAYSTACK_CONNECTIONS['default']['KWARGS'] = {"http_auth": es.username + ':' + es.password}
 
-# HAYSTACK_SIGNAL_PROCESSOR = 'haystack.signals.RealtimeSignalProcessor'
+# Allows constant real-time updating of search indexes, removes need for ./manage.py rebuild_index
+# If this is removed then we may have to set a cron job to update...
+HAYSTACK_SIGNAL_PROCESSOR = 'haystack.signals.RealtimeSignalProcessor'
 # End of Haystack settings
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
