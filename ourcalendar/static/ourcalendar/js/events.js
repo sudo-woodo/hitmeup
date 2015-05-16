@@ -1,7 +1,5 @@
 (function($, $HMU) {
-    var events = $.map($HMU.calendars, function(c) {
-        return c;
-    });
+    var events = $HMU.events;
 
     $(document).ready(function() {
 
@@ -16,36 +14,17 @@
 
             // Shows detail when clicking an event.
             eventClick: function(event) {
+                detailReactor.setState({
+                    edit: false,
+                    title: event.title,
+                    location: event.location,
+                    description: event.description,
+                    start: moment(event.start).format('LLL'),
+                    end: moment(event.end).format('LLL')
+                });
+
                 // Dev tip: can use event.id to get the clicked event's id
-                var eventDetailModal = $('#eventDetailModal');
-                eventDetailModal.find('.modal-title').text(event.title);
-
-                if (event.allDay == false) {
-                    eventDetailModal.find('#start-time').text(moment(event.start).format('LLL'));
-                    eventDetailModal.find('#start-time').append(' -');
-                    eventDetailModal.find('#end-time').text(moment(event.end).format('LLL'));
-                }
-                else {
-                    eventDetailModal.find('#start-time').text(moment(event.start).format('LL'));
-                    eventDetailModal.find('#end-time').text('');
-                }
-
-                //If there is no location, simply show "No Location"
-                if ( event.location.length == 0 )  {
-                    eventDetailModal.find('#location').text("No Location");
-                }
-                else {
-                    eventDetailModal.find('#location').text(event.location);
-                }
-
-                //If there is no description, simply show "No Description"
-                if ( event.description.length == 0 ) {
-                    eventDetailModal.find('#description').text("No Description");
-                }
-                else {
-                    eventDetailModal.find('#description').text(event.description);
-                }
-                eventDetailModal.modal('show');
+                $('#eventDetailModal').modal('show');
             },
             events: events,
             fixedWeekCount: false,
@@ -58,7 +37,11 @@
             select: function(start, end) {
                 $('#start-picker').data("DateTimePicker").date(start);
                 $('#end-picker').data("DateTimePicker").date(end);
+
+                // Reset the state of both the create event modal and the input form.
                 reactor.setState(reactor.getInitialState());
+                reactor.refs.inputForm.setState(reactor.refs.inputForm.getInitialState());
+
                 $("#create-event-modal").modal('show');
             },
             forceEventDuration: true
