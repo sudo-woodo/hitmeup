@@ -11,3 +11,7 @@ body {
     width: 100px;
     height: auto;
 }
+
+.search-bar {
+    padding-top: 8px;
+}

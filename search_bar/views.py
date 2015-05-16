@@ -24,7 +24,7 @@ class Search(View):
         # best_match() will get the SearchResult, then you get the user and the username
         username = user.best_match().object.get_username()
         print username
-        return render(request, 'search_bar/usernames.jinja', {'username': username})
+        return render(request, 'search_bar/usernames.jinja', {'username': username}) #eventually change this to render user profile
 
 def SearchBase(request):
     return render(request, 'search_bar/search.jinja')
