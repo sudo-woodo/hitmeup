@@ -50,14 +50,6 @@ var creationReactor = (function(React, $) {
                 var startMoment = moment(postData.start);
                 var endMoment = moment(postData.end);
 
-                // TODO remove support for allDay events.
-                if (endMoment.diff(startMoment, 'days') == 1 &&
-                     startMoment.hour() == 0 && endMoment.hour() == 0 &&
-                     startMoment.minute() == 0 && endMoment.minute() == 0 )  {
-
-                    postData.allDay = true;
-                }
-
                 // Format the dates to send the ajax request
                 postData.start = moment(postData.start).format('YYYY-MM-DD HH:mm');
                 postData.end = moment(postData.end).format('YYYY-MM-DD HH:mm');

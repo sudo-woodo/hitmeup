@@ -44,7 +44,8 @@
 
                 $("#create-event-modal").modal('show');
             },
-            forceEventDuration: true
+            forceEventDuration: true,
+            allDaySlot: false
         })
     });
 })(window.jQuery, window.$HMU);
