@@ -1,13 +1,4 @@
 var creationReactor = (function(React, $) {
-    // Error messages when user does not input all required fields.
-    var EventModalError = React.createClass({
-        render: function()  {
-            return (
-                <div className="alert alert-danger" role="alert">{this.props.children}</div>
-            );
-        }
-    });
-
     // Event modal allows for creation of events.  Is shown whenever a user clicks
     // a day.  Collects all of the necessary information.
     var EventModal = React.createClass({

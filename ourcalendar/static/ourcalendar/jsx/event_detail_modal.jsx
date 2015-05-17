@@ -35,20 +35,36 @@ var detailReactor = (function(React, $) {
 
         },
 
+        // On edit, set edit state to true and render the form.
         handleEdit: function()  {
-            // TODO On edit, need to render a new form with all of the previous inputs already in place.
-            this.setState({edit: true});
-
-
+            this.setState({
+                edit: true,
+                errors: []
+            });
         },
 
+        // User presses delete button, deletes event and renders the calendar.
         handleDelete: function()  {
-            // TODO On delete and then delete the event.
+            // AJAX request to delete event.
+            $.ajax({
+                    url: '/api/events/' + this.state.id + '/',
+                    type: "DELETE",
+                    contentType: "application/json",
+                    success: function (response) {
+                    },
+                    complete: function () {
+                    },
+                    error: function (xhr, textStatus, thrownError) {
+                        // TODO handle error case?
+                        console.log(xhr.responseText);
+                    }
+                });
 
-
+            $('#calendar').fullCalendar( 'removeEvents', this.state.id );
             $('#eventDetailModal').modal('hide');
         },
 
+        // User presses submit, sends AJAX request with required data. Ensures data is valid first.
         handleSubmit: function()  {
             // TODO actually do this
             var putData = {
@@ -60,41 +76,71 @@ var detailReactor = (function(React, $) {
                 calendar: 'Default'      // Necessary for AJAX request
             };
 
-            // Will need to do error checking in the future. Copy format of create_event_modal.
+            // Error checking: title, start, and end times all required.
+            var errors = [];
+            if (putData.end.length === 0) {
+                errors.unshift('End time is required.');
+                this.refs.inputForm.refs.datetime.refs.end.getDOMNode().focus();
+            }
 
-            var startMoment = moment(putData.start);
-            var endMoment = moment(putData.end);
+            if (putData.start.length === 0) {
+                errors.unshift('Start time is required.');
+                this.refs.inputForm.refs.datetime.refs.start.getDOMNode().focus();
+            }
 
-            putData.start = moment(putData.start).format('YYYY-MM-DD HH:mm');
-            putData.end = moment(putData.end).format('YYYY-MM-DD HH:mm');
+            if (putData.title.length === 0) {
+                errors.unshift('Title is required.');
+                this.refs.inputForm.refs.title.getDOMNode().focus();
+            }
 
-            // AJAX request to edit the event
-            $.ajax({
-                url: '/api/events/' + this.state.id + '/',
-                type: "PUT",
-                data: JSON.stringify(putData),
-                contentType: "application/json",
-                success: function(response) {},
-                complete: function() {},
-                error: function (xhr, textStatus, thrownError) {
-                    // TODO handle error case?
-                    console.log(xhr.responseText);
-                }
-            });
+            if (errors.length > 0)  {
+                this.setState({
+                    errors: errors
+                });
+            }
+            else {
+                // These are used to set the resulting event's start and end times.
+                var startMoment = moment(putData.start);
+                var endMoment = moment(putData.end);
 
-            var result = $('#calendar').fullCalendar('clientEvents', this.state.id )[0];
-            result.title = putData.title;
-            result.start = startMoment;
-            result.end = endMoment;
-            result.description = putData.description;
-            result.location = putData.location;
+                putData.start = moment(putData.start).format('YYYY-MM-DD HH:mm');
+                putData.end = moment(putData.end).format('YYYY-MM-DD HH:mm');
 
-            $('#calendar').fullCalendar('updateEvent', result);
-            $('#eventDetailModal').modal('hide');
+                // AJAX request to edit the event
+                $.ajax({
+                    url: '/api/events/' + this.state.id + '/',
+                    type: "PUT",
+                    data: JSON.stringify(putData),
+                    contentType: "application/json",
+                    success: function (response) {
+                    },
+                    complete: function () {
+                    },
+                    error: function (xhr, textStatus, thrownError) {
+                        // TODO handle error case?
+                        console.log(xhr.responseText);
+                    }
+                });
+
+                var full_calendar = $('#calendar');
+                var result = full_calendar.fullCalendar('clientEvents', this.state.id)[0];
+                result.title = putData.title;
+                result.start = startMoment;
+                result.end = endMoment;
+                result.description = putData.description;
+                result.location = putData.location;
+
+                full_calendar.fullCalendar('updateEvent', result);
+                $('#eventDetailModal').modal('hide');
+            }
         },
 
+        // User presses cancel button, is returned to previous screen.
         handleCancel: function()  {
-            this.setState({edit: false});
+            this.setState({
+                edit: false,
+                errors: []
+            });
         },
 
         // dummy get initial state for the time being.
@@ -106,7 +152,8 @@ var detailReactor = (function(React, $) {
                 start: "",
                 end: "",
                 edit: false,
-                id: -1
+                id: -1,
+                errors: []
             };
         },
 
@@ -126,6 +173,16 @@ var detailReactor = (function(React, $) {
             var delete_cancel_text = this.state.edit ? "Cancel" : "Delete";
             var delete_cancel_class = this.state.edit ? "btn btn-primary" : "btn btn-danger";
 
+            // Contains all of the info for the errors.  Only displayed while the form is shown.
+            var errors = this.state.errors.map(function(error) {
+               return (
+                   <EventModalError>
+                       {error}
+                   </EventModalError>
+               );
+            });
+            var display_errors = this.state.edit ? errors : "";
+
             return(
                 <div id="eventDetailModal" className="modal fade">
                     <div className="modal-dialog">
@@ -136,6 +193,9 @@ var detailReactor = (function(React, $) {
                                 <i className="fa fa-clock-o"></i>&nbsp;&nbsp;<span id="start-time">{this.state.start}</span> &mdash; <span id="end-time">{this.state.end}</span>
                             </div>
                             <div className="modal-body">
+                                <div>
+                                    {display_errors}
+                                </div>
                                 <form id="edit-form" onSubmit={this.handleSubmit}>
                                     {form}
                                 </form>
