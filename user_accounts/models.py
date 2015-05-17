@@ -9,8 +9,8 @@ from django.dispatch.dispatcher import receiver
 from user_accounts.templatetags import gravatar
 
 
-request_friend = django.dispatch.Signal(providing_args=["from_friend", "to_friend"])
-accept_friend = django.dispatch.Signal(providing_args=["from_friend", "to_friend"])
+request_friend = django.dispatch.Signal(providing_args=['from_friend', 'to_friend'])
+accept_friend = django.dispatch.Signal(providing_args=['from_friend', 'to_friend'])
 
 
 class UserProfile(models.Model):

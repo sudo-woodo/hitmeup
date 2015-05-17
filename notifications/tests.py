@@ -6,7 +6,7 @@ from django.test.client import Client
 from django.utils import timezone
 from django.utils.crypto import get_random_string
 from notifications.models import Notification, send_friend_request_notification, \
-    send_friend_accept_notification
+    send_friend_accept_notification, IMAGE_SIZE
 from user_accounts.models import UserProfile
 from util.factories import NotificationFactory, UserFactory, UserProfileFactory
 
@@ -34,6 +34,19 @@ class ModelTestCase(TestCase):
 
         self.assertEqual(notification.natural_time, naturaltime(time))
 
+    def test_refresh(self):
+        # Tests if refresh works.
+        notification = NotificationFactory()
+        old_time = notification.time
+        notification.read = True
+
+        notification.refresh()
+        self.assertFalse(notification.read)
+        self.assertNotEqual(old_time, notification.time)
+
+        from_db = Notification.objects.get(id=notification.id)
+        self.assertEqual(notification.read, from_db.read)
+        self.assertEqual(notification.time, from_db.time)
 
 class SignalTestCase(TestCase):
     """
@@ -52,8 +65,11 @@ class SignalTestCase(TestCase):
         self.assertEqual(len(self.to_friend.notifications.all()), 1)
         notif = self.to_friend.notifications.all()[0]
         self.assertEqual(notif.recipient, self.to_friend)
-        self.assertEqual(notif.image_url, self.from_friend.get_gravatar_url())
-        self.assertEqual(notif.action_url, '/') # TODO UPDATE WHEN AVAILABLE
+        self.assertEqual(notif.image_url, self.from_friend.get_gravatar_url(
+            IMAGE_SIZE
+        ))
+        self.assertEqual(notif.action_url, reverse('user_accounts:user_profile',
+                                                   args=(self.from_friend.username,)))
         self.assertEqual(notif.text,
                          Notification.NOTIFICATION_STRINGS[Notification.REQUEST_FRIEND]
                          % self.from_friend)
@@ -67,8 +83,11 @@ class SignalTestCase(TestCase):
         self.assertEqual(len(self.to_friend.notifications.all()), 1)
         notif = self.to_friend.notifications.all()[0]
         self.assertEqual(notif.recipient, self.to_friend)
-        self.assertEqual(notif.image_url, self.from_friend.get_gravatar_url())
-        self.assertEqual(notif.action_url, '/') # TODO UPDATE WHEN AVAILABLE
+        self.assertEqual(notif.image_url, self.from_friend.get_gravatar_url(
+            IMAGE_SIZE
+        ))
+        self.assertEqual(notif.action_url, reverse('user_accounts:user_profile',
+                                                   args=(self.from_friend.username,)))
         self.assertEqual(notif.text,
                          Notification.NOTIFICATION_STRINGS[Notification.ACCEPT_FRIEND]
                          % self.from_friend)

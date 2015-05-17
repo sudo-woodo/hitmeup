@@ -1,4 +1,5 @@
 from django.contrib.humanize.templatetags.humanize import naturaltime
+from django.core.urlresolvers import reverse
 from django.db import models
 from django.dispatch.dispatcher import receiver
 from user_accounts.models import UserProfile, request_friend, accept_friend
@@ -30,23 +31,49 @@ class Notification(models.Model):
     def natural_time(self):
         return naturaltime(self.time)
 
+    @property
+    def serialized(self):
+        return {
+            'image': self.image_url,
+            'action': self.action_url,
+            'text': self.text,
+            'time': self.natural_time,
+            'read': self.read,
+        }
+
+    def refresh(self):
+        # Marks as unread and updates the time
+        self.read = False
+        self.time = timezone.now()
+        self.save()
+
 
 #TODO: refactor signals to signals.py in hitmeup app
+
+IMAGE_SIZE = 200
+
 @receiver(request_friend, sender=UserProfile)
 def send_friend_request_notification(sender, from_friend, to_friend, **kwargs):
-    Notification.objects.create(
+    # Don't duplicate notifications
+    notification, created = Notification.objects.get_or_create(
         recipient=to_friend,
-        image_url=from_friend.get_gravatar_url(),
+        image_url=from_friend.get_gravatar_url(IMAGE_SIZE),
         action_url=from_friend.profile_url,
         text=Notification.NOTIFICATION_STRINGS[Notification.REQUEST_FRIEND] % from_friend,
     )
 
+    if not created:
+        notification.refresh()
+
 @receiver(accept_friend, sender=UserProfile)
 def send_friend_accept_notification(sender, from_friend, to_friend, **kwargs):
-    Notification.objects.create(
+    # Don't duplicate notifications
+    notification, created = Notification.objects.get_or_create(
         recipient=to_friend,
-        image_url=from_friend.get_gravatar_url(),
+        image_url=from_friend.get_gravatar_url(IMAGE_SIZE),
         action_url=from_friend.profile_url,
         text=Notification.NOTIFICATION_STRINGS[Notification.ACCEPT_FRIEND] % from_friend,
     )
 
+    if not created:
+        notification.refresh()
