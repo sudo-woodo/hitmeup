@@ -29,8 +29,10 @@ var detailReactor = (function(React, $) {
                     end: this.state.end
                 });
 
-                $(this.refs.inputForm.refs.datetime.refs.startpicker.getDOMNode()).data("DateTimePicker").date(moment(this.state.start));
-                $(this.refs.inputForm.refs.datetime.refs.endpicker.getDOMNode()).data("DateTimePicker").date(moment(this.state.end));
+                $(this.refs.inputForm.refs.datetime.refs.startpicker.getDOMNode())
+                    .data("DateTimePicker").date(moment(this.state.start));
+                $(this.refs.inputForm.refs.datetime.refs.endpicker.getDOMNode())
+                    .data("DateTimePicker").date(moment(this.state.end));
             }
 
         },
@@ -60,13 +62,12 @@ var detailReactor = (function(React, $) {
                     }
                 });
 
-            $('#calendar').fullCalendar( 'removeEvents', this.state.id );
+            $('#calendar').fullCalendar('removeEvents', this.state.id);
             $('#eventDetailModal').modal('hide');
         },
 
         // User presses submit, sends AJAX request with required data. Ensures data is valid first.
         handleSubmit: function()  {
-            // TODO actually do this
             var putData = {
                 title: React.findDOMNode(this.refs.inputForm.refs.title).value.trim(),
                 start: React.findDOMNode(this.refs.inputForm.refs.datetime.refs.start).value.trim(),
@@ -123,6 +124,7 @@ var detailReactor = (function(React, $) {
                 });
 
                 var full_calendar = $('#calendar');
+                // Grab the first event and update it
                 var result = full_calendar.fullCalendar('clientEvents', this.state.id)[0];
                 result.title = putData.title;
                 result.start = startMoment;
