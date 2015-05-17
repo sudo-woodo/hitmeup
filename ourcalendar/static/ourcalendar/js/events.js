@@ -45,7 +45,49 @@
 
                 $("#create-event-modal").modal('show');
             },
-            forceEventDuration: true
+            forceEventDuration: true,
+
+            eventDrop: function(event, delta, revertFunc)  {
+                $.ajax({
+                    url: '/api/events/' + event.id + '/',
+                    type: "PUT",
+                    data: JSON.stringify({
+                        start: moment(event.start).format('YYYY-MM-DD HH:mm'),
+                        end: moment(event.end).format('YYYY-MM-DD HH:mm')
+                    }),
+                    contentType: "application/json",
+                    success: function (response) {
+                    },
+                    complete: function () {
+                    },
+                    error: function (xhr, textStatus, thrownError) {
+                        // TODO handle error case?
+                        revertFunc();
+                        console.log(xhr.responseText);
+                    }
+                });
+            },
+
+            eventResize: function(event, delta, revertFunc)  {
+                $.ajax({
+                    url: '/api/events/' + event.id + '/',
+                    type: "PUT",
+                    data: JSON.stringify({
+                        start: moment(event.start).format('YYYY-MM-DD HH:mm'),
+                        end: moment(event.end).format('YYYY-MM-DD HH:mm')
+                    }),
+                    contentType: "application/json",
+                    success: function (response) {
+                    },
+                    complete: function () {
+                    },
+                    error: function (xhr, textStatus, thrownError) {
+                        // TODO handle error case?
+                        revertFunc();
+                        console.log(xhr.responseText);
+                    }
+                });
+            }
         })
     });
 })(window.jQuery, window.$HMU);
