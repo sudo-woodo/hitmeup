@@ -97,7 +97,8 @@ class LoginView(View):
             user = authenticate(username=login_form.cleaned_data['username'],
                                 password=login_form.cleaned_data['password'])
             if user:
-                # if the user is active, log them in and redirect to home
+                # If the user is active, log them in and redirect to next
+                # destination if specified; if not, redirect to home
                 if user.is_active:
                     login(request, user)
                     destination = request.GET.get(
