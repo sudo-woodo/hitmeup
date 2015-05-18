@@ -46,6 +46,7 @@
                 $("#create-event-modal").modal('show');
             },
             forceEventDuration: true,
+            allDaySlot: false,
 
             eventDrop: function(event, delta, revertFunc)  {
                 $.ajax({
