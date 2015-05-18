@@ -39,12 +39,13 @@
                 $('#end-picker').data("DateTimePicker").date(end);
 
                 // Reset the state of both the create event modal and the input form.
-                reactor.setState(reactor.getInitialState());
-                reactor.refs.inputForm.setState(reactor.refs.inputForm.getInitialState());
+                creationReactor.setState(creationReactor.getInitialState());
+                creationReactor.refs.inputForm.setState(creationReactor.refs.inputForm.getInitialState());
 
                 $("#create-event-modal").modal('show');
             },
-            forceEventDuration: true
+            forceEventDuration: true,
+            allDaySlot: false
         })
     });
-})(window.jQuery, $HMU);
+})(window.jQuery, window.$HMU);
