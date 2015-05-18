@@ -53,12 +53,12 @@ class UserProfile(models.Model):
 
     # Flattens busy times
     # TODO TEST ME
-    def flatten_busy(self, other, complement_range):
+    def flatten_busy(self, other, show_range):
         from ourcalendar.models import Event
 
         events = Event.objects.filter(calendar__ownder=self,
-                                           start__gt=complement_range.start,
-                                           end__lt=complement_range.end)
+                                      start__gt=show_range.start,
+                                      end__lt=show_range.end)
 
         return Interval.flatten_intervals(events)
 
