@@ -51,31 +51,16 @@ class UserProfile(models.Model):
 
     # Calendar helpers
 
-    # Intersects your free times with another user's
+    # Flattens busy times
     # TODO TEST ME
-    def intersect_free(self, other, complement_range):
-        """
-        Intersects this profile's free times with another profile's.
-
-        :param other: The other profile
-        :param range: The complement range Interval
-        :return: The complemented list of Intervals
-        """
-        # Grab valid events
+    def flatten_busy(self, other, complement_range):
         from ourcalendar.models import Event
 
-        self_events = Event.objects.filter(calendar__ownder=self,
+        events = Event.objects.filter(calendar__ownder=self,
                                            start__gt=complement_range.start,
                                            end__lt=complement_range.end)
-        other_events = Event.objects.filter(calendar__ownder=other,
-                                            start__gt=complement_range.start,
-                                            end__lt=complement_range.end)
 
-        # Return the complement
-        return Interval.complement_intervals(
-            [e.interval for e in self_events] +
-            [e.interval for e in other_events],
-            complement_range)
+        return Interval.flatten_intervals(events)
 
     # Whether or not this user is available right now
     # TODO TEST ME
