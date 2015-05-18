@@ -4,7 +4,7 @@ import hashlib
 
 
 @library.global_function
-def gravatar_url(email, size):
+def gravatar_url(email, size=80):
     default = 'retro'
 
     url = "http://www.gravatar.com/avatar/" + \

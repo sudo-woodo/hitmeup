@@ -1,8 +1,15 @@
+import django.dispatch
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.core.validators import RegexValidator
 from django.db import models
 from django.db.models.signals import post_save
+from django.dispatch.dispatcher import receiver
+from user_accounts.templatetags import gravatar
+
+
+request_friend = django.dispatch.Signal(providing_args=["from_friend", "to_friend"])
+accept_friend = django.dispatch.Signal(providing_args=["from_friend", "to_friend"])
 
 
 class UserProfile(models.Model):
@@ -15,7 +22,7 @@ class UserProfile(models.Model):
         message="Phone number must be entered in the format: "
                 "'+999999999'. Up to 15 digits allowed.")
     phone = models.CharField(max_length=16, validators=[phone_regex], blank=True)
-    bio = models.CharField(max_length=300, blank=True)
+    bio = models.TextField(max_length=300, blank=True)
 
     def __unicode__(self):
         return self.user.username
@@ -36,6 +43,9 @@ class UserProfile(models.Model):
     @property
     def email(self):
         return self.user.email
+
+    def get_gravatar_url(self, size=80):
+        return gravatar.gravatar_url(self.user.email, size)
 
     @property
     def friends(self):
@@ -64,41 +74,50 @@ class UserProfile(models.Model):
 
         # If no, then create a pending outgoing friendship
         except Friendship.DoesNotExist:
-            outgoing = Friendship.objects.create(
+            outgoing, created = Friendship.objects.get_or_create(
                 from_friend=self, to_friend=other)
+            if created:
+                request_friend.send(sender=self.__class__,
+                                    from_friend=self, to_friend=other)
 
         # If yes, accept the incoming friendship
         # and make an accepted outgoing friendship
         else:
-            outgoing = Friendship.objects.get_or_create(
-                from_friend=self, to_friend=other)[0]
+            outgoing, created = Friendship.objects.get_or_create(
+                from_friend=self, to_friend=other)
             outgoing.accepted = incoming.accepted = True
             outgoing.save()
             incoming.save()
+            if created:
+                accept_friend.send(sender=self.__class__,
+                                   from_friend=self, to_friend=other)
 
-        return outgoing
+        return outgoing, created
 
     def del_friend(self, other):
+        outgoing_deleted, incoming_deleted = True
+
         # Delete the outgoing
         try:
             Friendship.objects.get(from_friend=self, to_friend=other).delete()
         except Friendship.DoesNotExist:
-            pass
+            outgoing_deleted = False
 
         # Delete the incoming
         try:
             Friendship.objects.get(from_friend=other, to_friend=self).delete()
         except Friendship.DoesNotExist:
-            pass
+            incoming_deleted = False
+
+        return outgoing_deleted, incoming_deleted
 
 
 # Auto-create a UserProfile when creating a User
 # https://docs.djangoproject.com/en/1.4/topics/auth/#storing-additional-information-about-users
+@receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):
     if created:
         UserProfile.objects.create(user=instance)
-
-post_save.connect(create_user_profile, sender=User)
 
 
 class Friendship(models.Model):
