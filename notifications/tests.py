@@ -74,6 +74,11 @@ class SignalTestCase(TestCase):
                          Notification.NOTIFICATION_STRINGS[Notification.REQUEST_FRIEND]
                          % self.from_friend)
 
+        # Tests if duplicate notifications are sent
+        send_friend_request_notification(UserProfile, self.from_friend,
+                                         self.to_friend)
+        self.assertEqual(len(self.to_friend.notifications.all()), 1)
+
     def test_friend_accept(self):
         # Tests if the notification is created correctly on calling
         # the accept handler
@@ -92,6 +97,10 @@ class SignalTestCase(TestCase):
                          Notification.NOTIFICATION_STRINGS[Notification.ACCEPT_FRIEND]
                          % self.from_friend)
 
+        # Tests if duplicate notifications are sent
+        send_friend_accept_notification(UserProfile, self.from_friend,
+                                        self.to_friend)
+        self.assertEqual(len(self.to_friend.notifications.all()), 1)
 
 class ApiTestCase(TestCase):
     """
