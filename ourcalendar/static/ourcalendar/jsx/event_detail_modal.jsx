@@ -186,7 +186,7 @@ var detailReactor = (function(React, $) {
             var display_errors = this.state.edit ? errors : "";
 
             return(
-                <div id="eventDetailModal" className="modal fade">
+                <div id="eventDetailModal" className="modal fade" tabIndex="-1">
                     <div className="modal-dialog">
                         <div className="modal-content">
                             <div className="modal-header">

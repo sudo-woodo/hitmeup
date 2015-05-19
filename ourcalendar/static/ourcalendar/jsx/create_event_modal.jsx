@@ -99,7 +99,7 @@ var creationReactor = (function(React, $) {
             // Responsible for rendering the event modal which consists of a form containing input fields,
             // and date time pickers for start and end dates.
             return (
-                <div id="create-event-modal" className="modal fade">
+                <div id="create-event-modal" className="modal fade" tabIndex="-1">
                     <div className="modal-dialog">
                         <div className="modal-content">
                             <div className="modal-header">
