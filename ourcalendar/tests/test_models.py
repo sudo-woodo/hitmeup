@@ -97,3 +97,48 @@ class EventTestCase(TestCase):
             "%s -> %s -> %s" % (event.calendar.owner, event.calendar, event.title),
             unicode(event)
         )
+
+    def test_interval(self):
+        event = EventFactory()
+        interval = event.as_interval
+        self.assertEqual(event.start, interval.start)
+        self.assertEqual(event.end, interval.end)
+
+    def test_happens_when(self):
+        now = timezone.now()
+        onehr = timezone.timedelta(hours=1)
+
+        # Test in range
+        inrange = EventFactory(
+            start=now - onehr,
+            end=now + onehr,
+        )
+        self.assertTrue(inrange.happens_when(now))
+
+        # Test before
+        before = EventFactory(
+            start=now - 2 * onehr,
+            end=now - onehr,
+        )
+        self.assertFalse(before.happens_when(now))
+
+        # Test edge before
+        before = EventFactory(
+            start=now - onehr,
+            end=now,
+        )
+        self.assertFalse(before.happens_when(now))
+
+        # Test after
+        before = EventFactory(
+            start=now + onehr,
+            end=now + 2 * onehr,
+        )
+        self.assertFalse(before.happens_when(now))
+
+        # Test edge after
+        before = EventFactory(
+            start=now,
+            end=now + onehr,
+        )
+        self.assertFalse(before.happens_when(now))
