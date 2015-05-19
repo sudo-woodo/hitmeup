@@ -51,7 +51,12 @@ var creationReactor = (function(React, $) {
                     type: "POST",
                     data: JSON.stringify(postData),
                     contentType: "application/json",
-                    success: function(response) {},
+                    success: function(response) {
+                        postData.id = response.event_id;
+                        $('#create-event-modal').modal('hide');
+
+                        $('#calendar').fullCalendar('renderEvent', postData, true);
+                    },
                     complete: function() {},
                     error: function (xhr, textStatus, thrownError) {
                         // TODO handle error case?
@@ -59,12 +64,6 @@ var creationReactor = (function(React, $) {
                     }
                 });
 
-                $('#create-event-modal').modal('hide');
-                if (postData.location.length === 0)
-                    postData.location = 'No location';
-                if (postData.description.length === 0)
-                    postData.description = 'No description';
-                $('#calendar').fullCalendar('renderEvent', postData, true);
             }
         },
 
