@@ -34,6 +34,9 @@ def list(request):
         }
     })
 
+# Marks a notification as read and redirects to the 'next'.
+# One day, when we implement pop-up notification hub...
+# TODO TEST ME WHEN WE ACTUALLY USE THIS
 @login_required
 def action(request, notification_id):
     # Marks a notification as read, and redirects to "next" querystring param
@@ -44,11 +47,6 @@ def action(request, notification_id):
     except Notification.DoesNotExist:
         raise Http404("Notification to mark read not found")
 
-    try:
-        return HttpResponseRedirect(
-            request.GET['next']
-        )
-    except KeyError:
-        return HttpResponseRedirect(
-            reverse('static_pages:home')
-        )
+    return HttpResponseRedirect(
+        request.GET.get('next', reverse('static_pages:home'))
+    )
