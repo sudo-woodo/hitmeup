@@ -59,7 +59,7 @@ var creationReactor = (function(React, $) {
                     },
                     complete: function() {},
                     error: function (xhr, textStatus, thrownError) {
-                        // TODO handle error case?
+                        alert("An error occurred, please try again later.");
                         console.log(xhr.responseText);
                     }
                 });

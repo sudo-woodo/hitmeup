@@ -62,8 +62,8 @@
                     complete: function () {
                     },
                     error: function (xhr, textStatus, thrownError) {
-                        // TODO handle error case?
                         revertFunc();
+                        alert("An error occurred, please try again later.");
                         console.log(xhr.responseText);
                     }
                 });
@@ -83,8 +83,8 @@
                     complete: function () {
                     },
                     error: function (xhr, textStatus, thrownError) {
-                        // TODO handle error case?
                         revertFunc();
+                        alert("An error occurred, please try again later.");
                         console.log(xhr.responseText);
                     }
                 });
