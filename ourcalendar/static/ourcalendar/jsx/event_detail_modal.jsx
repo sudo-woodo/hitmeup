@@ -104,8 +104,8 @@ var detailReactor = (function(React, $) {
                 var startMoment = moment(putData.start);
                 var endMoment = moment(putData.end);
 
-                putData.start = moment(putData.start).format('YYYY-MM-DD HH:mm');
-                putData.end = moment(putData.end).format('YYYY-MM-DD HH:mm');
+                putData.start = startMoment.format('YYYY-MM-DD HH:mm');
+                putData.end = endMoment.format('YYYY-MM-DD HH:mm');
 
                 // AJAX request to edit the event
                 $.ajax({

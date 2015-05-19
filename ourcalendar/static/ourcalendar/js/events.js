@@ -19,8 +19,8 @@
                     title: event.title,
                     location: event.location,
                     description: event.description,
-                    start: moment(event.start).format('LLL'),
-                    end: moment(event.end).format('LLL'),
+                    start: event.start.format('LLL'),
+                    end: event.end.format('LLL'),
                     id: event.id
                 });
 
@@ -53,8 +53,8 @@
                     url: '/api/events/' + event.id + '/',
                     type: "PUT",
                     data: JSON.stringify({
-                        start: moment(event.start).format('YYYY-MM-DD HH:mm'),
-                        end: moment(event.end).format('YYYY-MM-DD HH:mm')
+                        start: event.start.format('YYYY-MM-DD HH:mm'),
+                        end: event.end.format('YYYY-MM-DD HH:mm')
                     }),
                     contentType: "application/json",
                     success: function (response) {
@@ -74,8 +74,8 @@
                     url: '/api/events/' + event.id + '/',
                     type: "PUT",
                     data: JSON.stringify({
-                        start: moment(event.start).format('YYYY-MM-DD HH:mm'),
-                        end: moment(event.end).format('YYYY-MM-DD HH:mm')
+                        start: event.start.format('YYYY-MM-DD HH:mm'),
+                        end: event.end.format('YYYY-MM-DD HH:mm')
                     }),
                     contentType: "application/json",
                     success: function (response) {

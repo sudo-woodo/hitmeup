@@ -42,8 +42,8 @@ var creationReactor = (function(React, $) {
                 var endMoment = moment(postData.end);
 
                 // Format the dates to send the ajax request
-                postData.start = moment(postData.start).format('YYYY-MM-DD HH:mm');
-                postData.end = moment(postData.end).format('YYYY-MM-DD HH:mm');
+                postData.start = startMoment.format('YYYY-MM-DD HH:mm');
+                postData.end = endMoment.format('YYYY-MM-DD HH:mm');
 
                 // AJAX request goes here.
                 $.ajax({
