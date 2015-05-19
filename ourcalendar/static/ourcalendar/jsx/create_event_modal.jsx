@@ -1,13 +1,4 @@
 var creationReactor = (function(React, $) {
-    // Error messages when user does not input all required fields.
-    var EventModalError = React.createClass({
-        render: function()  {
-            return (
-                <div className="alert alert-danger" role="alert">{this.props.children}</div>
-            );
-        }
-    });
-
     // Event modal allows for creation of events.  Is shown whenever a user clicks
     // a day.  Collects all of the necessary information.
     var EventModal = React.createClass({
@@ -51,8 +42,8 @@ var creationReactor = (function(React, $) {
                 var endMoment = moment(postData.end);
 
                 // Format the dates to send the ajax request
-                postData.start = moment(postData.start).format('YYYY-MM-DD HH:mm');
-                postData.end = moment(postData.end).format('YYYY-MM-DD HH:mm');
+                postData.start = startMoment.format('YYYY-MM-DD HH:mm');
+                postData.end = endMoment.format('YYYY-MM-DD HH:mm');
 
                 // AJAX request goes here.
                 $.ajax({
@@ -60,20 +51,17 @@ var creationReactor = (function(React, $) {
                     type: "POST",
                     data: JSON.stringify(postData),
                     contentType: "application/json",
-                    success: function(response) {},
-                    complete: function() {},
+                    success: function(response) {
+                        postData.id = response.event_id;
+                        $('#create-event-modal').modal('hide');
+                        $('#calendar').fullCalendar('renderEvent', postData, true);
+                    },
                     error: function (xhr, textStatus, thrownError) {
-                        // TODO handle error case?
+                        alert("An error occurred, please try again later.");
                         console.log(xhr.responseText);
                     }
                 });
 
-                $('#create-event-modal').modal('hide');
-                if (postData.location.length === 0)
-                    postData.location = 'No location';
-                if (postData.description.length === 0)
-                    postData.description = 'No description';
-                $('#calendar').fullCalendar('renderEvent', postData, true);
             }
         },
 
@@ -109,7 +97,7 @@ var creationReactor = (function(React, $) {
             // Responsible for rendering the event modal which consists of a form containing input fields,
             // and date time pickers for start and end dates.
             return (
-                <div id="create-event-modal" className="modal fade">
+                <div id="create-event-modal" className="modal fade" tabIndex="-1">
                     <div className="modal-dialog">
                         <div className="modal-content">
                             <div className="modal-header">
