@@ -53,17 +53,14 @@ var detailReactor = (function(React, $) {
                     type: "DELETE",
                     contentType: "application/json",
                     success: function (response) {
-                    },
-                    complete: function () {
-                    },
+                        $('#calendar').fullCalendar('removeEvents', this.state.id);
+                        $('#eventDetailModal').modal('hide');
+                    }.bind(this),
                     error: function (xhr, textStatus, thrownError) {
                         alert("An error occurred, please try again later.");
                         console.log(xhr.responseText);
                     }
                 });
-
-            $('#calendar').fullCalendar('removeEvents', this.state.id);
-            $('#eventDetailModal').modal('hide');
         },
 
         // User presses submit, sends AJAX request with required data. Ensures data is valid first.
@@ -114,26 +111,23 @@ var detailReactor = (function(React, $) {
                     data: JSON.stringify(putData),
                     contentType: "application/json",
                     success: function (response) {
-                    },
-                    complete: function () {
-                    },
+                        var full_calendar = $('#calendar');
+                        // Grab the first event and update it
+                        var result = full_calendar.fullCalendar('clientEvents', this.state.id)[0];
+                        result.title = putData.title;
+                        result.start = startMoment;
+                        result.end = endMoment;
+                        result.description = putData.description;
+                        result.location = putData.location;
+
+                        full_calendar.fullCalendar('updateEvent', result);
+                        $('#eventDetailModal').modal('hide');
+                    }.bind(this),
                     error: function (xhr, textStatus, thrownError) {
                         alert("An error occurred, please try again later.");
                         console.log(xhr.responseText);
                     }
                 });
-
-                var full_calendar = $('#calendar');
-                // Grab the first event and update it
-                var result = full_calendar.fullCalendar('clientEvents', this.state.id)[0];
-                result.title = putData.title;
-                result.start = startMoment;
-                result.end = endMoment;
-                result.description = putData.description;
-                result.location = putData.location;
-
-                full_calendar.fullCalendar('updateEvent', result);
-                $('#eventDetailModal').modal('hide');
             }
         },
 
@@ -168,6 +162,7 @@ var detailReactor = (function(React, $) {
         render: function()  {
             // This will be the form that will be rendered upon clicking edit button.
             // The Default detail should probably be a larger part including the header of the modal.
+            // TODO: ternaries are cool guys, but eventually refactor into 2 components
             var form = this.state.edit ? <InputForm ref="inputForm" /> : <DefaultDetail location={this.state.location} description={this.state.description} />;
             var edit_submit_button = this.state.edit ? this.handleSubmit : this.handleEdit;
             var edit_submit_text = this.state.edit ? "Save Changes" : "Edit Event";

@@ -54,10 +54,8 @@ var creationReactor = (function(React, $) {
                     success: function(response) {
                         postData.id = response.event_id;
                         $('#create-event-modal').modal('hide');
-
                         $('#calendar').fullCalendar('renderEvent', postData, true);
                     },
-                    complete: function() {},
                     error: function (xhr, textStatus, thrownError) {
                         alert("An error occurred, please try again later.");
                         console.log(xhr.responseText);
