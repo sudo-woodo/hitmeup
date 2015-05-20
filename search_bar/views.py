@@ -10,6 +10,7 @@ from haystack.query import SearchQuerySet
 class Search(View):
     def get(self, request):
         form = UserSearchForm(data=request.GET)
+        print form
         user = form.search() # form.search() returns a SearchQuerySet
         if user:
             # Best_match() will get the SearchResult, then you get the user and the username
@@ -20,7 +21,8 @@ class Search(View):
         # Not an exact username, need auto-complete!
         else:
             # The second parameter is the default value. Returns SearchResult object.
-            sqs = SearchQuerySet().autocomplete(user_auto=request.GET.get('q', "Error: No match"))[:5]
+            sqs = SearchQuerySet().autocomplete(user_auto=request.GET.get('q', "Error: Key 'q' not found."))[:5]
+            print sqs
             suggestions = [result.object.get_username() for result in sqs]
 
             # Make sure you return a JSON object, not a bare list,
