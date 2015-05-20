@@ -60,7 +60,7 @@ class UserProfile(models.Model):
     def flatten_busy(self, other, show_range):
         from ourcalendar.models import Event
 
-        events = Event.objects.filter(calendar__ownder=self,
+        events = Event.objects.filter(calendar__owner=self,
                                       start__gt=show_range.start,
                                       end__lt=show_range.end)
 

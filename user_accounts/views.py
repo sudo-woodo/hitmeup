@@ -171,7 +171,12 @@ class UserProfile(View):
             'jsx': [
                 'user_accounts/js/profile.jsx'
             ],
-            'js_data': {}
+            'js_data': {
+                'user_events': [e.serialize() for e in
+                       request.user.profile.calendars.get(title='Default').events.all()],
+                'friend_events': [e.serialize() for e in
+                       User.objects.get(username=username).profile.calendars.get(title="Default").events.all()]
+            }
         }
 
         if request.user.is_authenticated():
