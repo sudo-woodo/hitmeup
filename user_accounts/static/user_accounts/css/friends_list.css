@@ -83,11 +83,27 @@ body {
     pointer-events: all;
 }
 
-.calendar-link:hover {
+.profile-link:hover {
     text-decoration: none;
 }
+
+.refresh-button {
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    background-color: #388e3c;
+    color: white;
+    border-color: #bdbdbd;
+}
+
 .fav-icon {
+    cursor: pointer;
     color: #ff4081;
+}
+
+.fav {
+    animation: doki-doki;
+    animation-duration: 1s;
 }
 
 .free, .free-icon {
@@ -96,4 +112,22 @@ body {
 
 .busy, .busy-icon {
     color: #d50000;
+}
+
+.friend-box-animation-enter {
+    opacity: 0.01;
+    transition: opacity .4s linear;
+}
+
+.friend-box-animation-enter.friend-box-animation-enter-active {
+    opacity: 1;
+}
+
+@keyframes doki-doki {
+    0% {transform:scale(1)}
+    25% {transform:scale(1.2)}
+    50% {transform:scale(1)}
+    75% {transform:scale(1.2)}
+    100% {transform:scale(1)}
+
 }

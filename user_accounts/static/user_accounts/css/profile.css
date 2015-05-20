@@ -97,12 +97,15 @@ body {
     height: 100%;
     text-align: center;
     padding: 10px 10px 0 10px;
-    /*animation-name: enter;
-    animation-duration: .9s;*/
 }
 
 .action-button:hover {
     background-color: #e0e0e0;
+}
+
+.friend-button-set {
+    animation-name: enter;
+    animation-duration: .9s;
 }
 
 .pending-message {
@@ -112,8 +115,6 @@ body {
     height: 40px;
     border-right: solid #bdbdbd 1px;
     padding: 0 10px 0 10px;
-    /*animation-name: enter;
-    animation-duration: .9s;*/
 }
 
 #pending-text {
@@ -128,18 +129,18 @@ body {
     hyphens: auto;
     -ms-hyphens: auto;
     -moz-hyphens: auto;
-    /*animation: popout;
-    animation-duration: 1s;
-    animation-timing-function: ease-out;*/
+    animation: popout;
+    animation-duration: 1.8s;
+    animation-timing-function: ease-in;
 }
 
 #calendar-panel {
     margin-top: 30px;
     border-color: #bdbdbd;
-    /*animation: popout;
-    animation-duration: 1s;
-    animation-delay: .5s;
-    animation-timing-function: ease-out;*/
+    animation: popout;
+    animation-duration: 1.2s;
+    animation-delay: .6s;
+    animation-timing-function: ease-in;
 }
 
 @keyframes enter {
@@ -149,12 +150,12 @@ body {
 
 @keyframes popout {
     from{transform:scale(0)}
-    80%{transform:scale(1.05)}
+    60%{transform:scale(1.05)}
     to{transform:scale(1)}
 }
 
 @-webkit-keyframes popout {
     from{-webkit-transform:scale(0)}
-    80%{-webkit-transform:scale(1.05)}
+    60%{-webkit-transform:scale(1.05)}
     to{-webkit-transform:scale(1)}
 }
