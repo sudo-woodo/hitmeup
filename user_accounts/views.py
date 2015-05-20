@@ -1,4 +1,5 @@
 from django.contrib.auth import authenticate, login
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import logout_then_login
 from django.core.urlresolvers import reverse
 from django.http.response import HttpResponseRedirect
@@ -94,33 +95,25 @@ def logout(request):
 
 
 class EditView(View):
+    @login_required()
     def post(self, request):
         # Profile of user logged in
         profile = request.user.profile
         # Creates form with initial values
-        edit_form = EditForm(initial={'first_name': profile.first_name,
-                                      'last_name': profile.last_name,
-                                      'email': profile.email,
-                                      'phone': profile.phone,
-                                      'bio': profile.bio},
-                             data=request.POST)
+        edit_form = EditForm(data=request.POST)
         if edit_form.is_valid():
             # Iterator to iterate form
             updated_fields = {}
-            updated_passwords = {}
             # Gets non-empty field values
             for key, val in edit_form.cleaned_data.iteritems():
                 if val != u'':
-                    if key == 'new_password' or key == 'current_password':
-                        updated_passwords[key] = val
-                    else:
-                        updated_fields[key] = val
+                    updated_fields[key] = val
 
             # Password is not empty
-            if len(updated_passwords) == 2:
+            if updated_fields.viewkeys() >= {'current_password', 'new_password'}:
                 # Authenticates the "current password"
-                user = authenticate(username=request.user,
-                                    password=updated_passwords['current_password'])
+                user = authenticate(username=request.user.username,
+                                    password=updated_fields['current_password'])
                 if user:
                     # Update new field values
                     for key in updated_fields:
@@ -137,41 +130,38 @@ class EditView(View):
                                 updated_fields[key]
                             )
                     # Sets password
-                    request.user.set_password(updated_passwords['new_password'])
+                    request.user.set_password(updated_fields['new_password'])
                     request.user.save()
                     profile.save()
                     # Signs user in again
-                    new_user = authenticate(username=request.user,
-                                            password=updated_passwords['new_password'])
+                    new_user = authenticate(username=request.user.username,
+                                            password=updated_fields['new_password'])
                     login(request, new_user)
                     return HttpResponseRedirect(reverse('user_accounts:edit'))
                 else:
-                    edit_form = EditForm(initial={'first_name': profile.first_name,
-                                              'last_name': profile.last_name,
-                                              'email': profile.email,
-                                              'phone': profile.phone,
-                                              'bio': profile.bio})
-                    return render(request, 'user_accounts/edit.jinja', {
-                        'edit_form': edit_form,
-                        'error_messages': ['Incorrect password.']
-                    })
+                    return render(request, 'user_accounts/edit.jinja',
+                                  {'edit_form': EditForm(initial={'first_name': profile.first_name,
+                                                                  'last_name': profile.last_name,
+                                                                  'email': profile.email,
+                                                                  'phone': profile.phone,
+                                                                  'bio': profile.bio}),
+                                   'error_messages': ['Incorrect password.']
+                                   })
             # 1 missing password field
-            elif len(updated_passwords) == 1:
+            elif updated_fields.viewkeys() >= {'current_password'} or updated_fields.viewkeys() >= {'new_password'}:
                 # Sets error message
-                if 'current_password' not in updated_passwords:
+                if 'current_password' not in updated_fields:
                     error = ['Must enter current password.']
                 else:
                     error = ['Must enter new password.']
-
-                edit_form = EditForm(initial={'first_name': profile.first_name,
-                                              'last_name': profile.last_name,
-                                              'email': profile.email,
-                                              'phone': profile.phone,
-                                              'bio': profile.bio})
-                return render(request, 'user_accounts/edit.jinja', {
-                    'edit_form': edit_form,
-                    'error_messages': error
-                })
+                return render(request, 'user_accounts/edit.jinja',
+                              {'edit_form': EditForm(initial={'first_name': profile.first_name,
+                                                              'last_name': profile.last_name,
+                                                              'email': profile.email,
+                                                              'phone': profile.phone,
+                                                              'bio': profile.bio}),
+                               'error_messages': error
+                               })
             # Assumes user does not want to change password
             else:
                 # Iterates through dictionary
@@ -196,21 +186,17 @@ class EditView(View):
             return render(request, 'user_accounts/edit.jinja',{
                 'edit_form': edit_form
             })
-
+    @login_required()
     def get(self, request):
         # Only allows user to change account info if logged in
+        profile = request.user.profile
         if request.user.is_authenticated():
-            profile = request.user.profile
-            edit_form = EditForm(initial={'first_name': profile.first_name,
-                                          'last_name': profile.last_name,
-                                          'email': profile.email,
-                                          'phone': profile.phone,
-                                          'bio':profile.bio
-
-            })
-            # Sets both initial and placeholder value
-            return render(request, 'user_accounts/edit.jinja', {
-                'edit_form': edit_form
-            })
+            return render(request, 'user_accounts/edit.jinja',
+                          {'edit_form': EditForm(initial={'first_name': profile.first_name,
+                                                          'last_name': profile.last_name,
+                                                          'email': profile.email,
+                                                          'phone': profile.phone,
+                                                          'bio': profile.bio}),
+                           })
         # Else returns to the home page
         return HttpResponseRedirect(reverse('static_pages:home'))
