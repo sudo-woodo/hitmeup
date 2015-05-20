@@ -65,6 +65,7 @@ class SignUpExtendedForm(forms.Form):
         max_length=300,
         widget=forms.Textarea(
             attrs={
+                'rows': 4,
                 'class': 'form-control',
                 'placeholder': 'Write a short bio about yourself.',
                 'id': 'bio',

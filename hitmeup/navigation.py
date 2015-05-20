@@ -9,5 +9,10 @@ entries = [
         'name': 'Friends',
         'view': 'user_accounts:friendsList',
         'auth_required': True
-    }
+    },
+    {
+        'name': 'Calendar',
+        'view': 'calendar:view_calendar',
+        'auth_required': True,
+    },
 ]

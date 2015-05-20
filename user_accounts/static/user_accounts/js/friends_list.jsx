@@ -14,7 +14,7 @@
                     this.setState({friends: data['objects']});
                 }.bind(this),
                 error: function() {
-                    alert('Something went wrong with retrieving your' +
+                    alert('Something went wrong with retrieving your ' +
                     'friends list, refresh.')
                 }
             });

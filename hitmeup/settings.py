@@ -50,6 +50,7 @@ INSTALLED_APPS = (
     'dynamic_components',
     'static_pages',
     'user_accounts',
+    'ourcalendar',
     'notifications',
 )
 
@@ -135,13 +136,13 @@ DATABASES = {
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'America/Los_Angeles'
 
 USE_I18N = True
 
 USE_L10N = True
 
-USE_TZ = True
+USE_TZ = False
 
 
 # Static files (CSS, JavaScript, Images)
@@ -183,3 +184,7 @@ SCAFFOLDAPP_FILES = [
 # Authentication
 LOGIN_URL = '/login/'
 CSRF_FAILURE_VIEW = 'hitmeup.views.csrf_failure'
+
+
+# Fullcalendar
+TIME_FMT = '%Y-%m-%dT%H:%M:%S'

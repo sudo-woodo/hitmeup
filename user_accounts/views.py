@@ -98,7 +98,8 @@ class LoginView(View):
             user = authenticate(username=login_form.cleaned_data['username'],
                                 password=login_form.cleaned_data['password'])
             if user:
-                # if the user is active, log them in and redirect to home
+                # If the user is active, log them in and redirect to next
+                # destination if specified; if not, redirect to home
                 if user.is_active:
                     login(request, user)
                     destination = request.GET.get(
@@ -146,13 +147,20 @@ def logout(request):
 
 @login_required
 def friends_list(request):
+    def serialize(friend):
+        friendship = request.user.profile.get_friendship(friend)
+        serialized = friend.basic_serialized
+        serialized['favorite'] = friendship.favorite
+        return serialized
+
     return render(request, 'user_accounts/friends_list.jinja', {
         'css': [
             'user_accounts/css/friends_list.css'
         ],
         'ext_js': [
-            'https://cdnjs.cloudflare.com/ajax/libs/react/0.13.2/'
-            'react-with-addons.min.js',
+            #'https://cdnjs.cloudflare.com/ajax/libs/react/0.13.2/'
+            #'react-with-addons.min.js',
+            'https://fb.me/react-with-addons-0.13.3.js',
             'https://cdnjs.cloudflare.com/ajax/libs/react/0.13.0/'
             'JSXTransformer.js',
         ],
@@ -160,25 +168,26 @@ def friends_list(request):
             'user_accounts/js/friends_list.jsx',
         ],
         'js_data': {
-            'friends': [f.basic_serialized for f in
-                            request.user.profile.friends]
+            'friends': [serialize(f) for f in
+                        request.user.profile.friends]
         },
-	})
+    })
+
 
 class UserProfile(View):
     def get(self, request, username):
         context = {
             'ext_css': [
-                'http://fullcalendar.io/js/fullcalendar-2.3.1/'
+                '//fullcalendar.io/js/fullcalendar-2.3.1/'
                 'fullcalendar.min.css'
             ],
             'css': [
                 'user_accounts/css/profile.css'
             ],
             'ext_js': [
-                'http://cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/'
+                '//cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/'
                 'moment.min.js',
-                'http://fullcalendar.io/js/fullcalendar-2.3.1/'
+                '//fullcalendar.io/js/fullcalendar-2.3.1/'
                 'fullcalendar.min.js',
                 'https://cdnjs.cloudflare.com/ajax/libs/react/0.13.2/'
                 'react-with-addons.min.js',
