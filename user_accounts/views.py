@@ -9,6 +9,7 @@ from django.utils.html import escape
 from django.views.generic import View
 from user_accounts.forms import UserForm, SignupForm, SignUpExtendedForm
 from user_accounts.models import Friendship
+from communications.emails import send_test_mail
 
 
 class SignUpView(View):
@@ -71,7 +72,9 @@ class SignUpExtended(View):
                         )
             user.save()
             user.profile.save()
+            send_test_mail()
             return HttpResponseRedirect(reverse('static_pages:home'))
+
         # If there's an form error, rerender with errors
         else:
             return render(request, 'user_accounts/signup_extended.jinja', {

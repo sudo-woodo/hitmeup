@@ -181,14 +181,15 @@ LOGIN_URL = '/login/'
 CSRF_FAILURE_VIEW = 'hitmeup.views.csrf_failure'
 
 # Emails
-EMAIL_HOST = 'mail.optonline.net'
-EMAIL_HOST_USER = 'aarong4743'
-EMAIL_HOST_PASSWORD = 'triple3'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = 'sudowoodohitmeup@gmail.com'
+EMAIL_HOST_PASSWORD = 'bobandkavin'
 EMAIL_PORT = 587
-EMAIL_USE_TLS = False
+EMAIL_USE_TLS = True
 
 #EMAIL_BACKEND = 'django.core.mail.backends.dummy.EmailBackend'
+#EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 
 # SMS Setup
 #SENDSMS_BACKEND = 'myapp.mysmsbackend.SmsBackend'
-SENDSMS_BACKEND = 'sendsms.backends.console.SmsBackend'
+#SENDSMS_BACKEND = 'sendsms.backends.console.SmsBackend'
