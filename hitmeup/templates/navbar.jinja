@@ -37,7 +37,7 @@
             <ul class="nav navbar-nav navbar-right">
                 <li class="search-bar">
                     <div class="search-bar-container">
-                        <form id="search_form" class="form-inline" role="search" method="post"
+                        <form id="search_form" class="form-inline" role="search" method="get"
                             action="{{ url('search_bar:search') }}" padding-top="5px">
                             {% csrf_token %}
                             <div class="form-group">

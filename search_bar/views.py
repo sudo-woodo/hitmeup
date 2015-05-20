@@ -18,9 +18,8 @@ def autocomplete(request):
     return HttpResponse(the_data, content_type='application/json')
 
 class Search(View):
-    def post(self, request):
-        print request.POST
-        form = UserSearchForm(data=request.POST)
+    def get(self, request):
+        form = UserSearchForm(data=request.GET)
         user = form.search() # form.search() returns a SearchQuerySet
 
         # best_match() will get the SearchResult, then you get the user and the username
