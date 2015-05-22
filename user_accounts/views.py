@@ -145,7 +145,7 @@ def logout(request):
     return logout_then_login(request)
 
 
-class EditView(View):
+class EditAccountView(View):
     def post(self, request):
         # Profile of user logged in
         profile = request.user.profile
@@ -187,7 +187,7 @@ class EditView(View):
                     new_user = authenticate(username=request.user.username,
                                             password=updated_fields['new_password'])
                     login(request, new_user)
-                    return HttpResponseRedirect(reverse('user_accounts:edit'))
+                    return HttpResponseRedirect(reverse('user_accounts:edit_account'))
                 else:
                     return render(request, 'user_accounts/edit.jinja',
                                   {'edit_form': EditForm(initial={'first_name': profile.first_name,
@@ -230,7 +230,7 @@ class EditView(View):
                             )
                 request.user.save()
                 profile.save()
-                return HttpResponseRedirect(reverse('user_accounts:edit'))
+                return HttpResponseRedirect(reverse('user_accounts:edit_account'))
         else:
             # Sets both initial and placeholder value
             return render(request, 'user_accounts/edit.jinja',{

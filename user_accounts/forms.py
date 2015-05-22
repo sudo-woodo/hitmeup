@@ -74,7 +74,7 @@ class EditForm(forms.Form):
         widget=forms.Textarea(
             attrs={
                 'class': 'form-control',
-                'placeholder': 'Write about a quick bio about yourself :^)',
+                'placeholder': 'Write about a quick bio about yourself.',
                 'id': 'bio',
                 'name': 'Bio'
             }

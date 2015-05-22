@@ -36,9 +36,13 @@
                                     My Profile
                                 </a>
                             </li>
+                            <li>
+                                <a href="{{ url('user_accounts:edit_account') }}">
+                                    Edit Settings
+                                </a>
+                            </li>
                             <li role="presentation" class="divider"></li>
                             <li><a href="{{ url('user_accounts:logout') }}">Logout</a></li>
-                            <li><a href="{{ url('user_accounts:edit') }}">Edit Settings</a></li>
                         </ul>
                     </li>
 

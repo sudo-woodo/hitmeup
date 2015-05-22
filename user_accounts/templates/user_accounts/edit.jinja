@@ -33,9 +33,9 @@
             {% endif %}
         {% endfor %}
 
-        <form id="edit_form" method="post" action="{{ url('user_accounts:edit') }}"
+        <form id="edit_form" method="post" action="{{ url('user_accounts:edit_account') }}"
               enctype="multipart/form-data">
-            
+
             {% csrf_token %}
 
             {% for field in edit_form %}
