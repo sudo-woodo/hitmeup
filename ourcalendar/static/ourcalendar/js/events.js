@@ -19,8 +19,9 @@
                     title: event.title,
                     location: event.location,
                     description: event.description,
-                    start: moment(event.start).format('LLL'),
-                    end: moment(event.end).format('LLL')
+                    start: event.start.format('LLL'),
+                    end: event.end.format('LLL'),
+                    id: event.id
                 });
 
                 // Dev tip: can use event.id to get the clicked event's id
@@ -45,7 +46,49 @@
                 $("#create-event-modal").modal('show');
             },
             forceEventDuration: true,
-            allDaySlot: false
+            allDaySlot: false,
+
+            eventDrop: function(event, delta, revertFunc)  {
+                $.ajax({
+                    url: '/api/events/' + event.id + '/',
+                    type: "PUT",
+                    data: JSON.stringify({
+                        start: event.start.format('YYYY-MM-DD HH:mm'),
+                        end: event.end.format('YYYY-MM-DD HH:mm')
+                    }),
+                    contentType: "application/json",
+                    success: function (response) {
+                    },
+                    complete: function () {
+                    },
+                    error: function (xhr, textStatus, thrownError) {
+                        revertFunc();
+                        alert("An error occurred, please try again later.");
+                        console.log(xhr.responseText);
+                    }
+                });
+            },
+
+            eventResize: function(event, delta, revertFunc)  {
+                $.ajax({
+                    url: '/api/events/' + event.id + '/',
+                    type: "PUT",
+                    data: JSON.stringify({
+                        start: event.start.format('YYYY-MM-DD HH:mm'),
+                        end: event.end.format('YYYY-MM-DD HH:mm')
+                    }),
+                    contentType: "application/json",
+                    success: function (response) {
+                    },
+                    complete: function () {
+                    },
+                    error: function (xhr, textStatus, thrownError) {
+                        revertFunc();
+                        alert("An error occurred, please try again later.");
+                        console.log(xhr.responseText);
+                    }
+                });
+            }
         })
     });
 })(window.jQuery, window.$HMU);

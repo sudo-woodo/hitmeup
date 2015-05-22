@@ -1,3 +1,4 @@
+from django.core.urlresolvers import reverse
 import django.dispatch
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
@@ -5,11 +6,13 @@ from django.core.validators import RegexValidator
 from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch.dispatcher import receiver
+from ourcalendar.logic.intervals import Interval
 from user_accounts.templatetags import gravatar
+from django.utils import timezone
 
 
-request_friend = django.dispatch.Signal(providing_args=["from_friend", "to_friend"])
-accept_friend = django.dispatch.Signal(providing_args=["from_friend", "to_friend"])
+request_friend = django.dispatch.Signal(providing_args=['from_friend', 'to_friend'])
+accept_friend = django.dispatch.Signal(providing_args=['from_friend', 'to_friend'])
 
 
 class UserProfile(models.Model):
@@ -19,8 +22,7 @@ class UserProfile(models.Model):
                                               related_name='incoming_friends')
     phone_regex = RegexValidator(
         regex=r'^\+?\d{10,15}$',
-        message="Phone number must be entered in the format: "
-                "'+999999999'. Up to 15 digits allowed.")
+        message="Phone number must be between 10 to 15 digits.")
     phone = models.CharField(max_length=16, validators=[phone_regex], blank=True)
     bio = models.TextField(max_length=300, blank=True)
 
@@ -28,6 +30,10 @@ class UserProfile(models.Model):
         return self.user.username
 
     # Word of caution: none of these attributes are "settable."
+    @property
+    def username(self):
+        return self.user.username
+
     @property
     def first_name(self):
         return self.user.first_name
@@ -47,6 +53,36 @@ class UserProfile(models.Model):
     def get_gravatar_url(self, size=80):
         return gravatar.gravatar_url(self.user.email, size)
 
+    # Calendar helpers
+
+    # Flattens busy times
+    # TODO TEST ME
+    def flatten_busy(self, other, show_range):
+        from ourcalendar.models import Event
+
+        events = Event.objects.filter(calendar__ownder=self,
+                                      start__gt=show_range.start,
+                                      end__lt=show_range.end)
+
+        return Interval.flatten_intervals(events)
+
+    # Whether or not this user is available right now
+    # TODO TEST ME
+    @property
+    def is_free(self):
+        from ourcalendar.models import Event
+
+        for event in Event.objects.filter(calendar__owner=self):
+            if event.happens_when(timezone.now()):
+                return False
+        return True
+
+    # Friendship helpers
+
+    @property
+    def profile_url(self):
+        return reverse('user_accounts:user_profile', args=(self.username,))
+
     @property
     def friends(self):
         # Only friends you have accepted AND friends that have accepted you
@@ -65,8 +101,16 @@ class UserProfile(models.Model):
         return self.outgoing_friends.filter(
             incoming_friendships__accepted=False)
 
-    # Throws IntegrityError if friendship already exists
+    def get_friendship(self, other):
+        return Friendship.objects.get(from_friend=self, to_friend=other)
+
     def add_friend(self, other):
+        """
+        Adds a friend.
+        :param other: The friend to add
+        :return: A tuple consisting of the Friendship and whether or not it was
+        created.
+        """
         # Check if an incoming friendship exists
         try:
             incoming = Friendship.objects.get(
@@ -95,7 +139,13 @@ class UserProfile(models.Model):
         return outgoing, created
 
     def del_friend(self, other):
-        outgoing_deleted, incoming_deleted = True
+        """
+        Deletes a friend, both ways.
+        :param other: The friend to delete
+        :return: A tuple consisting of whether the incoming friendship
+        was deleted, and whether the outgoing friendship was deleted.
+        """
+        outgoing_deleted = incoming_deleted = True
 
         # Delete the outgoing
         try:
@@ -126,6 +176,7 @@ class Friendship(models.Model):
     to_friend = models.ForeignKey(UserProfile,
                                   related_name='incoming_friendships')
     accepted = models.BooleanField(default=False)
+    favorite = models.BooleanField(default=False)
 
     class Meta:
         unique_together = ('from_friend', 'to_friend')
