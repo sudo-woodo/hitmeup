@@ -1,4 +1,3 @@
-__author__ = 'goodoldbob'
 # forms.py
 from haystack.forms import SearchForm
 
