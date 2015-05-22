@@ -3,6 +3,8 @@ from django.db.models.signals import post_save
 from django.dispatch.dispatcher import receiver
 from django.utils import timezone
 from django.db import models
+from django.conf import settings
+from ourcalendar.logic.intervals import Interval
 from user_accounts.models import UserProfile
 
 
@@ -39,15 +41,29 @@ class Event(models.Model):
     location = models.CharField(max_length=200, blank=True)
     description = models.TextField(max_length=600, blank=True)
 
+    DEFAULT_TIME_FMT = '%Y-%m-%dT%H:%M:%S'
+
     def __unicode__(self):
         return "%s -> %s -> %s" % (self.calendar.owner, self.calendar, self.title)
 
+    # Serializes the event for the fullcalendar
     def serialize(self):
         return {
             'id': self.id,
             'title': self.title,
-            'start': self.start.strftime('%Y-%m-%dT%H:%M:%S'),
-            'end': self.end.strftime('%Y-%m-%dT%H:%M:%S'),
+            'start': self.start.strftime(getattr(settings, 'TIME_FMT',
+                                                 self.DEFAULT_TIME_FMT)),
+            'end': self.end.strftime(getattr(settings, 'TIME_FMT',
+                                             self.DEFAULT_TIME_FMT)),
             'location': self.location,
             'description': self.description,
         }
+
+    # Returns an Interval for comparison operations
+    @property
+    def as_interval(self):
+        return Interval(self.start, self.end)
+
+    # Returns whether or not a datetime is in the range of the event
+    def happens_when(self, time):
+        return self.start < time < self.end

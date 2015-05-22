@@ -184,3 +184,7 @@ SCAFFOLDAPP_FILES = [
 # Authentication
 LOGIN_URL = '/login/'
 CSRF_FAILURE_VIEW = 'hitmeup.views.csrf_failure'
+
+
+# Fullcalendar
+TIME_FMT = '%Y-%m-%dT%H:%M:%S'

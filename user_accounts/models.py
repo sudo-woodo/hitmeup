@@ -1,3 +1,4 @@
+from django.core.urlresolvers import reverse
 import django.dispatch
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
@@ -5,11 +6,13 @@ from django.core.validators import RegexValidator
 from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch.dispatcher import receiver
+from ourcalendar.logic.intervals import Interval
 from user_accounts.templatetags import gravatar
+from django.utils import timezone
 
 
-request_friend = django.dispatch.Signal(providing_args=["from_friend", "to_friend"])
-accept_friend = django.dispatch.Signal(providing_args=["from_friend", "to_friend"])
+request_friend = django.dispatch.Signal(providing_args=['from_friend', 'to_friend'])
+accept_friend = django.dispatch.Signal(providing_args=['from_friend', 'to_friend'])
 
 
 class UserProfile(models.Model):
@@ -53,6 +56,36 @@ class UserProfile(models.Model):
 
     def get_gravatar_url(self, size=80):
         return gravatar.gravatar_url(self.user.email, size)
+
+    # Calendar helpers
+
+    # Flattens busy times
+    # TODO TEST ME
+    def flatten_busy(self, other, show_range):
+        from ourcalendar.models import Event
+
+        events = Event.objects.filter(calendar__ownder=self,
+                                      start__gt=show_range.start,
+                                      end__lt=show_range.end)
+
+        return Interval.flatten_intervals(events)
+
+    # Whether or not this user is available right now
+    # TODO TEST ME
+    @property
+    def is_free(self):
+        from ourcalendar.models import Event
+
+        for event in Event.objects.filter(calendar__owner=self):
+            if event.happens_when(timezone.now()):
+                return False
+        return True
+
+    # Friendship helpers
+
+    @property
+    def profile_url(self):
+        return reverse('user_accounts:user_profile', args=(self.username,))
 
     @property
     def friends(self):

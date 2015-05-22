@@ -27,6 +27,7 @@ def calendar(request):
             'ourcalendar/js/events.js',
         ],
         'jsx': [
+            'ourcalendar/jsx/event_modal_error.jsx',
             'ourcalendar/jsx/datetime_field.jsx',
             'ourcalendar/jsx/input_form.jsx',
             'ourcalendar/jsx/create_event_modal.jsx',
