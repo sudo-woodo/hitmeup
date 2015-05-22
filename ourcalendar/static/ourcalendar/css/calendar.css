@@ -1,0 +1,17 @@
+#calendar {
+    max-width: 90%;
+    margin: 20px auto auto auto;
+}
+
+.modal-body textArea {
+    max-width: 100%;
+    min-width: 100%;
+}
+
+.fa-ul {
+    margin-bottom: 0;
+}
+
+#desc-loc-container {
+    word-wrap: break-word;
+}

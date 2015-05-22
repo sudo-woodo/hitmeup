@@ -67,6 +67,7 @@ INSTALLED_APPS = (
     # Vendor
     'django_jinja',
     'haystack',
+    'restless',
 
     # Custom
     'hitmeup',
@@ -75,6 +76,8 @@ INSTALLED_APPS = (
     'static_pages',
     'user_accounts',
 
+    'ourcalendar',
+    'notifications',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -102,6 +105,7 @@ CONTEXT_PROCESSORS = [
 
     # Custom
     'dynamic_components.context_processors.navbar',
+    'notifications.context_processors.notification_count',
 ]
 
 TEMPLATES = [
@@ -158,27 +162,33 @@ DATABASES = {
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'America/Los_Angeles'
 
 USE_I18N = True
 
 USE_L10N = True
 
-USE_TZ = True
+USE_TZ = False
 
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.8/howto/static-files/
 
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR, 'static'),
+)
+
 STATIC_ROOT = 'staticroot'
 
 STATIC_URL = '/static/'
+
 
 # Navigation
 
 from navigation import entries
 
 NAVBAR_ENTRIES = entries
+
 
 # Scaffold command
 
@@ -196,5 +206,11 @@ SCAFFOLDAPP_FILES = [
     (os.path.join('{app}', 'urls.py'), "describes {app}'s routes"),
 ]
 
+
 # Authentication
 LOGIN_URL = '/login/'
+CSRF_FAILURE_VIEW = 'hitmeup.views.csrf_failure'
+
+
+# Fullcalendar
+TIME_FMT = '%Y-%m-%dT%H:%M:%S'

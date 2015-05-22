@@ -23,12 +23,11 @@
 
         <form id="signup_form" method="post" action="{{ url('user_accounts:signup') }}"
               enctype="multipart/form-data">
-            
+
             {% csrf_token %}
 
             {% for field in signup_form %}
                 <div class="form-group">
-                    {{ field.label_tag() }}
                     {{ field }}
                 </div>
             {% endfor %}
