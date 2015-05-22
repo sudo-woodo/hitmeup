@@ -1,5 +1,4 @@
 from django.contrib.auth import authenticate, login
-from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import logout_then_login
 from django.core.urlresolvers import reverse
 from django.http.response import HttpResponseRedirect
@@ -7,7 +6,6 @@ from django.shortcuts import render
 from django.utils.html import escape
 from django.views.generic import View
 from user_accounts.forms import SignupForm, UserForm, EditForm
-from django.contrib.auth.models import User
 
 
 class SignUpView(View):
@@ -95,7 +93,6 @@ def logout(request):
 
 
 class EditView(View):
-    @login_required()
     def post(self, request):
         # Profile of user logged in
         profile = request.user.profile
@@ -186,7 +183,7 @@ class EditView(View):
             return render(request, 'user_accounts/edit.jinja',{
                 'edit_form': edit_form
             })
-    @login_required()
+
     def get(self, request):
         # Only allows user to change account info if logged in
         profile = request.user.profile
