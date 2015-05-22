@@ -147,6 +147,17 @@ def logout(request):
 
 class UserProfile(View):
     def get(self, request, username):
+        friend_events = []
+        try:
+            friend = User.objects.get(username=username).profile
+            friendship = request.user.profile.get_friendship(friend)
+            if username != request.user.username and \
+                    friendship is not None and friendship.accepted:
+                friend_events = [e.serialize() for e in
+                                 friend.calendars.get(title="Default").events.all()]
+        except (User.DoesNotExist, Friendship.DoesNotExist):
+            pass
+
         context = {
             'ext_css': [
                 'http://fullcalendar.io/js/fullcalendar-2.3.1/'
@@ -173,9 +184,8 @@ class UserProfile(View):
             ],
             'js_data': {
                 'user_events': [e.serialize() for e in
-                       request.user.profile.calendars.get(title='Default').events.all()],
-                'friend_events': [e.serialize() for e in
-                       User.objects.get(username=username).profile.calendars.get(title="Default").events.all()]
+                                request.user.profile.calendars.get(title='Default').events.all()],
+                'friend_events': friend_events
             }
         }
 
