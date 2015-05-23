@@ -1,10 +1,13 @@
 language: python
 python: 2.7
+sudo: required
 cache:
   directories:
   - $HOME/.cache/pip
 services: postgresql
   - elasticsearch
+before_install:
+  - curl -O https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-1.4.0.deb && sudo dpkg -i --force-confnew elasticsearch-1.2.4.deb
 install: pip install -r requirements.txt
 before_script:
 - sleep 10
