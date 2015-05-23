@@ -1,18 +1,19 @@
-from django.shortcuts import render
+from django.core.urlresolvers import reverse
+from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.views.generic import View
 from triton_sync.forms import TritonLinkLoginForm
-from triton_sync.logic.sync import get_classes, AuthenticationException, TritonLinkException
+from triton_sync.logic.sync import get_classes, AuthenticationException, TritonLinkException, import_schedule
 
 
 class LoginView(View):
     @method_decorator(login_required)
     def post(self, request):
-        # TODO create events accordingly
         login_form = TritonLinkLoginForm(data=request.POST)
         classes = []
 
+        # Get the user's classes from TritonLink
         if login_form.is_valid():
             username = login_form.cleaned_data['username']
             password = login_form.cleaned_data['password']
@@ -33,9 +34,9 @@ class LoginView(View):
                     ]
                 })
 
-        return render(request, 'triton_sync/sync.jinja', {
-            'classes': classes
-        })
+        # Create events for each of the user's class
+        import_schedule(request.user.profile, classes)
+        return redirect(reverse('calendar:view_calendar'))
 
     @method_decorator(login_required)
     def get(self, request):
