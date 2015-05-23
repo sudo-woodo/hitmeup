@@ -149,17 +149,14 @@ class UserProfile(View):
     def get(self, request, username):
         context = {
             'ext_css': [
-                'http://fullcalendar.io/js/fullcalendar-2.3.1/'
-                'fullcalendar.min.css'
+                '//fullcalendar.io/js/fullcalendar-2.3.1/fullcalendar.min.css',
             ],
             'css': [
                 'user_accounts/css/profile.css'
             ],
             'ext_js': [
-                'http://cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/'
-                'moment.min.js',
-                'http://fullcalendar.io/js/fullcalendar-2.3.1/'
-                'fullcalendar.min.js',
+                '//cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment.min.js',
+                '//fullcalendar.io/js/fullcalendar-2.3.1/fullcalendar.min.js',
                 'https://cdnjs.cloudflare.com/ajax/libs/react/0.13.2/'
                 'react-with-addons.min.js',
                 'https://cdnjs.cloudflare.com/ajax/libs/react/0.13.0/'
