@@ -13,10 +13,11 @@ before_script:
 - sleep 10
 - psql -c "create user hmu with password 'hmu';" -U postgres
 - psql -c "alter user hmu createdb;" -U postgres
+- elasticsearch -f -D es.config=/usr/local/Cellar/elasticsearch/0.90.0/config/elasticsearch.yml
+- python manage.py rebuild_index
+- y
 script:
 - python manage.py test
-- sudo service elasticsearch status
-- python manage.py rebuild_index
 branches:
   only:
   - master
