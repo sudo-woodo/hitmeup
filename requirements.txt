@@ -1,3 +1,4 @@
+beautifulsoup4==4.3.2
 coverage==3.7.1
 dj-database-url==0.3.0
 dj-static==0.0.6
@@ -11,5 +12,6 @@ Jinja2==2.7.3
 MarkupSafe==0.23
 psycopg2==2.6
 restless==2.0.1
+selenium==2.45.0
 six==1.9.0
 static3==0.5.1

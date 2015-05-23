@@ -4,3 +4,5 @@ ipython.py
 venv
 *.pyc
 staticroot
+node_modules
+*.log

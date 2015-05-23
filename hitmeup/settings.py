@@ -52,6 +52,7 @@ INSTALLED_APPS = (
     'user_accounts',
     'ourcalendar',
     'notifications',
+    'triton_sync',
 )
 
 MIDDLEWARE_CLASSES = (
