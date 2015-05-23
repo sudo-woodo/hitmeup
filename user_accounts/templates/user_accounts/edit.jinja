@@ -33,26 +33,24 @@
             {% endif %}
         {% endfor %}
 
-        <form id="edit_form" method="post" action="{{ url('user_accounts:edit_account') }}"
+        <form id="edit_form" method="post" action="{{ url('user_accounts:settings') }}"
               enctype="multipart/form-data">
 
             {% csrf_token %}
 
             {% for field in edit_form %}
                 <div class="edit-group">
-                    {{ field.label_tag() }}
                     {{ field }}
                 </div>
                 <p></p>
             {% endfor %}
             <div class="edit-group">
-                <button type="submit" name="save-password" class="btn btn-default">
+                <button type="submit" name="save-changes" class="btn btn-default">
                     Save Changes
                 </button>
-                <button type="reset" name="cancel-password" class="btn btn-default">
+                <button type="reset" name="cancel-changes" class="btn btn-default">
                     Cancel
                 </button>
-                <p></p>
             </div>
         </form>
     </div>

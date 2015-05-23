@@ -7,7 +7,7 @@ from django.http.response import HttpResponseRedirect
 from django.shortcuts import render
 from django.utils.html import escape
 from django.views.generic import View
-from user_accounts.forms import UserForm, SignupForm, SignUpExtendedForm, EditForm
+from user_accounts.forms import UserForm, SignupForm, SignUpExtendedForm, EditSettingsForm
 from user_accounts.models import Friendship
 
 
@@ -145,111 +145,85 @@ def logout(request):
     return logout_then_login(request)
 
 
-class EditAccountView(View):
+class SettingsView(View):
     def post(self, request):
-        # Profile of user logged in
         profile = request.user.profile
-        # Creates form with initial values
-        edit_form = EditForm(data=request.POST)
-        if edit_form.is_valid():
-            # Iterator to iterate form
-            updated_fields = {}
-            # Gets non-empty field values
-            for key, val in edit_form.cleaned_data.iteritems():
-                if val != u'':
-                    updated_fields[key] = val
+        edit_form = EditSettingsForm(data=request.POST)
+        error_message = None
 
-            # Password is not empty
-            if updated_fields.viewkeys() >= {'current_password', 'new_password'}:
-                # Authenticates the "current password"
-                user = authenticate(username=request.user.username,
-                                    password=updated_fields['current_password'])
-                if user:
-                    # Update new field values
-                    for key in updated_fields:
-                        if key == 'first_name' or key == 'last_name' or key == 'email':
-                            setattr(
-                                request.user,
-                                key,
-                                updated_fields[key]
-                            )
-                        else:
-                            setattr(
-                                profile,
-                                key,
-                                updated_fields[key]
-                            )
-                    # Sets password
-                    request.user.set_password(updated_fields['new_password'])
-                    request.user.save()
-                    profile.save()
-                    # Signs user in again
-                    new_user = authenticate(username=request.user.username,
-                                            password=updated_fields['new_password'])
-                    login(request, new_user)
-                    return HttpResponseRedirect(reverse('user_accounts:edit_account'))
-                else:
-                    return render(request, 'user_accounts/edit.jinja',
-                                  {'edit_form': EditForm(initial={'first_name': profile.first_name,
-                                                                  'last_name': profile.last_name,
-                                                                  'email': profile.email,
-                                                                  'phone': profile.phone,
-                                                                  'bio': profile.bio}),
-                                   'error_messages': ['Incorrect password.']
-                                   })
-            # 1 missing password field
-            elif updated_fields.viewkeys() >= {'current_password'} or updated_fields.viewkeys() >= {'new_password'}:
-                # Sets error message
-                if 'current_password' not in updated_fields:
-                    error = ['Must enter current password.']
-                else:
-                    error = ['Must enter new password.']
-                return render(request, 'user_accounts/edit.jinja',
-                              {'edit_form': EditForm(initial={'first_name': profile.first_name,
-                                                              'last_name': profile.last_name,
-                                                              'email': profile.email,
-                                                              'phone': profile.phone,
-                                                              'bio': profile.bio}),
-                               'error_messages': error
-                               })
-            # Assumes user does not want to change password
-            else:
-                # Iterates through dictionary
-                for key in updated_fields:
-                        if key == 'first_name' or key == 'last_name' or key == 'email':
-                            setattr(
-                                request.user,
-                                key,
-                                updated_fields[key]
-                            )
-                        else:
-                            setattr(
-                                profile,
-                                key,
-                                updated_fields[key]
-                            )
-                request.user.save()
-                profile.save()
-                return HttpResponseRedirect(reverse('user_accounts:edit_account'))
-        else:
-            # Sets both initial and placeholder value
-            return render(request, 'user_accounts/edit.jinja',{
+        # Re-render form with initial values if form is invalid
+        if not edit_form.is_valid():
+            return render(request, 'user_accounts/edit.jinja', {
                 'edit_form': edit_form
             })
 
+        # Get non-empty field values
+        updated_fields = {}
+        for key, val in edit_form.cleaned_data.iteritems():
+            if len(val) > 0:
+                updated_fields[key] = val
+
+        # One of the password fields entered
+        if updated_fields.viewkeys() >= {'current_password'} or updated_fields.viewkeys() >= {'new_password'}:
+            if 'current_password' not in updated_fields:
+                error_message = 'New password given, but current password was missing.'
+            elif 'new_password' not in updated_fields:
+                error_message = 'Current password given, but new password was missing.'
+            else:
+                # Authenticate the current password
+                user = authenticate(username=request.user.username,
+                                    password=updated_fields['current_password'])
+                if user:
+                    # Set password
+                    request.user.set_password(updated_fields['new_password'])
+                    request.user.save()
+                    profile.save()
+                    # Sign user in again
+                    new_user = authenticate(username=request.user.username,
+                                            password=updated_fields['new_password'])
+                    login(request, new_user)
+                else:
+                    error_message = 'Incorrect password.'
+
+        # Update other fields if there were no errors up to this point
+        if error_message is None:
+            for key in updated_fields:
+                if key == 'first_name' or key == 'last_name' or key == 'email':
+                    setattr(request.user, key, updated_fields[key])
+                else:
+                    setattr(profile, key, updated_fields[key])
+            request.user.save()
+            profile.save()
+
+            # Form submission successful; redirect to profile
+            return HttpResponseRedirect(reverse(
+                'user_accounts:user_profile',
+                args={profile.username}
+            ))
+
+        # Form submission not successful; return to form
+        return render(request, 'user_accounts/edit.jinja', {
+            'edit_form': EditSettingsForm(initial={
+                'first_name': profile.first_name,
+                'last_name': profile.last_name,
+                'email': profile.email,
+                'phone': profile.phone,
+                'bio': profile.bio
+            }),
+            'error_messages': [error_message]
+        })
+
     def get(self, request):
-        # Only allows user to change account info if logged in
         profile = request.user.profile
-        if request.user.is_authenticated():
-            return render(request, 'user_accounts/edit.jinja',
-                          {'edit_form': EditForm(initial={'first_name': profile.first_name,
-                                                          'last_name': profile.last_name,
-                                                          'email': profile.email,
-                                                          'phone': profile.phone,
-                                                          'bio': profile.bio}),
-                           })
-        # Else returns to the home page
-        return HttpResponseRedirect(reverse('static_pages:home'))
+        return render(request, 'user_accounts/edit.jinja', {
+            'edit_form': EditSettingsForm(initial={
+                'first_name': profile.first_name,
+                'last_name': profile.last_name,
+                'email': profile.email,
+                'phone': profile.phone,
+                'bio': profile.bio
+            })
+        })
 
 
 class UserProfile(View):

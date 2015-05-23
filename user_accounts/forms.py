@@ -1,5 +1,4 @@
 from django.contrib.auth.models import User
-from django.core.validators import RegexValidator
 from django import forms
 from user_accounts.models import UserProfile
 
@@ -30,74 +29,6 @@ class SignupForm(forms.ModelForm, UserForm):
     class Meta:
         model = User
         fields = ('email', 'username', 'password')
-
-
-class EditForm(forms.Form):
-    first_name = forms.CharField(required=False, widget=forms.TextInput(attrs={
-        'class': 'form-control',
-        'placeholder': 'Enter Your First Name',
-        'id': 'first_name',
-        'name': 'First Name'
-    }))
-
-    last_name = forms.CharField(required=False, widget=forms.TextInput(attrs={
-        'class': 'form-control',
-        'placeholder': 'Enter Your Last Name',
-        'id': 'last_name',
-        'name': 'Last Name'
-    }))
-
-    current_password = forms.CharField(required=False, widget=forms.PasswordInput(attrs={
-        'class': 'form-control',
-        'placeholder': 'Enter Current Password',
-        'id': 'current_password',
-        'name': 'Current Password'
-    }))
-
-    new_password = forms.CharField(required=False, widget=forms.PasswordInput(attrs={
-        'class': 'form-control',
-        'placeholder': 'Enter New Password',
-        'id': 'new_password',
-        'name': 'New Password'
-    }))
-
-    email = forms.CharField(required=False, widget=forms.EmailInput(attrs={
-        'class': 'form-control',
-        'placeholder': 'Enter Email',
-        'id': 'email',
-        'name': 'Email'
-    }))
-
-    bio = forms.CharField(
-        required=False,
-        max_length=300,
-        widget=forms.Textarea(
-            attrs={
-                'class': 'form-control',
-                'placeholder': 'Write about a quick bio about yourself.',
-                'id': 'bio',
-                'name': 'Bio'
-            }
-        )
-    )
-
-    phone_regex = RegexValidator(
-        regex=r'^\+?\d{10,15}$',
-        message="Phone number must be between 10-15 digits")
-
-    phone = forms.CharField(
-        required=False,
-        max_length=15,
-        validators=[phone_regex],
-        widget=forms.TextInput(
-            attrs={
-                'class': 'form-control',
-                'placeholder': 'Enter Your Phone Number',
-                'id': 'phone',
-                'name': 'Phone'
-            }
-        )
-    )
 
 
 class SignUpExtendedForm(forms.Form):
@@ -134,6 +65,7 @@ class SignUpExtendedForm(forms.Form):
         max_length=300,
         widget=forms.Textarea(
             attrs={
+                'rows': 4,
                 'class': 'form-control',
                 'placeholder': 'Write a short bio about yourself.',
                 'id': 'bio',
@@ -141,3 +73,24 @@ class SignUpExtendedForm(forms.Form):
             }
         )
     )
+
+
+class EditSettingsForm(SignupForm, SignUpExtendedForm):
+    current_password = forms.CharField(required=False, widget=forms.PasswordInput(attrs={
+        'class': 'form-control',
+        'placeholder': 'Current password',
+        'id': 'current_password',
+        'name': 'Current Password'
+    }))
+
+    new_password = forms.CharField(required=False, widget=forms.PasswordInput(attrs={
+        'class': 'form-control',
+        'placeholder': 'New password',
+        'id': 'new_password',
+        'name': 'New Password'
+    }))
+
+    username = password = None
+
+    class Meta(SignupForm.Meta):
+        fields = ('first_name', 'last_name', 'email', 'current_password', 'new_password', 'phone', 'bio')
