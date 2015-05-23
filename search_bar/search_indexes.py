@@ -1,5 +1,4 @@
 from haystack import indexes
-# from hitmeup.models import Something
 from django.contrib.auth.models import User
 
 # Create search_bar index for user search_bar, can add additional filters later

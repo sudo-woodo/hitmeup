@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
 from django.views.generic import View
-from django.core.urlresolvers import reverse
+# TODO: for todo: from django.core.urlresolvers import reverse
 
 from .forms import UserSearchForm
 import simplejson as json
@@ -10,23 +10,24 @@ from haystack.query import SearchQuerySet
 class Search(View):
     def get(self, request):
         form = UserSearchForm(data=request.GET)
-        print form
         user = form.search() # form.search() returns a SearchQuerySet
         if user:
             # Best_match() will get the SearchResult, then you get the user and the username
             username = user.best_match().object.get_username()
-            # return HttpResponseRedirect(reverse('user_accounts:user_profile',username=username))
+            #
+            # TODO: for displaying user profile once it is merge to master:
+            # TODO:  return HttpResponseRedirect(reverse('user_accounts:user_profile',username=username))
             return render(request, 'search_bar/usernames.jinja', {'username': username}) # eventually change this to render user profile
 
         # Not an exact username, need auto-complete!
         else:
             # The second parameter is the default value. Returns SearchResult object.
             sqs = SearchQuerySet().autocomplete(user_auto=request.GET.get('q', "Error: Key 'q' not found."))[:5]
-            print sqs
             suggestions = [result.object.get_username() for result in sqs]
 
             # Make sure you return a JSON object, not a bare list,
             # otherwise you could be vulnerable to an XSS attack.
+            # TODO: return a list of user profiles once its branch is merged to master
             the_data = json.dumps({
                 'results': suggestions
             })

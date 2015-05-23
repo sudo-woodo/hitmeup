@@ -5,8 +5,4 @@ from . import views
 urlpatterns = [
     url(r'^search/$', views.SearchBase, name='searchbase'),
     url(r'^searchresults/$', views.Search.as_view(), name='search'),
-
 ]
-
-
-

@@ -26,10 +26,10 @@
                 <li class="search-bar">
                     <div class="search-bar-container">
                         <form id="search_form" class="form-inline" role="search" method="get"
-                            action="{{ url('search_bar:search') }}" padding-top="5px">
+                            action="{{ url('search_bar:search') }}">
                             {% csrf_token %}
                             <div class="form-group">
-                                <input type="text" name="q" class="form-control" placeholder="Search for users">
+                                <input type="text" name="q" class="form-control" placeholder="Find your friends!">
                             </div>
                             <button type="submit" class="btn btn-default">Search</button>
                         </form>
