@@ -7,7 +7,7 @@ cache:
 services: postgresql
   - elasticsearch
 before_install:
-  - curl -O https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-1.4.0.deb && sudo dpkg -i --force-confnew elasticsearch-1.2.4.deb
+  - curl -O https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-1.4.0.deb && sudo dpkg -i --force-confnew elasticsearch-1.4.0.deb
 install: pip install -r requirements.txt
 before_script:
 - sleep 10
