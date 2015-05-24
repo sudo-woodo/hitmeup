@@ -13,10 +13,11 @@ class WeeklyRecurrenceTest(TestCase):
 
     def test_starts_before_start_ends_before_start(self):
         self.event.start=datetime.datetime(2014, 5, 23, 10, 46, 45, 349955)
-        self.event.end=datetime.datetime(2014, 5, 25, 10, 46, 45, 349955)
+        self.event.end=datetime.datetime(2014, 5, 24, 10, 46, 45, 349955)
 
         self.w = WeeklyRecurrenceFactory(event=self.event)
         self.w.days_of_week = [1,0,0,0,0,0,0]
+        self.w.last_event_end = datetime.datetime(2014, 5, 29, 10, 46, 45, 349955)
        # self.w.total_number = 5
         self.assertEquals(self.event.get_between(timezone.now(), timezone.now() + timezone.timedelta(hours=1)),[])
 

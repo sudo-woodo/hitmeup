@@ -50,7 +50,7 @@ class Event(models.Model):
     DEFAULT_TIME_FMT = '%Y-%m-%dT%H:%M:%S'
 #TODO: How do we link event to recurring so that when we make an event, we also make a recurring?
     def __unicode__(self):
-        return "%s -> %s -> %s" % (self.calendar.owner, self.calendar, self.title)
+        return "%s -> %s" % (self.start, self.end)
 
     # Serializes the event for the fullcalendar
     def serialize(self):
@@ -125,7 +125,7 @@ class SingleRecurrence(RecurrenceType):
         return "%s -> SingleRecurrenceType" % self.event
 
 '''
-Input: after n occurrences
+Input: after n occurrences, needed if we want to support this functionality
 def find_last_occurrence(time, frequency, total_number, days_of_week):
     print(days_of_week)
     return time
@@ -142,8 +142,9 @@ class WeeklyRecurrence(RecurrenceType):
     #TODO: Make sure that the length is only 7!
     #TODO: Make sure at least one day is 1
     #TODO: CAUTION: event.start is not necessarily the first date in the recurring series
+
     # Days of the week, M T W TH F Sa Su
-    days_of_week = models.CommaSeparatedIntegerField(default=[1,0,0,0,0,0,0], max_length=100)
+    days_of_week = models.CharField(default="1000000", max_length=7)
     # The number of weeks between each occurrence
     frequency = models.IntegerField(default=1)
 
@@ -152,37 +153,29 @@ class WeeklyRecurrence(RecurrenceType):
 
     last_event_end = models.DateTimeField(default=hour_from_now)
 
-    #TODO can calculate current_event_end with current_event_start + event.start-event.end
+    #TODO: implement with frequency
     def get_between(self, range_start, range_end):
         events = []
-        if self.event.start < range_end and self.last_event > range_start:
+        if self.event.start < range_end and self.last_event_end > range_start:
             start = max(self.event.start, range_start)
+            start = datetime.datetime(start.year, start.month, start.day, self.event.start.hour, self.event.start.minute,
+                                      self.event.start.second)
             end = min(self.last_event_end, range_end)
-            index = self.event.start.weekday()
-            counter = 0
-
+            print (start)
+            print (end)
             while start < end: #TODO check for off by one errors
 
-                if self.days_of_week[index] == 1:
+                if self.days_of_week[start.weekday()] == '1':
                     events.append(Event(calendar=self.event.calendar,
                               title=self.event.title,
                               location=self.event.location,
                               description=self.event.description,
-                              start=datetime.datetime(start.year, start.month, start.day,
-                                              self.event.start.hour, self.event.start.minute,
-                                              self.event.start.second, self.event.start.microsecond) + timezone.timedelta(days=counter),
-                              end=datetime.datetime(start.year, start.month, start.day,
-                                              self.event.start.hour, self.event.start.minute,
-                                              self.event.start.second, self.event.start.microsecond) + timezone.timedelta(days=counter)
-                                              + self.event.start - self.event.end)
+                              start=start,
+                              end=start + (self.event.start - self.event.end))
                               )
+                start = start + timezone.timedelta(days=1)
 
-                #Go to next day
-                while self.days_of_week[index] == 0:
-                    index = (index + 1) % 6
-                counter = counter + 1
-
-            return events #array
+        return events #array
 
     def __unicode__(self):
         return "%s -> WeeklyRecurrenceType" % self.event
