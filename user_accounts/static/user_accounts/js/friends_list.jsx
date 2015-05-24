@@ -15,7 +15,7 @@
                 }.bind(this),
                 error: function() {
                     alert('Something went wrong with retrieving your ' +
-                    'friends list, refresh.')
+                    'friends list, please try refreshing the page.')
                 }
             });
         },
@@ -27,12 +27,12 @@
 
         render: function() {
             var friendNodes = [];
-            (this.state.friends).forEach(function(friend) {
+            this.state.friends.forEach(function(friend) {
                 var friendNode = (
                     <ReactCSSTransitionGroup transitionName="friend-box-animation" transitionLeave={false}>
                         <FriendBox friend={friend} key={friend.username}/>
                     </ReactCSSTransitionGroup>
-                )
+                );
                 if(friend.favorite) {
                     friendNodes.unshift(friendNode);
                 }
@@ -203,7 +203,7 @@
             return (
                 <img
                     src={ this.props.pic }
-                    alt="Picture was not found"
+                    alt="Profile Picture"
                     className="profile-pic img-thumbnail"
                 />
             );
