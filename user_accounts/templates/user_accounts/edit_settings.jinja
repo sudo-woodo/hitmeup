@@ -45,7 +45,7 @@
         {% endfor %}
 
         <div class="row edit-section">
-            <div class="col-xs-12 col-md-2 edit-pic-col">
+            <div class="col-xs-12 col-sm-3 col-lg-2 edit-pic-col">
                 <img
                     src="{{ profile_pic }}"
                     alt="Profile picture"
@@ -58,7 +58,7 @@
                     </a>
                 </div>
             </div>
-            <div class="col-xs-12 col-md-10 edit-info-col">
+            <div class="col-xs-12 col-sm-9 col-lg-10 edit-info-col">
                 <form id="edit-form" method="post" action="{{ url('user_accounts:settings') }}"
                       enctype="multipart/form-data">
 
