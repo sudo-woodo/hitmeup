@@ -212,7 +212,7 @@
             return (
                 <img
                     src={ this.props.pic }
-                    alt="Profile Picture"
+                    alt="Profile picture"
                     className="profile-pic img-thumbnail"
                 />
             );

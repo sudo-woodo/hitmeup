@@ -226,6 +226,10 @@ class SettingsView(View):
 
         # Return to form
         return render(request, 'user_accounts/edit_settings.jinja', {
+            'css': [
+                'user_accounts/css/edit_settings.css'
+            ],
+            'profile_pic': profile.get_gravatar_url(125),
             'edit_form': edit_form,
             'error_messages': error_messages,
             'success_messages': success_messages,
@@ -234,6 +238,10 @@ class SettingsView(View):
     def get(self, request):
         profile = request.user.profile
         return render(request, 'user_accounts/edit_settings.jinja', {
+            'css': [
+                'user_accounts/css/edit_settings.css'
+            ],
+            'profile_pic': profile.get_gravatar_url(125),
             'edit_form': SettingsForm(initial={
                 'first_name': profile.first_name,
                 'last_name': profile.last_name,
