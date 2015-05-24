@@ -48,30 +48,21 @@ class SignUpExtended(View):
     def post(self, request):
         # Fill out form with request data
         signup_extended_form = SignUpExtendedForm(data=request.POST)
+
         if signup_extended_form.is_valid():
-            # if the form is valid, update userprofile model
+            # if the form is valid, update user and userprofile
             user = request.user
-            updatedFields = []
             for key, val in signup_extended_form.cleaned_data.iteritems():
-                if val != u'':
-                    if key == 'first_name' or key == 'last_name':
-                        updatedFields.append(key)
-                        setattr(
-                            user,
-                            key,
-                            val
-                        )
+                if val.strip():
+                    if key in {'first_name', 'last_name'}:
+                        setattr(user, key, val.strip())
 
                     else:
-                        updatedFields.append(key)
-                        setattr(
-                            user.profile,
-                            key,
-                            val
-                        )
+                        setattr(user.profile, key, val.strip())
             user.save()
             user.profile.save()
             return HttpResponseRedirect(reverse('static_pages:home'))
+
         # If there's an form error, rerender with errors
         else:
             return render(request, 'user_accounts/signup_extended.jinja', {
@@ -149,33 +140,44 @@ class SettingsView(View):
     def post(self, request):
         profile = request.user.profile
         edit_form = EditSettingsForm(data=request.POST)
-        error_message = None
+        error_messages = []
+        success_messages = []
 
-        # Re-render form with initial values if form is invalid
-        if not edit_form.is_valid():
-            return render(request, 'user_accounts/edit_settings.jinja', {
-                'edit_form': edit_form
-            })
+        # To see if we need to update password
+        update_password = False
+        password_valid = True
 
-        # Get non-empty field values
-        updated_fields = {}
-        for key, val in edit_form.cleaned_data.iteritems():
-            if len(val) > 0:
-                updated_fields[key] = val
+        if edit_form.is_valid():
+            # Get non-empty field values
+            updated_fields = {k: v for k, v
+                              in edit_form.cleaned_data.iteritems() if v}
 
-        # One of the password fields entered
-        if updated_fields.viewkeys() & {'current_password', 'new_password'}:
-            if 'current_password' not in updated_fields:
-                error_message = 'New password given, but current password' \
-                                ' was missing.'
-            elif 'new_password' not in updated_fields:
-                error_message = 'Current password given, but new password' \
-                                ' was missing.'
-            else:
-                # Authenticate the current password
-                user = authenticate(username=request.user.username,
-                                    password=updated_fields['current_password'])
-                if user:
+            # Manually check password fields
+            if updated_fields.viewkeys() & {'current_password', 'new_password'}:
+                if 'current_password' not in updated_fields:
+                    error_messages.append(
+                        'New password given, but current password was missing.'
+                    )
+                    password_valid = False
+                elif 'new_password' not in updated_fields:
+                    error_messages.append(
+                        'Current password given, but new password was missing.'
+                    )
+                    password_valid = False
+                else:
+                    # Authenticate the current password
+                    user = authenticate(username=request.user.username,
+                                        password=updated_fields['current_password'])
+                    if user:
+                        update_password = True
+                    else:
+                        error_messages.append('Incorrect password.')
+                        password_valid = False
+
+            # Only proceed if password valid
+            if password_valid:
+                # Update password
+                if update_password:
                     # Set password
                     request.user.set_password(updated_fields['new_password'])
                     request.user.save()
@@ -184,35 +186,24 @@ class SettingsView(View):
                     new_user = authenticate(username=request.user.username,
                                             password=updated_fields['new_password'])
                     login(request, new_user)
-                else:
-                    error_message = 'Incorrect password.'
 
-        # Update other fields if there were no errors up to this point
-        if error_message is None:
-            for key in updated_fields:
-                if key == 'first_name' or key == 'last_name' or key == 'email':
-                    setattr(request.user, key, updated_fields[key])
-                else:
-                    setattr(profile, key, updated_fields[key])
-            request.user.save()
-            profile.save()
+                # Update other fields
+                if not error_messages:
+                    for key, val in updated_fields.iteritems():
+                        if key in {'first_name', 'last_name', 'email'}:
+                            setattr(request.user, key, val.strip())
+                        else:
+                            setattr(profile, key, val.strip())
+                    request.user.save()
+                    profile.save()
 
-            # Form submission successful; redirect to profile
-            return HttpResponseRedirect(reverse(
-                'user_accounts:user_profile',
-                args={profile.username}
-            ))
+                success_messages.append('Successfully updated!')
 
-        # Form submission not successful; return to form
+        # Return to form
         return render(request, 'user_accounts/edit_settings.jinja', {
-            'edit_form': EditSettingsForm(initial={
-                'first_name': profile.first_name,
-                'last_name': profile.last_name,
-                'email': profile.email,
-                'phone': profile.phone,
-                'bio': profile.bio
-            }),
-            'error_messages': [error_message]
+            'edit_form': edit_form,
+            'error_messages': error_messages,
+            'success_messages': success_messages,
         })
 
     def get(self, request):
