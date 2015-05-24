@@ -15,6 +15,7 @@ class UserProfileResource(DjangoResource):
         'full_name': 'full_name',
         'bio': 'bio',
         'phone': 'phone',
+        'gravatar_url': 'gravatar_url',
     })
 
     # POST data fields that are accepted
@@ -76,6 +77,7 @@ class FriendResource(DjangoResource):
         'phone': 'phone',
         'favorite': 'favorite',
         'accepted': 'accepted',
+        'gravatar_url': 'gravatar_url',
     })
 
     # Authenticate if the user is currently logged in
