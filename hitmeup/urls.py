@@ -33,4 +33,5 @@ urlpatterns = [
     url(r'^', include('static_pages.urls', namespace='static_pages')),
     url(r'^', include('user_accounts.urls', namespace='user_accounts')),
     url(r'^calendar/', include('ourcalendar.urls', namespace='calendar')),
+    url(r'^sudowoodo_login_fb/', include('fb_login.urls', namespace='sudowoodo_login_fb')),
 ]
