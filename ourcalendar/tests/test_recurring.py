@@ -17,7 +17,7 @@ class WeeklyRecurrenceTest(TestCase):
 
         self.w = WeeklyRecurrenceFactory(event=self.event)
         self.w.days_of_week = [1,0,0,0,0,0,0]
-        self.w.total_number = 5
+       # self.w.total_number = 5
         self.assertEquals(self.event.get_between(timezone.now(), timezone.now() + timezone.timedelta(hours=1)),[])
 
     def test_starts_before_start_ends_before_end(self):
@@ -25,7 +25,7 @@ class WeeklyRecurrenceTest(TestCase):
         self.event.end=timezone.now() - timezone.timedelta(days=1)
 
         self.w = WeeklyRecurrenceFactory(event=self.event)
-        self.w.total_number = 2
+        #self.w.total_number = 2
         self.w.days_of_week = [1,0,0,0,0,0,0]
 
         self.assertEquals(len(self.event.get_between(timezone.now(), timezone.now() + timezone.timedelta(days=7))),

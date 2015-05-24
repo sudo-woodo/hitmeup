@@ -1,3 +1,4 @@
+import datetime
 from django.contrib.contenttypes.models import ContentType
 from django.core.validators import RegexValidator
 from django.db.models.signals import post_save
@@ -140,52 +141,47 @@ move_forward: moves number of days forward (could be backwards if negative) acco
 class WeeklyRecurrence(RecurrenceType):
     #TODO: Make sure that the length is only 7!
     #TODO: Make sure at least one day is 1
+    #TODO: CAUTION: event.start is not necessarily the first date in the recurring series
     # Days of the week, M T W TH F Sa Su
     days_of_week = models.CommaSeparatedIntegerField(default=[1,0,0,0,0,0,0], max_length=100)
     # The number of weeks between each occurrence
     frequency = models.IntegerField(default=1)
 
     # Total number of occurrences
-    total_number = models.IntegerField(default=1)
+    #total_number = models.IntegerField(default=1)
 
-    last_event = models.DateTimeField(default=hour_from_now)
+    last_event_end = models.DateTimeField(default=hour_from_now)
 
-    #Given total number
+    #TODO can calculate current_event_end with current_event_start + event.start-event.end
     def get_between(self, range_start, range_end):
         events = []
         if self.event.start < range_end and self.last_event > range_start:
-            start = self.event.start
-            end = self.event.end
+            start = max(self.event.start, range_start)
+            end = min(self.last_event_end, range_end)
             index = self.event.start.weekday()
+            counter = 0
 
-            # number of events added to events array
-            times = 0
-            while times < self.total_number:
-                times = times + 1
-                index = (index + 1) % 6
-                counter = 1
-                #Go to next day
-                while self.days_of_week[index] == 0:
-                    index = (index + 1) % 6
-                    counter = counter + 1
+            while start < end: #TODO check for off by one errors
 
-                if self.event.end + timezone.timedelta(days=counter) < range_start:
-                    continue;
-                if self.event.start + timezone.timedelta(days=counter) > range_end:
-                    break;
-                events.append(Event(calendar=self.event.calendar,
+                if self.days_of_week[index] == 1:
+                    events.append(Event(calendar=self.event.calendar,
                               title=self.event.title,
                               location=self.event.location,
                               description=self.event.description,
-                              start=self.event.start + timezone.timedelta(days=counter),
-                              end=self.event.end + timezone.timedelta(days=counter)))
+                              start=datetime.datetime(start.year, start.month, start.day,
+                                              self.event.start.hour, self.event.start.minute,
+                                              self.event.start.second, self.event.start.microsecond) + timezone.timedelta(days=counter),
+                              end=datetime.datetime(start.year, start.month, start.day,
+                                              self.event.start.hour, self.event.start.minute,
+                                              self.event.start.second, self.event.start.microsecond) + timezone.timedelta(days=counter)
+                                              + self.event.start - self.event.end)
+                              )
 
+                #Go to next day
+                while self.days_of_week[index] == 0:
+                    index = (index + 1) % 6
+                counter = counter + 1
 
-
-            '''
-            start from max(event.start, range_start)
-            keep adding event to array until we reach min(last_event, range_end)
-            '''
             return events #array
 
     def __unicode__(self):
