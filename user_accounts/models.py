@@ -6,6 +6,8 @@ from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch.dispatcher import receiver
 from user_accounts.templatetags import gravatar
+from django.core.mail import EmailMessage
+from communications.emails import send_welcome_email
 
 
 request_friend = django.dispatch.Signal(providing_args=["from_friend", "to_friend"])
@@ -47,8 +49,8 @@ class UserProfile(models.Model):
     def email(self):
         return self.user.email
 
-    def send_email(self):
-        pass
+    def create_email(self, sender='sudowoodohitmeup@gmail.com', *args, **kwargs):
+        return EmailMessage(from_email=sender, to=[self.email], *args, **kwargs)
 
     def get_gravatar_url(self, size=80):
         return gravatar.gravatar_url(self.user.email, size)
@@ -137,7 +139,8 @@ class UserProfile(models.Model):
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):
     if created:
-        UserProfile.objects.create(user=instance)
+        profile = UserProfile.objects.create(user=instance)
+        send_welcome_email(profile)
 
 
 class Friendship(models.Model):

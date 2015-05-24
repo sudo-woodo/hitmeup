@@ -51,6 +51,7 @@ INSTALLED_APPS = (
     'static_pages',
     'user_accounts',
     'notifications',
+    'communications',
 )
 
 MIDDLEWARE_CLASSES = (

@@ -1,5 +1,7 @@
 from django.core.mail import send_mail
 from django.core.mail import EmailMessage
+from django.template.loader import get_template
+
 
 def send_test_mail():
 #    send_mail('Test email', 'The test email worked!', 'sudowoodohitmeup@gmail.com',
@@ -12,6 +14,17 @@ def send_test_mail():
 
     email.send(fail_silently=False)
     print("message sent")
+
+def send_welcome_email(profile):
+    msg = profile.create_email(
+        subject='Welcome to HitMeUp!',
+        body=get_template(
+            'communications/emails/welcome.jinja'
+        ).render({'profile': profile})
+    )
+    msg.content_subtype = "html"
+    msg.send(fail_silently=False)
+    print("signup message sent")
 #def send_registration_email(user):
  #   subject = "wooo"
   #  body = "welcome, %s" % user.username

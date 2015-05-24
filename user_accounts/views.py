@@ -72,7 +72,7 @@ class SignUpExtended(View):
                         )
             user.save()
             user.profile.save()
-            send_test_mail()
+            #send_test_mail()
             return HttpResponseRedirect(reverse('static_pages:home'))
 
         # If there's an form error, rerender with errors
