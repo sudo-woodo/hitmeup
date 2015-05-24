@@ -10,6 +10,7 @@ from django.views.generic import View
 from user_accounts.forms import UserForm, SignupForm, SignUpExtendedForm
 from user_accounts.models import Friendship
 from communications.emails import send_test_mail
+from hitmeup import settings
 
 
 class SignUpView(View):

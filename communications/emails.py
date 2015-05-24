@@ -1,6 +1,7 @@
 from django.core.mail import send_mail
 from django.core.mail import EmailMessage
 from django.template.loader import get_template
+from hitmeup import settings
 
 
 def send_test_mail():
@@ -16,11 +17,12 @@ def send_test_mail():
     print("message sent")
 
 def send_welcome_email(profile):
+    print "URL is: " + settings.LOGO_URL
     msg = profile.create_email(
         subject='Welcome to HitMeUp!',
         body=get_template(
             'communications/emails/welcome.jinja'
-        ).render({'profile': profile})
+        ).render({'profile': profile, 'absolute_logo_uri' : settings.LOGO_URL})
     )
     msg.content_subtype = "html"
     msg.send(fail_silently=False)

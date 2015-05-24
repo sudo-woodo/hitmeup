@@ -188,6 +188,9 @@ EMAIL_HOST_PASSWORD = 'bobandkavin'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 
+# Image Absolute URL's
+LOGO_URL = ''
+
 #EMAIL_BACKEND = 'django.core.mail.backends.dummy.EmailBackend'
 #EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 
