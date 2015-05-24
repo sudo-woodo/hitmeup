@@ -1,7 +1,6 @@
 (function($HMU, React, $, _) {
     'use strict';
 
-    var ReactCSSTransitionGroup = React.addons.CSSTransitionGroup;
     var cx = React.addons.classSet;
 
     var FriendsList = React.createClass({
@@ -23,7 +22,6 @@
         getInitialState: function() {
             return {friends: this.props.friends};
         },
-
 
         render: function() {
             var favorites = [];
@@ -71,7 +69,7 @@
                     ></i>
                     { this.props.children }
                 </li>
-            )
+            );
         }
 
     });
@@ -100,62 +98,75 @@
         render: function() {
             var infoItems = [
                 {
-                    icon: (this.state.friend.favorite ? 'fa-heart fav' : 'fa-heart-o') +
-                        ' fav-icon'
-                    ,
-                    info: <span className="info">
-                        <strong>{this.props.friend.username}</strong>
-                    </span>,
+                    icon: (this.state.friend.favorite ?
+                            'fa-heart fav' :
+                            'fa-heart-o'
+                    ) + ' fav-icon',
+                    info: (
+                        <span className="info">
+                            <strong>
+                                {this.props.friend.username}
+                            </strong>
+                        </span>
+                    ),
                     clickHandler: this.favHandler
                 },
                 {
                     icon: this.props.friend.free ?
-                        'fa-check-circle free-icon' : 'fa-clock-o busy-icon'
-                    ,
-                    info: <span className={
-                        'info ' +
-                        (this.props.friend.free ? 'free' : 'busy')
-                    }>
+                        'fa-check-circle free-icon' :
+                        'fa-clock-o busy-icon',
+                    info: (
+                        <span className={
+                            'info ' +
+                            (this.props.friend.free ? 'free' : 'busy')
+                        }>
                             {this.props.friend.free ? 'Free' : 'Busy'}
-                    </span>,
+                        </span>
+                    ),
                     clickHandler: null
                 },
                 {
                     icon: 'fa-envelope',
-                    info: <a
-                        href={
-                            this.props.friend.email ?
-                            'mailto:' + this.props.friend.email :
-                            '#'
-                        }
-                        className="info"
-                    >
+                    info: (
+                        <a
+                            href={
+                                this.props.friend.email ?
+                                'mailto:' + this.props.friend.email :
+                                '#'
+                            }
+                            className="info"
+                        >
                             {this.props.friend.email}
-                    </a>,
+                        </a>
+                    ),
                     clickHandler: null
                 },
                 {
                     icon: 'fa-phone',
-                    info: <a
-                        href={
-                            this.props.friend.phone ?
-                            'tel:' + this.props.friend.phone :
-                            '#'
-                        }
-                        className="info"
-                    >
+                    info: (
+                        <a
+                            href={
+                                this.props.friend.phone ?
+                                'tel:' + this.props.friend.phone :
+                                '#'
+                            }
+                            className="info"
+                        >
                             {this.props.friend.phone || '—'}
-                    </a>,
+                        </a>
+                    ),
                     clickHandler: null
                 },
                 {
                     icon: 'fa-user',
-                    info: <a
-                        href={this.props.friend.profile_url}
-                        className="profile-link info"
-                    >
-                        My Profile
-                    </a>,
+                    info: (
+                        <a
+                            href={this.props.friend.profile_url}
+                            className="info"
+                        >
+                            My Profile
+                        </a>
+                    ),
                     clickHandler: null
                 }
             ];

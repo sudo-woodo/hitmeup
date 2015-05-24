@@ -83,7 +83,7 @@ body {
     pointer-events: all;
 }
 
-.profile-link:hover {
+a:hover {
     text-decoration: none;
 }
 
