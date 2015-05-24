@@ -73,8 +73,9 @@ class UserProfilesApiTestCase(TestCase):
         response = self.client.get(self.GET_DETAIL_URL(self.profile.pk))
         data = json.loads(response.content)
 
-        expected_fields = ['id', 'username', 'email', 'first_name',
-                           'last_name', 'full_name', 'bio', 'phone']
+        expected_fields = ['id', 'username', 'email', 'first_name', 'last_name',
+                           'full_name', 'bio', 'phone', 'gravatar_url',
+                           'profile_url', 'is_free']
 
         # Ensure all the fields are present
         for field in expected_fields:
@@ -82,6 +83,10 @@ class UserProfilesApiTestCase(TestCase):
                 self.assertEqual(data[field], self.profile.pk)
             else:
                 self.assertEqual(data[field], getattr(self.profile, field))
+
+        for field in data:
+            if field not in expected_fields:
+                self.fail("Found unexpected field in data: %s" % field)
 
     def test_update(self):
         # Try updating another user's profile
@@ -199,7 +204,6 @@ class FriendsApiTestCase(TestCase):
                 friendship = Friendship.objects.get(from_friend=self.profile,
                                                     to_friend=other.profile)
                 self.assertEqual(data[field], getattr(friendship, field))
-                continue
             elif field == 'id':
                 self.assertEqual(data[field], other.pk)
             else:

@@ -23,7 +23,9 @@
             <div class="container">
                 <div id="header-upper-half-content">
                     <div id="username-container">
-                        <h2>{{ profile.username }}</h2>
+                        <h2>
+                            {{ profile.username }}
+                        </h2>
                         <div id="firstlastname-container">
                             {{ profile.full_name }}
                         </div>
@@ -38,14 +40,16 @@
                         {% if not censor %}
                             src="{{ profile.get_gravatar_url(125) }}"
                         {% endif %}
-                        alt=""
+                        alt="Profile picture"
                         id ="pic"
                         class="img-thumbnail
                             {% if censor %}
                                 pic-censored
                             {% endif %}
                         ">
-                        <div id="friend-button-container"></div>
+                        {% if not censor %}
+                            <div id="friend-button-container"></div>
+                        {% endif %}
                 </div>
             </div>
         </div>
@@ -54,28 +58,47 @@
     <div class="container" id="profile-body">
         <div class="row">
             <div class="col-xs-12 col-sm-12 col-md-3">
-                <div class="panel panel-default" id="info-panel">
-                    <ul class="list-group">
-                        <li class="list-group-item">
-                            <ul class="fa-ul">
-                                <li>
-                                    <i class="fa-li fa fa-envelope"></i>
-                                    {{ profile.email }}
+                <div id="info-panel">
+                    <div class="panel panel-default">
+                        <ul class="list-group">
+                            {% if friended %}
+                                <li class="list-group-item">
+                                    <ul class="fa-ul">
+                                        <li>
+                                            {% if profile.is_free %}
+                                                <i class="fa fa-li fa-check-circle free-icon"></i>
+                                                <span class="free">Free</span>
+                                            {% else %}
+                                                <i class="fa fa-li fa-clock-o busy-icon"></i>
+                                                <span class="busy">Busy</span>
+                                            {% endif %}
+                                        </li>
+                                    </ul>
                                 </li>
-                                <li>
-                                    {% if profile.phone != '' %}
-                                        <i class="fa-li fa fa-phone"></i>
-                                        {{ profile.phone }}
-                                    {% endif %}
-                                 </li>
-                            </ul>
-                        </li>
-                        {% if profile.bio != '' %}
+                            {% endif %}
                             <li class="list-group-item">
-                                <em>{{ profile.bio }}</em>
+                                <ul class="fa-ul">
+                                    <li>
+                                        <i class="fa-li fa fa-envelope"></i>
+                                        {{ profile.email }}
+                                    </li>
+                                    <li>
+                                        {% if profile.phone %}
+                                            <i class="fa-li fa fa-phone"></i>
+                                            {{ profile.phone }}
+                                        {% endif %}
+                                    </li>
+                                </ul>
                             </li>
-                        {% endif %}
-                    </ul>
+                        </ul>
+                    </div>
+                    {% if profile.bio %}
+                        <div class="panel panel-default">
+                            <div class="panel-body">
+                                <em>{{ profile.bio }}</em>
+                            </div>
+                        </div>
+                    {% endif %}
                 </div>
             </div>
             <div class="col-xs-12 col-sm-12 col-md-9">
