@@ -26,29 +26,27 @@
 
 
         render: function() {
-            var friendNodes = [];
+            var favorites = [];
+            var regulars = [];
             this.state.friends.forEach(function(friend) {
-                var friendNode = (
-                    <ReactCSSTransitionGroup transitionName="friend-box-animation" transitionLeave={false}>
-                        <FriendBox friend={friend} key={friend.username}/>
-                    </ReactCSSTransitionGroup>
-                );
+                var friendNode = <FriendBox friend={friend} key={friend.username}/>;
                 if(friend.favorite) {
-                    friendNodes.unshift(friendNode);
-                }
-                else {
-                    friendNodes.push(friendNode);
+                    favorites.push(friendNode);
+                } else {
+                    regulars.push(friendNode);
                 }
             });
             return (
                 <div className="friends-list">
                     <div className="container-fluid">
                         <div className="row">
-                            {friendNodes}
+                            {favorites}
+                            {regulars}
                         </div>
                         <div
                             className="btn btn-lg btn-default refresh-button"
-                            onClick={this.refreshHandler}>
+                            onClick={this.refreshHandler}
+                        >
                             <i className="fa fa-refresh refresh-icon"></i>
                         </div>
                     </div>
