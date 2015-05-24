@@ -114,25 +114,40 @@
                     icon: this.props.friend.free ?
                         'fa-check-circle free-icon' : 'fa-clock-o busy-icon'
                     ,
-                    info: <span className={'info ' +
-                    (this.props.friend.free ? 'free' : 'busy')
-                        }>
+                    info: <span className={
+                        'info ' +
+                        (this.props.friend.free ? 'free' : 'busy')
+                    }>
                             {this.props.friend.free ? 'Free' : 'Busy'}
                     </span>,
                     clickHandler: null
                 },
                 {
                     icon: 'fa-envelope',
-                    info: <span className="info">
+                    info: <a
+                        href={
+                            this.props.friend.email ?
+                            'mailto:' + this.props.friend.email :
+                            '#'
+                        }
+                        className="info"
+                    >
                             {this.props.friend.email}
-                    </span>,
+                    </a>,
                     clickHandler: null
                 },
                 {
                     icon: 'fa-phone',
-                    info: <span className="info">
+                    info: <a
+                        href={
+                            this.props.friend.phone ?
+                            'tel:' + this.props.friend.phone :
+                            '#'
+                        }
+                        className="info"
+                    >
                             {this.props.friend.phone || '—'}
-                    </span>,
+                    </a>,
                     clickHandler: null
                 },
                 {
