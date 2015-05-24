@@ -1,0 +1,58 @@
+{% extends "base.jinja" %}
+
+{% block title %}
+    Edit Settings
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <h1>Edit Settings</h1>
+
+        {% if error_messages %}
+            {% for error in error_messages %}
+                <div class="form-error alert alert-danger alert-dismissible" role="alert">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <strong>{{ error }}</strong>
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        {% for field in edit_form %}
+            {% if field.errors %}
+                {% for error in field.errors %}
+                    <div class="form-error alert alert-danger alert-dismissible" role="alert">
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        {{ field.label_tag() }}
+                        {{ error|escape }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endfor %}
+
+        <form id="edit_form" method="post" action="{{ url('user_accounts:settings') }}"
+              enctype="multipart/form-data">
+
+            {% csrf_token %}
+
+            {% for field in edit_form %}
+                <div class="edit-group">
+                    {{ field }}
+                </div>
+                <p></p>
+            {% endfor %}
+            <div class="edit-group">
+                <button type="submit" name="save-changes" class="btn btn-default">
+                    Save Changes
+                </button>
+                <button type="reset" name="cancel-changes" class="btn btn-default">
+                    Cancel
+                </button>
+            </div>
+        </form>
+    </div>
+
+{% endblock %}

@@ -23,7 +23,7 @@ class SignupForm(forms.ModelForm, UserForm):
         'class': 'form-control',
         'placeholder': 'Email',
         'id': 'email',
-        'name': 'email'
+        'name': 'Email'
     }))
 
     class Meta:
@@ -65,6 +65,7 @@ class SignUpExtendedForm(forms.Form):
         max_length=300,
         widget=forms.Textarea(
             attrs={
+                'rows': 4,
                 'class': 'form-control',
                 'placeholder': 'Write a short bio about yourself.',
                 'id': 'bio',
@@ -72,3 +73,24 @@ class SignUpExtendedForm(forms.Form):
             }
         )
     )
+
+
+class EditSettingsForm(SignupForm, SignUpExtendedForm):
+    current_password = forms.CharField(required=False, widget=forms.PasswordInput(attrs={
+        'class': 'form-control',
+        'placeholder': 'Current password',
+        'id': 'current_password',
+        'name': 'Current Password'
+    }))
+
+    new_password = forms.CharField(required=False, widget=forms.PasswordInput(attrs={
+        'class': 'form-control',
+        'placeholder': 'New password',
+        'id': 'new_password',
+        'name': 'New Password'
+    }))
+
+    username = password = None
+
+    class Meta(SignupForm.Meta):
+        fields = ('first_name', 'last_name', 'email', 'current_password', 'new_password', 'phone', 'bio')
