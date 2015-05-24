@@ -12,6 +12,9 @@ from user_accounts.forms import LoginForm, SignupForm, SignUpExtendedForm, Setti
 from user_accounts.models import Friendship
 
 
+PROFILE_PIC_SIZE = 125
+
+
 class SignUpView(View):
     def post(self, request):
         # Fill out form with request data
@@ -226,6 +229,10 @@ class SettingsView(View):
 
         # Return to form
         return render(request, 'user_accounts/edit_settings.jinja', {
+            'css': [
+                'user_accounts/css/edit_settings.css'
+            ],
+            'profile_pic': profile.get_gravatar_url(PROFILE_PIC_SIZE),
             'edit_form': edit_form,
             'error_messages': error_messages,
             'success_messages': success_messages,
@@ -234,6 +241,10 @@ class SettingsView(View):
     def get(self, request):
         profile = request.user.profile
         return render(request, 'user_accounts/edit_settings.jinja', {
+            'css': [
+                'user_accounts/css/edit_settings.css'
+            ],
+            'profile_pic': profile.get_gravatar_url(PROFILE_PIC_SIZE),
             'edit_form': SettingsForm(initial={
                 'first_name': profile.first_name,
                 'last_name': profile.last_name,

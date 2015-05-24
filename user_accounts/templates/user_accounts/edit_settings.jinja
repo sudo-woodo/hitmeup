@@ -44,30 +44,45 @@
             {% endif %}
         {% endfor %}
 
-        <form id="edit-form" method="post" action="{{ url('user_accounts:settings') }}"
-              enctype="multipart/form-data">
-
-            {% csrf_token %}
-
-            {% for field in edit_form %}
-                <div class="form-group">
-                    <label for="{{ field.id_for_label }}">
-                        {{ field.label }}
-                    </label>
-                    {{ field }}
+        <div class="row edit-section">
+            <div class="col-xs-12 col-md-2 edit-pic-col">
+                <img
+                    src="{{ profile_pic }}"
+                    alt="Profile picture"
+                    id ="pic"
+                    class="img-thumbnail"
+                >
+                <div class="edit-pic-button-container">
+                    <a href="https://en.gravatar.com/connect/" class="btn btn-primary">
+                        Change profile picture
+                    </a>
                 </div>
-                <p></p>
-            {% endfor %}
-
-            <div class="form-group">
-                <button type="submit" name="save-changes" class="btn btn-primary">
-                    Save changes
-                </button>
-                <button type="reset" name="reset-changes" class="btn btn-default">
-                    Reset changes
-                </button>
             </div>
-        </form>
-    </div>
+            <div class="col-xs-12 col-md-10 edit-info-col">
+                <form id="edit-form" method="post" action="{{ url('user_accounts:settings') }}"
+                      enctype="multipart/form-data">
 
+                    {% csrf_token %}
+
+                    {% for field in edit_form %}
+                        <div class="form-group">
+                            <label for="{{ field.id_for_label }}">
+                                {{ field.label }}
+                            </label>
+                            {{ field }}
+                        </div>
+                    {% endfor %}
+
+                    <div class="form-group">
+                        <button type="submit" name="save-changes" class="btn btn-primary">
+                            Save changes
+                        </button>
+                        <button type="reset" name="reset-changes" class="btn btn-default">
+                            Reset changes
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 {% endblock %}
