@@ -148,13 +148,17 @@ def logout(request):
 class UserProfile(View):
     def get(self, request, username):
         friend_events = []
+        should_display = False
         try:
+            if username == request.user.username:
+                should_display = True
             friend = User.objects.get(username=username).profile
             friendship = request.user.profile.get_friendship(friend)
             if username != request.user.username and \
                     friendship is not None and friendship.accepted:
                 friend_events = [e.serialize() for e in
                                  friend.calendars.get(title="Default").events.all()]
+                should_display = True
         except (User.DoesNotExist, Friendship.DoesNotExist):
             pass
 
@@ -172,20 +176,21 @@ class UserProfile(View):
                 'http://fullcalendar.io/js/fullcalendar-2.3.1/'
                 'fullcalendar.min.js',
                 'https://cdnjs.cloudflare.com/ajax/libs/react/0.13.2/'
-                'react-with-addons.min.js',
+                'react-with-addons.js',
                 'https://cdnjs.cloudflare.com/ajax/libs/react/0.13.0/'
                 'JSXTransformer.js',
             ],
             'js': [
-                'user_accounts/js/testcalendar.js'
             ],
             'jsx': [
-                'user_accounts/js/profile.jsx'
+                'user_accounts/js/calendar.jsx',
+                'user_accounts/js/profile.jsx',
             ],
             'js_data': {
                 'user_events': [e.serialize() for e in
                                 request.user.profile.calendars.get(title='Default').events.all()],
-                'friend_events': friend_events
+                'friend_events': friend_events,
+                'should_display': should_display
             }
         }
 
