@@ -1,3 +1,4 @@
+from django.core.urlresolvers import reverse
 import django.dispatch
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
@@ -5,13 +6,15 @@ from django.core.validators import RegexValidator
 from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch.dispatcher import receiver
+from ourcalendar.logic.intervals import Interval
 from user_accounts.templatetags import gravatar
+from django.utils import timezone
 from django.core.mail import EmailMessage
 from communications.emails import send_welcome_email
 
 
-request_friend = django.dispatch.Signal(providing_args=["from_friend", "to_friend"])
-accept_friend = django.dispatch.Signal(providing_args=["from_friend", "to_friend"])
+request_friend = django.dispatch.Signal(providing_args=['from_friend', 'to_friend'])
+accept_friend = django.dispatch.Signal(providing_args=['from_friend', 'to_friend'])
 
 
 class UserProfile(models.Model):
@@ -49,12 +52,46 @@ class UserProfile(models.Model):
     def email(self):
         return self.user.email
 
+    @property
+    def gravatar_url(self):
+        return self.get_gravatar_url()
+
     def create_email(self, sender='sudowoodohitmeup@gmail.com', *args, **kwargs):
         #return an EmailMessage Object with the email address to send to being the user's
         return EmailMessage(from_email=sender, to=[self.email], *args, **kwargs)
 
     def get_gravatar_url(self, size=80):
         return gravatar.gravatar_url(self.user.email, size)
+
+    # Calendar helpers
+
+    # Flattens busy times
+    # TODO TEST ME IF WE EVER USE THIS
+    def flatten_busy(self, other, show_range):
+        from ourcalendar.models import Event
+
+        events = Event.objects.filter(calendar__ownder=self,
+                                      start__gt=show_range.start,
+                                      end__lt=show_range.end)
+
+        return Interval.flatten_intervals(events)
+
+    # Whether or not this user is available right now
+    # TODO TEST ME
+    @property
+    def is_free(self):
+        from ourcalendar.models import Event
+
+        for event in Event.objects.filter(calendar__owner=self):
+            if event.happens_when(timezone.now()):
+                return False
+        return True
+
+    # Friendship helpers
+
+    @property
+    def profile_url(self):
+        return reverse('user_accounts:user_profile', args=(self.username,))
 
     @property
     def friends(self):
@@ -73,6 +110,20 @@ class UserProfile(models.Model):
     def pending_outgoing_friends(self):
         return self.outgoing_friends.filter(
             incoming_friendships__accepted=False)
+
+    @property
+    def basic_serialized(self):
+        return {
+            'id': self.pk,
+            'username': self.username,
+            'first_name': self.first_name,
+            'last_name': self.last_name,
+            'email': self.email,
+            'phone': self.phone,
+            'gravatar_url': self.get_gravatar_url(size=100),
+            'profile_url': self.profile_url,
+            'is_free': self.is_free,
+        }
 
     def get_friendship(self, other):
         return Friendship.objects.get(from_friend=self, to_friend=other)

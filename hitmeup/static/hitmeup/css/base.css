@@ -12,6 +12,10 @@ body {
     height: auto;
 }
 
+.navbar-default {
+    border-color: #BDBDBD;
+}
+
 .red-bg {
     background-color: #EF5350;
 }

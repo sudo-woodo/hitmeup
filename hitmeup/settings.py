@@ -50,6 +50,7 @@ INSTALLED_APPS = (
     'dynamic_components',
     'static_pages',
     'user_accounts',
+    'ourcalendar',
     'notifications',
     'communications',
 )
@@ -136,17 +137,21 @@ DATABASES = {
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'America/Los_Angeles'
 
 USE_I18N = True
 
 USE_L10N = True
 
-USE_TZ = True
+USE_TZ = False
 
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.8/howto/static-files/
+
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR, 'static'),
+)
 
 STATIC_ROOT = 'staticroot'
 
@@ -181,6 +186,7 @@ SCAFFOLDAPP_FILES = [
 LOGIN_URL = '/login/'
 CSRF_FAILURE_VIEW = 'hitmeup.views.csrf_failure'
 
+
 # Emails
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_HOST_USER = 'sudowoodohitmeup@gmail.com'
@@ -197,3 +203,7 @@ LOGO_URL = ''
 # SMS Setup
 #SENDSMS_BACKEND = 'myapp.mysmsbackend.SmsBackend'
 #SENDSMS_BACKEND = 'sendsms.backends.console.SmsBackend'
+
+
+# Fullcalendar
+TIME_FMT = '%Y-%m-%dT%H:%M:%S'

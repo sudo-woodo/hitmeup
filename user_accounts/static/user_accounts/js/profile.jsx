@@ -2,7 +2,6 @@
     'use strict';
 
     var cx = React.addons.classSet;
-    var ReactCSSTransitionGroup = React.addons.CSSTransitionGroup;
 
     var STATE = {
         CLEAN: 0,
@@ -88,9 +87,9 @@
         render: function() {
             return (
                 <div
-                    className={cx({
-                        'action-button ': true
-                        }) + this.props.buttonClasses
+                    className={[cx({
+                        'action-button': true
+                        }), this.props.buttonClasses].join(' ')
                     }
                     onClick={this.props.clickHandler}
                 >
@@ -126,18 +125,17 @@
             if (this.state.status == STATE.PENDING) {
                 pendingMessage = (
                     <div className="pending-message">
-                        <i className="fa fa-pulse fa-spinner"></i>
+                        <i className="fa fa-share"></i>
                         <span id="pending-text">
-                            Pending
+                            <em>Request sent</em>
                         </span>
                     </div>
                 );
             }
             return (
-                <div className="friend-button-set">
+                <div className="friend-button-set" key={this.state.buttonClasses}>
                     <ActionButton
-                        key={this.state.button}
-                        buttonClasses={this.state.button}
+                        buttonClasses={this.state.buttonClasses}
                         iconClasses={this.state.iconClasses}
                         clickHandler={this.state.clickHandler}
                         status={this.state.status}
