@@ -15,7 +15,7 @@ class UserProfileResource(DjangoResource):
         'full_name': 'full_name',
         'bio': 'bio',
         'phone': 'phone',
-        'picture_url': 'gravatar_url',
+        'gravatar_url': 'gravatar_url',
         'profile_url': 'profile_url'
     })
 
@@ -78,7 +78,7 @@ class FriendResource(DjangoResource):
         'phone': 'phone',
         'favorite': 'favorite',
         'accepted': 'accepted',
-        'picture_url': 'gravatar_url',
+        'gravatar_url': 'gravatar_url',
         'profile_url': 'profile_url'
     })
 

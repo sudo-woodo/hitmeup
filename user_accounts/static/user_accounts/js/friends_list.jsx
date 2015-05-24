@@ -164,7 +164,7 @@
                             <div className="friend-info panel-body">
                                 <div className="profile-pic-container">
                                     <FriendPic
-                                        pic={this.props.friend.picture_url}
+                                        pic={this.props.friend.gravatar_url}
                                     />
                                 </div>
 

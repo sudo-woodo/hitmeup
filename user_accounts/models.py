@@ -114,7 +114,7 @@ class UserProfile(models.Model):
             'last_name': self.last_name,
             'email': self.email,
             'phone': self.phone,
-            'picture_url': self.get_gravatar_url(size=100),
+            'gravatar_url': self.get_gravatar_url(size=100),
             'profile_url': self.profile_url
         }
 

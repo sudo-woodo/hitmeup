@@ -158,11 +158,8 @@ def friends_list(request):
             'user_accounts/css/friends_list.css'
         ],
         'ext_js': [
-            #'https://cdnjs.cloudflare.com/ajax/libs/react/0.13.2/'
-            #'react-with-addons.min.js',
-            'https://fb.me/react-with-addons-0.13.3.js',
-            'https://cdnjs.cloudflare.com/ajax/libs/react/0.13.0/'
-            'JSXTransformer.js',
+            '//cdnjs.cloudflare.com/ajax/libs/react/0.13.2/react-with-addons.min.js',
+            '//cdnjs.cloudflare.com/ajax/libs/react/0.13.0/JSXTransformer.js',
         ],
         'jsx': [
             'user_accounts/js/friends_list.jsx',

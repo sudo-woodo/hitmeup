@@ -74,7 +74,8 @@ class UserProfilesApiTestCase(TestCase):
         data = json.loads(response.content)
 
         expected_fields = ['id', 'username', 'email', 'first_name', 'last_name',
-                           'full_name', 'bio', 'phone', 'gravatar_url']
+                           'full_name', 'bio', 'phone', 'gravatar_url',
+                           'profile_url']
 
         # Ensure all the fields are present
         for field in expected_fields:
