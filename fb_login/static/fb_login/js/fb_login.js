@@ -1,13 +1,3 @@
-<!DOCTYPE html>
-<html>
-<head>
-<title>Facebook Login JavaScript Example</title>
-{#<script src="/fb_login/static/fb_login/js/fb_login.js"></script>#}
-<meta charset="UTF-8">
-</head>
-
-<body>
-<script>
   // This is called with the results from from FB.getLoginStatus().
   function statusChangeCallback(response) {
     console.log('statusChangeCallback');
@@ -18,9 +8,7 @@
     // for FB.getLoginStatus().
     if (response.status === 'connected') {
       // Logged into your app and Facebook.
-     // logIn(response);
       testAPI();
-        getUserId();
     } else if (response.status === 'not_authorized') {
       // The person is logged into Facebook, but not your app.
       document.getElementById('status').innerHTML = 'Please log ' +
@@ -45,13 +33,13 @@
   window.fbAsyncInit = function() {
   FB.init({
     appId      : '1582315285353858',
-    cookie     : true,  // enable cookies to allow the server to access
+    cookie     : true,  // enable cookies to allow the server to access 
                         // the session
     xfbml      : true,  // parse social plugins on this page
     version    : 'v2.2' // use version 2.2
   });
 
-  // Now that we've initialized the JavaScript SDK, we call
+  // Now that we've initialized the JavaScript SDK, we call 
   // FB.getLoginStatus().  This function gets the state of the
   // person visiting this page and can return one of three states to
   // the callback you provide.  They can be:
@@ -94,32 +82,5 @@
         // Person is now logged out
            document.getElementById('status').innerHTML = 'You are logged out.';
     });
+
    }
-
-  function getUserId() {
-      FB.api('/me', function (response) {
-          console.log(response.id);
-{#          return response.id;#}
-      });
-  }
-   //function logIn(response){
-     //  if()
-
-   //}
-</script>
-
-<!--
-  Below we include the Login Button social plugin. This button uses
-  the JavaScript SDK to present a graphical Login button that triggers
-  the FB.login() function when clicked.
--->
-
-<fb:login-button scope="public_profile,email" onlogin="checkLoginState();">
-</fb:login-button>
-<button onclick="checkOut();">Log Out</button>
-<div id="status">
-</div>
-{#<div getUserInfo()</div>#}
-{#<script>getUserInfo()</script>#}
-</body>
-</html>
