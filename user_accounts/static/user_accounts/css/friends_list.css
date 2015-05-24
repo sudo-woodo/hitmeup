@@ -96,6 +96,12 @@ body {
     border-color: #bdbdbd;
 }
 
+.refresh-button:hover {
+    background-color: #2E7D32;
+    color: white;
+    border-color: #9E9E9E;
+}
+
 .fav-icon {
     cursor: pointer;
     color: #ff4081;
