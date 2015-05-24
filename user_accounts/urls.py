@@ -11,5 +11,6 @@ urlpatterns = [
     url(r'^settings/$', login_required(views.SettingsView.as_view()),
         name='settings'),
     url(r'^user/(?P<username>[\w.@+-]+)/$', views.UserProfile.as_view(),
-        name='user_profile')
+        name='user_profile'),
+    url(r'^friends/$', views.friends_list, name='friends_list'),
 ]

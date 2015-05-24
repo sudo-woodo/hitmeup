@@ -1,4 +1,5 @@
 from django.contrib.auth import authenticate, login
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib.auth.views import logout_then_login
 from django.core.urlresolvers import reverse
@@ -133,6 +134,31 @@ class LoginView(View):
 
 def logout(request):
     return logout_then_login(request)
+
+@login_required
+def friends_list(request):
+    def serialize(friend):
+        friendship = request.user.profile.get_friendship(friend)
+        serialized = friend.basic_serialized
+        serialized['favorite'] = friendship.favorite
+        return serialized
+
+    return render(request, 'user_accounts/friends_list.jinja', {
+        'css': [
+            'user_accounts/css/friends_list.css'
+        ],
+        'ext_js': [
+            '//cdnjs.cloudflare.com/ajax/libs/react/0.13.2/react-with-addons.min.js',
+            '//cdnjs.cloudflare.com/ajax/libs/react/0.13.0/JSXTransformer.js',
+        ],
+        'jsx': [
+            'user_accounts/js/friends_list.jsx',
+        ],
+        'js_data': {
+            'friends': [serialize(f) for f in
+                        request.user.profile.friends]
+        },
+    })
 
 
 class SettingsView(View):
