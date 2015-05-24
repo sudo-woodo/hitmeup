@@ -7,7 +7,7 @@ entries = [
     },
     {
         'name': 'Friends',
-        'view': 'user_accounts:friendsList',
+        'view': 'user_accounts:friends_list',
         'auth_required': True
     },
     {

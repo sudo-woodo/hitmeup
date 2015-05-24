@@ -9,5 +9,5 @@ urlpatterns = [
     url(r'^logout/$', views.logout, name='logout'),
     url(r'^user/(?P<username>[\w.@+-]+)/$', views.UserProfile.as_view(),
         name='user_profile'),
-    url(r'^friends/$', views.friends_list, name='friendsList'),
+    url(r'^friends/$', views.friends_list, name='friends_list'),
 ]
