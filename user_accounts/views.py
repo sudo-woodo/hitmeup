@@ -153,7 +153,7 @@ class SettingsView(View):
 
         # Re-render form with initial values if form is invalid
         if not edit_form.is_valid():
-            return render(request, 'user_accounts/edit.jinja', {
+            return render(request, 'user_accounts/edit_settings.jinja', {
                 'edit_form': edit_form
             })
 
@@ -164,11 +164,13 @@ class SettingsView(View):
                 updated_fields[key] = val
 
         # One of the password fields entered
-        if updated_fields.viewkeys() >= {'current_password'} or updated_fields.viewkeys() >= {'new_password'}:
+        if updated_fields.viewkeys() & {'current_password', 'new_password'}:
             if 'current_password' not in updated_fields:
-                error_message = 'New password given, but current password was missing.'
+                error_message = 'New password given, but current password' \
+                                ' was missing.'
             elif 'new_password' not in updated_fields:
-                error_message = 'Current password given, but new password was missing.'
+                error_message = 'Current password given, but new password' \
+                                ' was missing.'
             else:
                 # Authenticate the current password
                 user = authenticate(username=request.user.username,
@@ -202,7 +204,7 @@ class SettingsView(View):
             ))
 
         # Form submission not successful; return to form
-        return render(request, 'user_accounts/edit.jinja', {
+        return render(request, 'user_accounts/edit_settings.jinja', {
             'edit_form': EditSettingsForm(initial={
                 'first_name': profile.first_name,
                 'last_name': profile.last_name,
@@ -215,7 +217,7 @@ class SettingsView(View):
 
     def get(self, request):
         profile = request.user.profile
-        return render(request, 'user_accounts/edit.jinja', {
+        return render(request, 'user_accounts/edit_settings.jinja', {
             'edit_form': EditSettingsForm(initial={
                 'first_name': profile.first_name,
                 'last_name': profile.last_name,
