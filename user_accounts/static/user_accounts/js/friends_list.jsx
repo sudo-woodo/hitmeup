@@ -195,7 +195,7 @@
                                 <div className=
                                     "profile-info-container overflow-control"
                                 >
-                                    <ul className="fa-ul">
+                                    <ul className="fa-ul info-container">
                                         { infoNodes }
                                     </ul>
                                 </div>
