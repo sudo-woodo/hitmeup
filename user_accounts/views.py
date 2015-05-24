@@ -7,7 +7,7 @@ from django.http.response import HttpResponseRedirect
 from django.shortcuts import render
 from django.utils.html import escape
 from django.views.generic import View
-from user_accounts.forms import UserForm, SignupForm, SignUpExtendedForm, EditSettingsForm
+from user_accounts.forms import LoginForm, SignupForm, SignUpExtendedForm, SettingsForm
 from user_accounts.models import Friendship
 
 
@@ -83,7 +83,7 @@ class SignUpExtended(View):
 class LoginView(View):
     def post(self, request):
         # Fill out form with request data
-        login_form = UserForm(data=request.POST)
+        login_form = LoginForm(data=request.POST)
         if login_form.is_valid():
             user = authenticate(username=login_form.cleaned_data['username'],
                                 password=login_form.cleaned_data['password'])
@@ -126,9 +126,8 @@ class LoginView(View):
             return HttpResponseRedirect(reverse('static_pages:home'))
 
         # Else, display a empty form for the user
-        login_form = UserForm()
         return render(request, 'user_accounts/login.jinja', {
-            'login_form': login_form
+            'login_form': LoginForm()
         })
 
 
@@ -139,7 +138,7 @@ def logout(request):
 class SettingsView(View):
     def post(self, request):
         profile = request.user.profile
-        edit_form = EditSettingsForm(data=request.POST)
+        edit_form = SettingsForm(data=request.POST)
         error_messages = []
         success_messages = []
 
@@ -209,7 +208,7 @@ class SettingsView(View):
     def get(self, request):
         profile = request.user.profile
         return render(request, 'user_accounts/edit_settings.jinja', {
-            'edit_form': EditSettingsForm(initial={
+            'edit_form': SettingsForm(initial={
                 'first_name': profile.first_name,
                 'last_name': profile.last_name,
                 'email': profile.email,

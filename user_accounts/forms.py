@@ -3,7 +3,7 @@ from django import forms
 from user_accounts.models import UserProfile
 
 
-class UserForm(forms.Form):
+class LoginForm(forms.Form):
     username = forms.CharField(widget=forms.TextInput(attrs={
         'class': 'form-control',
         'placeholder': 'Username',
@@ -18,7 +18,7 @@ class UserForm(forms.Form):
     }))
 
 
-class SignupForm(forms.ModelForm, UserForm):
+class SignupForm(forms.ModelForm, LoginForm):
     email = forms.CharField(widget=forms.EmailInput(attrs={
         'class': 'form-control',
         'placeholder': 'Email',
@@ -75,7 +75,14 @@ class SignUpExtendedForm(forms.Form):
     )
 
 
-class EditSettingsForm(SignupForm, SignUpExtendedForm):
+class SettingsForm(SignUpExtendedForm):
+    email = forms.CharField(required=False, widget=forms.EmailInput(attrs={
+        'class': 'form-control',
+        'placeholder': 'Email',
+        'id': 'email',
+        'name': 'email',
+    }))
+
     current_password = forms.CharField(required=False, widget=forms.PasswordInput(attrs={
         'class': 'form-control',
         'placeholder': 'Current password',
