@@ -51,18 +51,21 @@ class SignUpTestCase(TestCase):
         response = self.client.post(SIGNUP_URL, self.SIGNUP_INFO)
         user = User.objects.get(username=self.SIGNUP_INFO['username'])
 
-        # Tests the auto login and redirect
+        # Makes sure test outbox has an email
         self.assertEqual(len(mail.outbox), 1)
+        #checks subject to be welcome subject, to test that welcome email was sent
         self.assertEqual(mail.outbox[0].subject, 'Welcome to HitMeUp!')
 
     def test_existing_user(self):
         # Tests registering with the same username
         response = self.client.post(SIGNUP_URL, self.LOGIN_INFO)
+        #test that no email was sent
         self.assertEqual(len(mail.outbox), 0)
 
     def test_signup_while_logged_in(self):
         # Tests accessing the signup page while already logged in
         self.client.login(**self.LOGIN_INFO)
         response = self.client.get(SIGNUP_URL)
+        #test that no email was sent
         self.assertEqual(len(mail.outbox), 0)
 

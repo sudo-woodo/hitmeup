@@ -50,6 +50,7 @@ class UserProfile(models.Model):
         return self.user.email
 
     def create_email(self, sender='sudowoodohitmeup@gmail.com', *args, **kwargs):
+        #return an EmailMessage Object with the email address to send to being the user's
         return EmailMessage(from_email=sender, to=[self.email], *args, **kwargs)
 
     def get_gravatar_url(self, size=80):
@@ -140,6 +141,7 @@ class UserProfile(models.Model):
 def create_user_profile(sender, instance, created, **kwargs):
     if created:
         profile = UserProfile.objects.create(user=instance)
+        #send welcome email when profile is created
         send_welcome_email(profile)
 
 

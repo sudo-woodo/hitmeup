@@ -4,6 +4,7 @@ from django.shortcuts import render, redirect
 from communications.emails import send_test_mail
 
 def email_test(request):
+    #test statement to see if email is sending
     print('reached email_test view')
     send_test_mail()
     return redirect('static_pages:home')

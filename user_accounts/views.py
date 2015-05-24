@@ -18,6 +18,9 @@ class SignUpView(View):
         # Fill out form with request data
         signup_form = SignupForm(data=request.POST)
         if signup_form.is_valid():
+            #Create an abolute URL for the HitMeUp logo image and save it in settings for later use
+            #settings.LOGO_URL = request.build_absolute_uri()
+            #print settings.LOGO_URL
             user = signup_form.save()
             user.set_password(user.password)
             user.save()
