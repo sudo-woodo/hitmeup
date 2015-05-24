@@ -105,8 +105,8 @@ class RecurrenceType(models.Model):
 
 class RecurrenceType(models.Model):
 
-   # event = models.OneToOneField(Event, primary_key=True, related_name="recurrence_type")
-    event = models.OneToOneField(Event, primary_key=True)
+    event = models.OneToOneField(Event, primary_key=True, related_name="recurrence_type")
+    #event = models.OneToOneField(Event, primary_key=True)
     def get_between(self, range_start, range_end):
         raise NotImplementedError("Recurrence Type not implemented!!")
 
@@ -124,30 +124,78 @@ class SingleRecurrence(RecurrenceType):
         return "%s -> SingleRecurrenceType" % self.event
 
 '''
-def find_last_occurrence():
-    print("hi")
-    return timezone.now()
-'''
+Input: after n occurrences
 def find_last_occurrence(time, frequency, total_number, days_of_week):
     print(days_of_week)
-    return 1
+    return time
+
+For future:
+
+end = (start + 7 * total_number/days_per_week * frequency).move_forward(total_number % days_per_week - 1)
+
+move_forward: moves number of days forward (could be backwards if negative) according to days_of_week
+'''
+
 
 class WeeklyRecurrence(RecurrenceType):
     #TODO: Make sure that the length is only 7!
-    days_of_week = models.CommaSeparatedIntegerField(default=[0,0,0,0,0,0,0], max_length=13)
+    #TODO: Make sure at least one day is 1
+    # Days of the week, M T W TH F Sa Su
+    days_of_week = models.CommaSeparatedIntegerField(default=[1,0,0,0,0,0,0], max_length=100)
     # The number of weeks between each occurrence
     frequency = models.IntegerField(default=1)
-    total_number = models.IntegerField(default=1)
-    end = models.DateTimeField(default=find_last_occurrence(event.end,
-                        frequency, total_number, days_of_week)) #TODO: Question : why can't this be self?
-    #end = models.DateTimeField(default=find_last_occurrence)
 
+    # Total number of occurrences
+    total_number = models.IntegerField(default=1)
+
+    last_event = models.DateTimeField(default=hour_from_now)
+
+    #Given total number
     def get_between(self, range_start, range_end):
-        if self.event.start < range_end and self.event.end > range_start:
-            return self.event
+        events = []
+        if self.event.start < range_end and self.last_event > range_start:
+            start = self.event.start
+            end = self.event.end
+            index = self.event.start.weekday()
+
+            # number of events added to events array
+            times = 0
+            while times < self.total_number:
+                times = times + 1
+                index = (index + 1) % 6
+                counter = 1
+                #Go to next day
+                while self.days_of_week[index] == 0:
+                    index = (index + 1) % 6
+                    counter = counter + 1
+
+                if self.event.end + timezone.timedelta(days=counter) < range_start:
+                    continue;
+                if self.event.start + timezone.timedelta(days=counter) > range_end:
+                    break;
+                events.append(Event(calendar=self.event.calendar,
+                              title=self.event.title,
+                              location=self.event.location,
+                              description=self.event.description,
+                              start=self.event.start + timezone.timedelta(days=counter),
+                              end=self.event.end + timezone.timedelta(days=counter)))
+
+
+
+            '''
+            start from max(event.start, range_start)
+            keep adding event to array until we reach min(last_event, range_end)
+            '''
+            return events #array
 
     def __unicode__(self):
         return "%s -> WeeklyRecurrenceType" % self.event
 
 
+'''
+Input: after n occurrences
+    @property
+    def end(self):
+        return find_last_occurrence(self.event.end, self.frequency, self.total_number, self.days_of_week)
+'''
 
