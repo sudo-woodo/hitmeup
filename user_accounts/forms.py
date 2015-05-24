@@ -1,3 +1,4 @@
+from collections import OrderedDict
 from django.contrib.auth.models import User
 from django import forms
 from user_accounts.models import UserProfile
@@ -76,6 +77,9 @@ class SignUpExtendedForm(forms.Form):
 
 
 class SettingsForm(SignUpExtendedForm):
+    FIELD_ORDER = ['email', 'current_password', 'new_password',
+                   'first_name', 'last_name', 'phone', 'bio']
+
     email = forms.CharField(required=False, widget=forms.EmailInput(attrs={
         'class': 'form-control',
         'placeholder': 'Email',
@@ -97,8 +101,10 @@ class SettingsForm(SignUpExtendedForm):
         'name': 'new-password',
     }))
 
-    username = password = None
-
-    class Meta(SignupForm.Meta):
-        fields = ('email', 'current_password', 'new_password',
-                  'first_name', 'last_name', 'phone', 'bio')
+    # Reorder fields
+    def __init__(self, *args, **kwargs):
+        super(SettingsForm, self).__init__(*args, **kwargs)
+        self.fields = OrderedDict((k, self.fields[k]) for k in self.FIELD_ORDER
+                                  # Remaining fields
+                                  + list(set(self.fields) -
+                                         set(self.FIELD_ORDER)))
