@@ -103,11 +103,6 @@ body {
     background-color: #e0e0e0;
 }
 
-.friend-button-set {
-    animation-name: enter;
-    animation-duration: .9s;
-}
-
 .pending-message {
     display: inline-block;
     line-height: 40px;
@@ -129,33 +124,9 @@ body {
     hyphens: auto;
     -ms-hyphens: auto;
     -moz-hyphens: auto;
-    animation: popout;
-    animation-duration: 1.8s;
-    animation-timing-function: ease-in;
 }
 
 #calendar-panel {
     margin-top: 30px;
     border-color: #bdbdbd;
-    animation: popout;
-    animation-duration: 1.2s;
-    animation-delay: .6s;
-    animation-timing-function: ease-in;
-}
-
-@keyframes enter {
-    from{opacity: 0;}
-    to{opacity: 1;}
-}
-
-@keyframes popout {
-    from{transform:scale(0)}
-    60%{transform:scale(1.05)}
-    to{transform:scale(1)}
-}
-
-@-webkit-keyframes popout {
-    from{-webkit-transform:scale(0)}
-    60%{-webkit-transform:scale(1.05)}
-    to{-webkit-transform:scale(1)}
 }

@@ -89,27 +89,42 @@ body {
 
 .refresh-button {
     position: fixed;
-    bottom: 0;
-    right: 0;
+    bottom: 15px;
+    right: 15px;
+    height: 50px;
+    width: 50px;
+    border-radius: 25px;
+    line-height: 1.5;
     background-color: #388e3c;
     color: white;
     border-color: #bdbdbd;
 }
 
-.refresh-button:hover {
+.refresh-button .refresh-icon {
+    -webkit-transition-duration: 0.4s;
+    -moz-transition-duration: 0.4s;
+    -ms-transition-duration: 0.4s;
+    -o-transition-duration: 0.4s;
+    transition-duration: 0.4s;
+}
+
+.refresh-button:hover, .refresh-button:active, .refresh-button:focus {
     background-color: #2E7D32;
     color: white;
     border-color: #9E9E9E;
 }
 
+.refresh-button:hover .refresh-icon {
+    -webkit-transform: rotate(180deg);
+    -moz-transform: rotate(180deg);
+    -ms-transform: rotate(180deg);
+    -o-transform: rotate(180deg);
+    transform: rotate(180deg);
+}
+
 .fav-icon {
     cursor: pointer;
     color: #ff4081;
-}
-
-.fav {
-    animation: doki-doki;
-    animation-duration: 1s;
 }
 
 .free, .free-icon {
@@ -118,22 +133,4 @@ body {
 
 .busy, .busy-icon {
     color: #d50000;
-}
-
-.friend-box-animation-enter {
-    opacity: 0.01;
-    transition: opacity .4s linear;
-}
-
-.friend-box-animation-enter.friend-box-animation-enter-active {
-    opacity: 1;
-}
-
-@keyframes doki-doki {
-    0% {transform:scale(1)}
-    25% {transform:scale(1.2)}
-    50% {transform:scale(1)}
-    75% {transform:scale(1.2)}
-    100% {transform:scale(1)}
-
 }

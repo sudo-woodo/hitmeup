@@ -49,7 +49,7 @@
                         <div
                             className="btn btn-lg btn-default refresh-button"
                             onClick={this.refreshHandler}>
-                            <i className="fa fa-refresh"></i>
+                            <i className="fa fa-refresh refresh-icon"></i>
                         </div>
                     </div>
                 </div>
