@@ -2,7 +2,6 @@
     'use strict';
 
     var cx = React.addons.classSet;
-    var ReactCSSTransitionGroup = React.addons.CSSTransitionGroup;
 
     var STATE = {
         CLEAN: 0,
@@ -88,9 +87,9 @@
         render: function() {
             return (
                 <div
-                    className={cx({
-                        'action-button ': true
-                        }) + this.props.buttonClasses
+                    className={[cx({
+                        'action-button': true
+                        }), this.props.buttonClasses].join(' ')
                     }
                     onClick={this.props.clickHandler}
                 >

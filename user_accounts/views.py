@@ -280,6 +280,7 @@ class UserProfile(View):
                 context['profile'] = profile
                 context['js_data']['showFriendButton'] = request.user.id != profile.pk
                 context['js_data']['profileId'] = profile.pk
+                context['friended'] = False
                 context['censor'] = False
 
                 try:
@@ -288,6 +289,7 @@ class UserProfile(View):
                         to_friend=profile
                     )
                     if friendship.accepted:
+                        context['friended'] = True
                         context['js_data']['status'] = state['IS_FRIENDS']
                     else:
                         context['js_data']['status'] = state['PENDING']
