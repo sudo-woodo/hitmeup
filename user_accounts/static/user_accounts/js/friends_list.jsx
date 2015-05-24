@@ -112,15 +112,15 @@
                     clickHandler: this.favHandler
                 },
                 {
-                    icon: this.props.friend.free ?
+                    icon: this.props.friend.is_free ?
                         'fa-check-circle free-icon' :
                         'fa-clock-o busy-icon',
                     info: (
                         <span className={
                             'info ' +
-                            (this.props.friend.free ? 'free' : 'busy')
+                            (this.props.friend.is_free ? 'free' : 'busy')
                         }>
-                            {this.props.friend.free ? 'Free' : 'Busy'}
+                            {this.props.friend.is_free ? 'Free' : 'Busy'}
                         </span>
                     ),
                     clickHandler: null

@@ -60,7 +60,7 @@ class UserProfile(models.Model):
     # Calendar helpers
 
     # Flattens busy times
-    # TODO TEST ME
+    # TODO TEST ME IF WE EVER USE THIS
     def flatten_busy(self, other, show_range):
         from ourcalendar.models import Event
 
@@ -115,7 +115,8 @@ class UserProfile(models.Model):
             'email': self.email,
             'phone': self.phone,
             'gravatar_url': self.get_gravatar_url(size=100),
-            'profile_url': self.profile_url
+            'profile_url': self.profile_url,
+            'is_free': self.is_free,
         }
 
     def get_friendship(self, other):
