@@ -29,8 +29,7 @@ class SignUpView(View):
             new_user = authenticate(username=request.POST['username'],
                                     password=request.POST['password'])
             login(request, new_user)
-            return HttpResponseRedirect(reverse('user_accounts:extended_signup')
-                                        + '?first_visit=true')
+            return HttpResponseRedirect(reverse('user_accounts:extended_signup'))
         else:
             # Return the form with errors
             return render(request, 'user_accounts/signup.jinja',
@@ -56,15 +55,19 @@ class SignUpExtended(View):
         if signup_extended_form.is_valid():
             # if the form is valid, update user and userprofile
             user = request.user
+            profile = user.profile
+
+            profile.did_extended_signup = True
             for key, val in signup_extended_form.cleaned_data.iteritems():
                 if val.strip():
                     if key in {'first_name', 'last_name'}:
                         setattr(user, key, val.strip())
 
                     else:
-                        setattr(user.profile, key, val.strip())
+                        setattr(profile, key, val.strip())
+
             user.save()
-            user.profile.save()
+            profile.save()
             return HttpResponseRedirect(reverse('static_pages:home'))
 
         # If there's an form error, rerender with errors
@@ -75,7 +78,7 @@ class SignUpExtended(View):
 
     def get(self, request):
         # If it's not the user's first visit, return them to home
-        if not request.GET.get('first_visit', False) == 'true':
+        if request.user.profile.did_extended_signup:
             return HttpResponseRedirect(reverse('static_pages:home'))
 
         # Otherwise, return a blank form for the user to fill out
