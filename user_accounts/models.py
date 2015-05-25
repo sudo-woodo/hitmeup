@@ -50,13 +50,17 @@ class UserProfile(models.Model):
     def email(self):
         return self.user.email
 
+    @property
+    def gravatar_url(self):
+        return self.get_gravatar_url()
+
     def get_gravatar_url(self, size=80):
         return gravatar.gravatar_url(self.user.email, size)
 
     # Calendar helpers
 
     # Flattens busy times
-    # TODO TEST ME
+    # TODO TEST ME IF WE EVER USE THIS
     def flatten_busy(self, other, show_range):
         from ourcalendar.models import Event
 
@@ -100,6 +104,20 @@ class UserProfile(models.Model):
     def pending_outgoing_friends(self):
         return self.outgoing_friends.filter(
             incoming_friendships__accepted=False)
+
+    @property
+    def basic_serialized(self):
+        return {
+            'id': self.pk,
+            'username': self.username,
+            'first_name': self.first_name,
+            'last_name': self.last_name,
+            'email': self.email,
+            'phone': self.phone,
+            'gravatar_url': self.get_gravatar_url(size=100),
+            'profile_url': self.profile_url,
+            'is_free': self.is_free,
+        }
 
     def get_friendship(self, other):
         return Friendship.objects.get(from_friend=self, to_friend=other)

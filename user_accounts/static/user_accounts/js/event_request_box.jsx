@@ -1,6 +1,21 @@
 var requestReactor = (function($HMU, React, $, _) {
 
     var should_display = $HMU.should_display && !($HMU.is_user);
+    var EventForm = React.createClass({
+       render: function()  {
+           return (
+               <div className ="panel panel-default">
+                   <h4 id="request-header" align="center"><i className="fa fa-cutlery"></i>&nbsp; Send event request</h4>
+                   <form id="event-form" onSubmit={this.handleSubmit}>
+                       <InputForm ref="inputForm" />
+                   </form>
+               </div>
+           );
+
+       }
+
+    });
+
 
     var EventRequestBox = React.createClass({
 
@@ -9,12 +24,7 @@ var requestReactor = (function($HMU, React, $, _) {
         },
 
         render: function()  {
-           var form = <div className ="panel panel-default">
-                        <h4 id="request-header" align="center"><i className="fa fa-cutlery"></i>&nbsp; Send event request</h4>
-                        <form id="event-form" onSubmit={this.handleSubmit}>
-                            <InputForm ref="inputForm" />
-                        </form>
-                      </div>;
+           var form = <EventForm ref="request"/>;
            var panel = should_display ? form : "";
 
            return (
