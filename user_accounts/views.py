@@ -20,6 +20,18 @@ class SignUpView(View):
         # Fill out form with request data
         signup_form = SignupForm(data=request.POST)
         if signup_form.is_valid():
+
+            # Check if passwords match
+            data = signup_form.cleaned_data
+            if data['password'] != data['confirm_password']:
+                # Return the form with errors
+                return render(request, 'user_accounts/signup.jinja', {
+                    'signup_form': signup_form,
+                    'error_messages': [
+                        'Passwords do not match.',
+                    ],
+                })
+
             user = signup_form.save()
             user.set_password(user.password)
             user.save()
@@ -83,7 +95,7 @@ class SignUpExtended(View):
 
         # Otherwise, return a blank form for the user to fill out
         return render(request, 'user_accounts/signup_extended.jinja', {
-            'signup_extended_form': SignUpExtendedForm()
+            'signup_extended_form': SignUpExtendedForm(),
         })
 
 

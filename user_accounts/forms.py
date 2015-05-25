@@ -11,6 +11,7 @@ class LoginForm(forms.Form):
         'id': 'username',
         'name': 'username',
     }))
+
     password = forms.CharField(widget=forms.PasswordInput(attrs={
         'class': 'form-control',
         'placeholder': 'Password',
@@ -27,9 +28,16 @@ class SignupForm(forms.ModelForm, LoginForm):
         'name': 'email',
     }))
 
+    confirm_password = forms.CharField(required=False, widget=forms.PasswordInput(attrs={
+        'class': 'form-control',
+        'placeholder': 'Confirm Password',
+        'id': 'confirm-password',
+        'name': 'confirm-password',
+    }))
+
     class Meta:
         model = User
-        fields = ('email', 'username', 'password')
+        fields = ('email', 'username', 'password', 'confirm_password')
 
 
 class SignUpExtendedForm(forms.Form):
