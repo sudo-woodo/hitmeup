@@ -41,10 +41,16 @@ var calendarReactor = (function($HMU, React, $, _)  {
                     defaultView: "agendaWeek",
                     allDaySlot: false,
                     scrollTime: "08:00:00",
+                    selectable: true,
                     header: {
                         left: 'prev,next today',
                         center: 'title',
                         right: 'month,agendaWeek,agendaDay'
+                    },
+                    select: function(start, end) {
+                        $('#start-picker').data("DateTimePicker").date(start);
+                        $('#end-picker').data("DateTimePicker").date(end);
+
                     }
                 });
             }

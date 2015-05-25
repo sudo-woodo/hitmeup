@@ -1,0 +1,34 @@
+var requestReactor = (function($HMU, React, $, _) {
+
+    var should_display = $HMU.should_display && !($HMU.is_user);
+
+    var EventRequestBox = React.createClass({
+
+        handleSubmit: function()  {
+            //Handle the form components.
+        },
+
+        render: function()  {
+           var form = <div className ="panel panel-default">
+                        <h4 id="request-header" align="center"><i className="fa fa-cutlery"></i>&nbsp; Send event request</h4>
+                        <form id="event-form" onSubmit={this.handleSubmit}>
+                            <InputForm ref="inputForm" />
+                        </form>
+                      </div>;
+           var panel = should_display ? form : "";
+
+           return (
+                 <div>
+                    {panel}
+                 </div>
+           );
+       }
+    });
+
+    // Renders the event request modal.
+    return React.render(
+        <EventRequestBox />,
+        document.getElementById('request-panel')
+    );
+
+})(window.$HMU, window.React, window.jQuery, window._);

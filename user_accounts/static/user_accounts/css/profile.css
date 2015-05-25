@@ -133,6 +133,31 @@ body {
     animation-timing-function: ease-out;*/
 }
 
+#request-panel {
+    margin-top: 30px;
+    margin-bottom: 0;
+    border-color: #bdbdbd;
+    word-wrap: break-word;
+    hyphens: auto;
+    -ms-hyphens: auto;
+    -moz-hyphens: auto;
+    /*animation: popout;
+    animation-duration: 1s;
+    animation-timing-function: ease-out;*/
+}
+
+#request-form {
+    display: block;
+    margin : 0 auto;
+    padding: 10px;
+    overflow: hidden;
+}
+
+#request-header {
+    text-align: center;
+
+}
+
 #calendar-panel {
     margin-top: 30px;
     border-color: #bdbdbd;
