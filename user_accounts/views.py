@@ -196,18 +196,33 @@ class SettingsView(View):
                               in edit_form.cleaned_data.iteritems() if v}
 
             # Manually check password fields
-            if updated_fields.viewkeys() & {'current_password', 'new_password'}:
+            if updated_fields.viewkeys() & {
+                'current_password', 'new_password', 'confirm_password',
+            }:
                 if 'current_password' not in updated_fields:
                     error_messages.append(
-                        'New password given, but current password was missing.'
+                        'Current password was missing.'
                     )
                     password_valid = False
-                elif 'new_password' not in updated_fields:
+                if 'new_password' not in updated_fields:
                     error_messages.append(
-                        'Current password given, but new password was missing.'
+                        'New password was missing.'
                     )
                     password_valid = False
-                else:
+                if 'confirm_password' not in updated_fields:
+                    error_messages.append(
+                        'Password confirmation was missing.'
+                    )
+                    password_valid = False
+
+                # If we're good so far...
+                if password_valid:
+                    if updated_fields['new_password'] != updated_fields['confirm_password']:
+                        error_messages.append(
+                            'New password and password confirmation don\'t match.'
+                        )
+                        password_valid = False
+
                     # Authenticate the current password
                     user = authenticate(username=request.user.username,
                                         password=updated_fields['current_password'])
