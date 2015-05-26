@@ -1,6 +1,5 @@
 .tt-menu {
-    width: 100%;
-    min-width: 160px;
+    min-width: 100%;
     margin-top: 2px;
     background-color: #fff;
     border: 1px solid rgba(0, 0, 0, 0.2);
