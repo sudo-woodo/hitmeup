@@ -74,7 +74,8 @@ class UserProfilesApiTestCase(TestCase):
         data = json.loads(response.content)
 
         expected_fields = ['id', 'username', 'email', 'first_name', 'last_name',
-                           'full_name', 'bio', 'phone', 'gravatar_url']
+                           'full_name', 'bio', 'phone', 'gravatar_url',
+                           'profile_url', 'is_free']
 
         # Ensure all the fields are present
         for field in expected_fields:
@@ -203,7 +204,6 @@ class FriendsApiTestCase(TestCase):
                 friendship = Friendship.objects.get(from_friend=self.profile,
                                                     to_friend=other.profile)
                 self.assertEqual(data[field], getattr(friendship, field))
-                continue
             elif field == 'id':
                 self.assertEqual(data[field], other.pk)
             else:
