@@ -13,9 +13,16 @@
         }
     });
 
-    $('#user-search-form-input').typeahead(null, {
+    var $tt = $('#user-search-form-input');
+
+    $tt.typeahead(null, {
         name: 'user-suggestions',
         source: userSuggestions,
         limit: 10 // Doesn't work if it's 5 for SOME reason...
+    });
+
+    // Submit on selection
+    $tt.on('typeahead:selected', function(event, selection) {
+        $('#user-search-form').submit();
     });
 })})(window.$HMU, window.jQuery, Bloodhound);
