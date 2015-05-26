@@ -11,6 +11,11 @@ def do_user_search(data, num_results=None):
     :param num_results: How many results to return; defaults to all
     :return: (string, [string])
     """
+    # Ensure we have a query
+    query = data['q']
+    if not query:
+        return (None, [])
+
     form = UserSearchForm(data=data)
     user = form.search() # form.search() returns a SearchQuerySet
 
@@ -19,7 +24,7 @@ def do_user_search(data, num_results=None):
 
     # The second parameter is the default value. Returns SearchResult object.
     try:
-        sqs = SearchQuerySet().autocomplete(user_auto=data['q'])
+        sqs = SearchQuerySet().autocomplete(user_auto=query)
         suggestions = [result.object.username for result in sqs]
 
         # Trim the results
