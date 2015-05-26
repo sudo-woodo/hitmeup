@@ -27,7 +27,6 @@
                     <div class="search-bar-container">
                         <form id="search_form" class="form-inline" role="search" method="get"
                             action="{{ url('search_bar:search') }}">
-                            {% csrf_token %}
                             <div class="form-group">
                                 <input type="text" name="q" class="form-control" placeholder="Find your friends!">
                             </div>
