@@ -155,6 +155,8 @@ class WeeklyRecurrence(RecurrenceType):
 
     #TODO: implement with frequency
     def get_between(self, range_start, range_end):
+
+        # An array of events to return
         events = []
         if self.event.start < range_end and self.last_event_end > range_start:
             start = max(self.event.start, range_start)
@@ -175,7 +177,7 @@ class WeeklyRecurrence(RecurrenceType):
                               )
                 start = start + timezone.timedelta(days=1)
 
-        return events #array
+        return events
 
     def __unicode__(self):
         return "%s -> WeeklyRecurrenceType" % self.event
