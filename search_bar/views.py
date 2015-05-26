@@ -1,7 +1,6 @@
-from django.shortcuts import render
+from django.core.urlresolvers import reverse
 from django.http import HttpResponse, HttpResponseRedirect
 from django.views.generic import View
-# TODO: for todo: from django.core.urlresolvers import reverse
 
 from .forms import UserSearchForm
 import simplejson as json
@@ -14,10 +13,9 @@ class Search(View):
         if user:
             # Best_match() will get the SearchResult, then you get the user and the username
             username = user.best_match().object.get_username()
-            #
-            # TODO: for displaying user profile once it is merge to master:
-            # TODO:  return HttpResponseRedirect(reverse('user_accounts:user_profile',username=username))
-            return render(request, 'search_bar/usernames.jinja', {'username': username}) # eventually change this to render user profile
+            return HttpResponseRedirect(
+                reverse('user_accounts:user_profile', args=(username,))
+            )
 
         # Not an exact username, need auto-complete!
         else:
@@ -32,7 +30,3 @@ class Search(View):
                 'results': suggestions
             })
             return HttpResponse(the_data, content_type='application/json') # change this later
-
-# Probably won't need this in future since search is in navbar
-def SearchBase(request):
-    return render(request, 'search_bar/search.jinja')
