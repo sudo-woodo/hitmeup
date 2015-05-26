@@ -1,0 +1,46 @@
+.tt-menu {
+    width: 100%;
+    min-width: 160px;
+    margin-top: 2px;
+    background-color: #fff;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
+
+    -webkit-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+    -moz-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+}
+
+.tt-suggestion {
+    display: block;
+    margin: 5px;
+    padding: 3px 20px;
+    cursor: pointer;
+}
+
+.tt-suggestion:hover, .tt-suggestion:active, .tt-suggestion.tt-cursor {
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
+}
+
+.tt-suggestion:hover {
+    background-color: #f5f5f5;
+}
+
+.tt-suggestion:active {
+    background-color: #e6e6e6;
+}
+
+.tt-suggestion.tt-cursor {
+    color: #fff;
+    background-color: #337ab7;
+}
+
+.tt-suggestion.tt-cursor:active {
+    color: #fff;
+    background-color: #286090;
+}
