@@ -1,1 +1,4 @@
 {{ object.username }}
+{{ object.first_name }}
+{{ object.last_name }}
+{{ object.get_full_name }}
