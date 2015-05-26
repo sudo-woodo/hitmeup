@@ -1,4 +1,3 @@
-# forms.py
 from haystack.forms import SearchForm
 
 class UserSearchForm(SearchForm):

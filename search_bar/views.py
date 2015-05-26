@@ -1,10 +1,9 @@
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse, HttpResponseRedirect
 from django.views.generic import View
-
-from .forms import UserSearchForm
-import simplejson as json
 from haystack.query import SearchQuerySet
+import json
+from .forms import UserSearchForm
 
 class Search(View):
     def get(self, request):

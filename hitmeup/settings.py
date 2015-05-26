@@ -49,12 +49,11 @@ INSTALLED_APPS = (
     # Custom
     'hitmeup',
     'dynamic_components',
-    'search_bar',
     'static_pages',
     'user_accounts',
-
     'ourcalendar',
     'notifications',
+    'search_bar',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -195,7 +194,7 @@ TIME_FMT = '%Y-%m-%dT%H:%M:%S'
 # Haystack settings
 from urlparse import urlparse
 
-es = urlparse(os.environ.get('SEARCHBOX_URL') or 'http://127.0.0.1:9200/')
+es = urlparse(os.environ.get('SEARCHBOX_URL', 'http://127.0.0.1:9200/'))
 
 port = es.port or 80
 
