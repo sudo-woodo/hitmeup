@@ -24,8 +24,17 @@ def do_user_search(data, num_results=None):
 
     # The second parameter is the default value. Returns SearchResult object.
     try:
-        sqs = SearchQuerySet().autocomplete(user_auto=query)
-        suggestions = [result.object.username for result in sqs]
+        usernames = SearchQuerySet().autocomplete(user_auto=query)
+        first_names = SearchQuerySet().autocomplete(first_name_auto=query)
+        last_names = SearchQuerySet().autocomplete(last_name_auto=query)
+
+        # TODO: figure out a logical way to order these in the search results
+        # TODO: implement first + last name autocomplete
+        suggestions = [result.object.username for result in usernames]
+        first_names = [result.object.username for result in first_names]
+        last_names = [result.object.username for result in last_names]
+        suggestions.extend(first_names)
+        suggestions.extend(last_names)
 
         # Trim the results
         if num_results:
