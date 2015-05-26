@@ -68,7 +68,9 @@
                 {% endif %}
             </ul>
 
-            {% include 'search_bar/navbar_entry.jinja' %}
+            {% if user.is_authenticated() %}
+                {% include 'search_bar/navbar_entry.jinja' %}
+            {% endif %}
 
         </div><!-- /.navbar-collapse -->
     </div><!-- /.container-fluid -->
