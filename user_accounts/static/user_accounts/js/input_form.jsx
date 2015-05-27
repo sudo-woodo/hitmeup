@@ -1,11 +1,11 @@
 // This will be the react class used as the input form for creation and editing of an event.
 // for use in both the event detail modal and the create event modal.
-var InputForm = (function(React, $)  {
+var InputForm = (function(React, $) {
 
     return React.createClass({
 
-        getInitialState: function()  {
-            return  {
+        getInitialState: function() {
+            return {
                 title: '',
                 start: '',
                 end: '',
@@ -14,7 +14,7 @@ var InputForm = (function(React, $)  {
             };
         },
 
-        handleInput: function()  {
+        handleInput: function() {
             this.setState({
                 title: this.refs.title.getDOMNode().value,
                 description: this.refs.description.getDOMNode().value,
@@ -23,7 +23,7 @@ var InputForm = (function(React, $)  {
         },
 
         // Returns fields that are then put into the form.
-        render: function()  {
+        render: function() {
             return (
                 <div id="request-form">
                     <p><input type="text" maxLength="200" className="form-control" placeholder="Title" value={this.state.title} ref="title" onChange={this.handleInput} /></p>
