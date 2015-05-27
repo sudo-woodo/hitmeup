@@ -8,6 +8,7 @@ from django.utils.timezone import datetime
 
 
 class EventResource(DjangoResource):
+    #TODO: Need to update fields preparer for recurrence
     preparer = FieldsPreparer(fields={
         'event_id': 'pk',
         'start': 'start',
@@ -34,6 +35,7 @@ class EventResource(DjangoResource):
             range_end = self.data['range_end']
         else:
             errors['range_end'].append("range end not provided")
+
         if errors:
             raise BadRequest(str(errors))
 
@@ -120,12 +122,12 @@ class EventResource(DjangoResource):
             calendar_title = self.data['calendar']
 
         # Error check recurrence type
-        if 'type' not in self.data:
-            errors['type'].append("Recurrence type not provided")
-        elif self.data['type'] != 'weekly' or self.data['type'] != 'single':
-            errors['type'].append("recurrence_type not single or weekly")
+        if 'recurrence_type' not in self.data:
+            errors['recurrence_type'].append("Recurrence type not provided")
+        elif self.data['recurrence_type'] != 'weekly' and self.data['recurrence_type'] != 'single':
+            errors['recurrence_type'].append("recurrence_type not single or weekly")
         else:
-            recurrence_type = self.data['type']
+            recurrence_type = self.data['recurrence_type']
 
         # Additional error checks for weekly recurrence
         if recurrence_type == "weekly":
@@ -165,7 +167,7 @@ class EventResource(DjangoResource):
             location=self.data.get('location', '')
         )
 
-        if recurrence_type == "single": #TODO: can we check string equality like this?
+        if recurrence_type == "single": # TODO: can we check string equality like this?
             SingleRecurrence.objects.create(
                 event=event
             )
@@ -182,3 +184,5 @@ class EventResource(DjangoResource):
     # Deletes a specified event.
     def delete(self, pk):
         Event.objects.get(id=pk, calendar__owner=self.request.user.profile).delete()
+        #TODO delete recurrence here
+
