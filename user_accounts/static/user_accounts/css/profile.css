@@ -125,6 +125,10 @@ body {
     -moz-hyphens: auto;
 }
 
+.panel {
+    border-color: #bdbdbd;
+}
+
 .free, .free-icon {
     color: #42ED51;
 }
@@ -133,7 +137,8 @@ body {
     color: #d50000;
 }
 
-#calendar-panel {
-    margin-top: 30px;
-    border-color: #bdbdbd;
+@media (min-width: 992px) {
+    #calendar-panel {
+        margin-top: 30px;
+    }
 }

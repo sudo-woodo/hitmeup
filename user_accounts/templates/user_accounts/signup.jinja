@@ -8,6 +8,17 @@
     <div class="container">
         <h1>Sign Up for HitMeUp!</h1>
 
+        {% if error_messages %}
+            {% for error in error_messages %}
+                <div class="form-error alert alert-danger alert-dismissible" role="alert">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <strong>{{ error }}</strong>
+                </div>
+            {% endfor %}
+        {% endif %}
+
         {% for field in signup_form %}
             {% if field.errors %}
                 {% for error in field.errors %}

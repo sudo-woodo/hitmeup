@@ -65,7 +65,7 @@
 
         {# JS - Variables stored in $HMU #}
         <script type="application/javascript">
-            window.$HMU = {{ js_data|default('{}')|to_json }};
+            window.$HMU = {{ js_data|default({})|to_json }};
         </script>
 
         {# JS - Vendor #}
