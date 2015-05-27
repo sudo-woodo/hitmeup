@@ -19,13 +19,19 @@ var requestReactor = (function($HMU, React, $, _) {
 
     var EventRequestBox = React.createClass({
 
+        getInitialState: function() {
+            return  {
+                display: should_display
+            };
+        },
+
         handleSubmit: function()  {
             //Handle the form components.
         },
 
         render: function()  {
            var form = <EventForm ref="request"/>;
-           var panel = should_display ? form : "";
+           var panel = this.state.display ? form : "";
 
            return (
                  <div>

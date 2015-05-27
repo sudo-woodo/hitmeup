@@ -23,8 +23,13 @@
                     url: '/api/friends/' + $HMU.profileId + '/',
                     method: 'POST',
                     success: function (data) {
-                        if(data.accepted)
+                        if(data.accepted) {
                             thiz.setState(PROPS[STATE.IS_FRIENDS](thiz));
+                            calendarReactor.setState({
+                                initial: true,
+                                display: true
+                            });
+                        }
                         else
                             thiz.setState(PROPS[STATE.PENDING](thiz));
                     },
@@ -73,6 +78,11 @@
                     method: 'DELETE',
                     success: function() {
                         thiz.setState(PROPS[STATE.CLEAN](thiz));
+                        calendarReactor.setState({
+                            display: false,
+                            initial: false
+                        });
+                        requestReactor.setState({display: false});
                     },
                     error: function() {
                         alert('Something went wrong with removing the friend,' +

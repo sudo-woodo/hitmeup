@@ -28,9 +28,13 @@ var calendarReactor = (function($HMU, React, $, _)  {
 
     var NotFriend = React.createClass({
         render: function()  {
+            var icon = this.props.initial ? "fa fa-refresh fa-lg" : "fa fa-lock fa-lg";
+            var message = this.props.initial ?
+                "You must be friends with this user to view their calendar." :
+                "Please refresh this page to view their calendar.";
             return(
                 <div>
-                    <i className="fa fa-lock fa-lg"></i>&nbsp; You must be friends with this user to view their calendar.
+                    <i className={icon}></i>&nbsp; {message}
                 </div>
             );
         }
@@ -40,7 +44,8 @@ var calendarReactor = (function($HMU, React, $, _)  {
 
         getInitialState: function() {
             return  {
-                display: false
+                display: should_display,
+                initial: false
             };
         },
 
@@ -69,10 +74,8 @@ var calendarReactor = (function($HMU, React, $, _)  {
         },
 
         render: function() {
-            if (should_display) {
-                this.state.display = true;
-            }
-            var window = this.state.display ? <div ref='cal' id="calendar"></div> : <NotFriend />;
+            var window = this.state.initial ? <NotFriend initial={true} /> :
+                this.state.display ? <div ref='cal' id="calendar"></div> : <NotFriend initial={false} />;
 
             return (
                 <div>
