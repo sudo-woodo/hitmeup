@@ -1,6 +1,5 @@
 from django.contrib.auth.models import User
 from haystack.query import SearchQuerySet
-from search_bar.forms import UserSearchForm
 
 
 def do_user_search(data, num_results=None):
@@ -17,11 +16,11 @@ def do_user_search(data, num_results=None):
     if not query:
         return (None, [])
 
-    form = UserSearchForm(data=data)
-    search_results = form.search() # form.search() returns a SearchQuerySet
-
-    # Best_match() will get the SearchResult, then you get the user and the username
-    user = search_results.best_match().object if search_results else None
+    # Try for an exact match
+    try:
+        user = User.objects.get(username=query)
+    except User.DoesNotExist:
+        user = None
 
     # The second parameter is the default value. Returns SearchResult object.
     try:
