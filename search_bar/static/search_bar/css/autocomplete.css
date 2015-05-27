@@ -1,9 +1,33 @@
+.search-result-image {
+    position: absolute;
+    top: 5px;
+    width: 40px;
+    height: 40px;
+}
+
+.search-result-text {
+    margin-left: 45px;
+}
+
+.search-result-text-username, .search-result-text-fullname {
+    -ms-word-wrap: break-word;
+    word-wrap: break-word;
+}
+
+.search-result-text-fullname {
+    -webkit-hyphens: auto;
+    -moz-hyphens: auto;
+    -ms-hyphens: auto;
+    hyphens: auto;
+}
+
 .tt-hint {
     color: #ccc;
 }
 
 .tt-menu {
     min-width: 100%;
+    max-width: 400px;
     margin-top: 2px;
     background-color: #fff;
     border: 1px solid rgba(0, 0, 0, 0.2);
@@ -18,9 +42,11 @@
 }
 
 .tt-suggestion {
+    position: relative;
+    min-height: 50px;
     display: block;
     margin: 5px;
-    padding: 3px 20px;
+    padding: 3px 10px;
     cursor: pointer;
 }
 

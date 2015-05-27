@@ -1,4 +1,4 @@
-(function ($HMU, $, Bloodhound) { $(function() {
+(function ($HMU, $, Handlebars, Bloodhound) { $(function() {
     'use strict';
 
     var userSuggestions = new Bloodhound({
@@ -19,11 +19,22 @@
         name: 'user-suggestions',
         source: userSuggestions,
         display: 'username',
-        limit: 10 // Doesn't work if it's 5 for SOME reason...
+        limit: 10, // Doesn't work if it's 5 for SOME reason...
+        templates: {
+            suggestion: Handlebars.compile([
+                '<div>',
+                '    <img src="{{ gravatar_url }}" class="img-thumbnail search-result-image">',
+                '    <div class="search-result-text">',
+                '        <strong class="search-result-text-username">{{ username }}</strong> <br />',
+                '        <span class="search-result-text-fullname">{{ first_name }} {{ last_name }}</span>',
+                '    </div>',
+                '</div>'
+            ].join('\n'))
+        }
     });
 
     // Submit on selection
     $tt.on('typeahead:selected', function(event, selection) {
         $('#user-search-form').submit();
     });
-})})(window.$HMU, window.jQuery, Bloodhound);
+})})(window.$HMU, window.jQuery, window.Handlebars, window.Bloodhound);
