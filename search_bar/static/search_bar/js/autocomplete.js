@@ -13,6 +13,7 @@
         }
     });
 
+    var $form = $('#user-search-form');
     var $tt = $('#user-search-form-input');
 
     $tt.typeahead(null, {
@@ -35,6 +36,16 @@
 
     // Submit on selection
     $tt.on('typeahead:selected', function(event, selection) {
-        $('#user-search-form').submit();
+        $form.submit();
     });
+
+    // Hehe
+    $form.submit(function(e) {
+        switch ($tt.val()) {
+            case 'hestia!':
+                e.preventDefault();
+                window.location.href = 'http://hestia.dance/';
+                break;
+        }
+    })
 })})(window.$HMU, window.jQuery, window.Handlebars, window.Bloodhound);
