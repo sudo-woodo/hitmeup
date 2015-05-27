@@ -1,0 +1,119 @@
+{% extends "base.jinja" %}
+
+{% block title %}
+    Profile
+{% endblock %}
+
+{% block content %}
+    {% if censor %}
+        <div class="censor-overlay">
+            <div class="censor-button-div">
+                <a
+                    class="btn btn-success btn-lg censor-button"
+                    href={{ return_url }}
+                >
+                    Please login to view profile pages.
+                </a>
+            </div>
+        </div>
+    {% endif %}
+
+    <div id="header">
+        <div id="header-upper-half">
+            <div class="container">
+                <div id="header-upper-half-content">
+                    <div id="username-container">
+                        <h2>
+                            {{ profile.username }}
+                        </h2>
+                        <div id="firstlastname-container">
+                            {{ profile.full_name }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="header-lower-half">
+            <div class="container">
+                <div id="header-lower-half-content">
+                    <img
+                        {% if not censor %}
+                            src="{{ profile.get_gravatar_url(125) }}"
+                        {% endif %}
+                        alt="Profile picture"
+                        id ="pic"
+                        class="img-thumbnail
+                            {% if censor %}
+                                pic-censored
+                            {% endif %}
+                        ">
+                        {% if not censor %}
+                            <div id="friend-button-container"></div>
+                        {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container" id="profile-body">
+        <div class="row">
+            <div class="col-xs-12 col-sm-12 col-md-3">
+                <div id="info-panel">
+                    <div class="panel panel-default">
+                        <ul class="list-group">
+                            {# If friended or on own profile page #}
+                            {% if friended or profile == user.profile %}
+                                <li class="list-group-item">
+                                    <ul class="fa-ul">
+                                        <li>
+                                            {% if profile.is_free %}
+                                                <i class="fa fa-li fa-check-circle free-icon"></i>
+                                                <span class="free">Free</span>
+                                            {% else %}
+                                                <i class="fa fa-li fa-clock-o busy-icon"></i>
+                                                <span class="busy">Busy</span>
+                                            {% endif %}
+                                        </li>
+                                    </ul>
+                                </li>
+                            {% endif %}
+                            <li class="list-group-item">
+                                <ul class="fa-ul">
+                                    <li>
+                                        <i class="fa-li fa fa-envelope"></i>
+                                        <a href="mailto:{{ profile.email }}">
+                                            {{ profile.email }}
+                                        </a>
+                                    </li>
+                                    <li>
+                                        {% if profile.phone %}
+                                            <i class="fa-li fa fa-phone"></i>
+                                            <a href="tel:{{ profile.phone }}">
+                                                {{ profile.phone }}
+                                            </a>
+                                        {% endif %}
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                    {% if profile.bio %}
+                        <div class="panel panel-default">
+                            <div class="panel-body">
+                                <em>{{ profile.bio }}</em>
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="col-xs-12 col-sm-12 col-md-9">
+                <div class="panel panel-default" id="calendar-panel">
+                    <div class="panel-body">
+                        <div id="calendar">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

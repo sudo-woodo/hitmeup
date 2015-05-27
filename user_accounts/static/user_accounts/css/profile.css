@@ -1,0 +1,144 @@
+body {
+    background-color: #e0e0e0;
+}
+
+.censor-overlay {
+    position: fixed;
+    display: block;
+    height: 100%;
+    width: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    z-index: 20;
+    text-align: center;
+}
+
+.censor-button-div {
+    margin: 0 30px 0 30px;
+}
+
+.censor-button {
+    margin-top: 100px;
+    white-space: normal;
+}
+
+#header {
+    background-color: white;
+}
+
+#header-upper-half {
+    background-color: gray;
+}
+
+#header-lower-half {
+    border: solid #bdbdbd 1px;
+}
+
+#header-upper-half-content {
+    position: relative;
+    height: 120px;
+}
+
+#header-lower-half-content {
+    position: relative;
+    height: 40px;
+}
+
+#username-container {
+    color: white;
+    position: absolute;
+    left: 125px;
+    bottom: 5px;
+    padding-left: 10px;
+    word-wrap: break-word;
+    right: 0;
+}
+
+#firstlastname-container {
+    margin-top: -10px;
+    font-size: 1.2em;
+    hyphens: auto;
+    -ms-hyphens: auto;
+    -moz-hyphens: auto;
+}
+
+#pic {
+    position: absolute;
+    left: 0;
+    bottom: 10px;
+    height: 125px;
+    width: 125px;
+    z-index: 10;
+}
+
+.pic-censored {
+    background-color: black;
+}
+
+.friend-button-set {
+    height: 100%;
+}
+
+#friend-button-container {
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+}
+
+.action-button {
+    cursor: pointer;
+    z-index: 15;
+    background-color: white;
+    color: #616161;
+    border-left: solid #bdbdbd 1px;
+    border-right: solid #bdbdbd 1px;
+    display: inline-block;
+    height: 100%;
+    text-align: center;
+    padding: 10px 10px 0 10px;
+}
+
+.action-button:hover {
+    background-color: #e0e0e0;
+}
+
+.pending-message {
+    display: inline-block;
+    line-height: 40px;
+    color: #616161;
+    height: 40px;
+    border-right: solid #bdbdbd 1px;
+    padding: 0 10px 0 10px;
+}
+
+#pending-text {
+    padding-left: 5px;
+}
+
+#info-panel {
+    margin-top: 30px;
+    margin-bottom: 0;
+    border-color: #bdbdbd;
+    word-wrap: break-word;
+    hyphens: auto;
+    -ms-hyphens: auto;
+    -moz-hyphens: auto;
+}
+
+.panel {
+    border-color: #bdbdbd;
+}
+
+.free, .free-icon {
+    color: #42ED51;
+}
+
+.busy, .busy-icon {
+    color: #d50000;
+}
+
+@media (min-width: 992px) {
+    #calendar-panel {
+        margin-top: 30px;
+    }
+}

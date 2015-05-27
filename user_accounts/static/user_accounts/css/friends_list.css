@@ -1,0 +1,134 @@
+body {
+    background-color: #e0e0e0;
+}
+
+#main-content {
+    margin-top: 20px;
+}
+
+.panel-default {
+    border-color: #bdbdbd;
+}
+
+.profile-pic-container {
+    display: inline-block;
+    float: left;
+    margin-right: 10px;
+}
+
+.profile-pic {
+    height: 100px;
+    width: 100px;
+    border: solid darkgrey 1px;
+}
+
+.profile-info-container {
+    pointer-events: none;
+    width: calc(100% - 110px);
+    display: inline-block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: clip;
+}
+
+.overflow-control {
+    position: relative;
+    pointer-events: none;
+}
+
+.overflow-control:after {
+    content: '';
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    filter: progid:DXImageTransform.Microsoft.gradient(
+            startColorstr='#ffffff',
+            endColorstr='#00ffffff',
+            GradientType=0
+    );
+    background: -webkit-linear-gradient(
+            right,
+            rgba(255,255,255,1) 0px,
+            rgba(255,255,255,0) 20px
+    );
+    background: -moz-linear-gradient(
+            right,
+            rgba(255,255,255,1) 0px,
+            rgba(255,255,255,0) 20px
+    );
+    background: -ms-linear-gradient(
+            right,
+            rgba(255,255,255,1) 0px,
+            rgba(255,255,255,0) 20px
+    );
+    background: -o-linear-gradient(
+            right,
+            rgba(255,255,255,1) 0px,
+            rgba(255,255,255,0) 20px
+    );
+    background: linear-gradient(
+            right,
+            rgba(255,255,255,1) 0px,
+            rgba(255,255,255,0) 20px
+    );
+    pointer-events: none;
+}
+
+.info-container {
+    pointer-events: all;
+}
+
+a:hover {
+    text-decoration: none;
+}
+
+.refresh-button {
+    position: fixed;
+    bottom: 15px;
+    right: 15px;
+    height: 50px;
+    width: 50px;
+    border-radius: 25px;
+    line-height: 1.5;
+    background-color: #388e3c;
+    color: white;
+    border-color: #bdbdbd;
+}
+
+.refresh-button .refresh-icon {
+    -webkit-transition-duration: 0.4s;
+    -moz-transition-duration: 0.4s;
+    -ms-transition-duration: 0.4s;
+    -o-transition-duration: 0.4s;
+    transition-duration: 0.4s;
+}
+
+.refresh-button:hover, .refresh-button:active, .refresh-button:focus {
+    background-color: #2E7D32;
+    color: white;
+    border-color: #9E9E9E;
+}
+
+.refresh-button:hover .refresh-icon {
+    -webkit-transform: rotate(180deg);
+    -moz-transform: rotate(180deg);
+    -ms-transform: rotate(180deg);
+    -o-transform: rotate(180deg);
+    transform: rotate(180deg);
+}
+
+.fav-icon {
+    cursor: pointer;
+    color: #ff4081;
+}
+
+.free, .free-icon {
+    color: #42ED51;
+}
+
+.busy, .busy-icon {
+    color: #d50000;
+}
