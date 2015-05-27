@@ -288,20 +288,24 @@ class SettingsView(View):
 class UserProfile(View):
     def get(self, request, username):
         friend_events = []
+        user_events = []
         should_display = False
         is_user = username == request.user.username
-        try:
-            if is_user:
-                should_display = True
-            friend = User.objects.get(username=username).profile
-            friendship = request.user.profile.get_friendship(friend)
-            if username != is_user and \
-                    friendship is not None and friendship.accepted:
-                friend_events = [e.serialize() for e in
-                                 friend.calendars.get(title="Default").events.all()]
-                should_display = True
-        except (User.DoesNotExist, Friendship.DoesNotExist):
-            pass
+        if request.user.is_authenticated():
+            user_events = [e.serialize() for e in
+                                request.user.profile.calendars.get(title='Default').events.all()]
+            try:
+                if is_user:
+                    should_display = True
+                friend = User.objects.get(username=username).profile
+                friendship = request.user.profile.get_friendship(friend)
+                if username != is_user and \
+                        friendship is not None and friendship.accepted:
+                    friend_events = [e.serialize() for e in
+                                     friend.calendars.get(title="Default").events.all()]
+                    should_display = True
+            except (User.DoesNotExist, Friendship.DoesNotExist):
+                pass
 
         context = {
             'ext_css': [
@@ -330,8 +334,7 @@ class UserProfile(View):
                 'user_accounts/js/event_request_box.jsx',
             ],
             'js_data': {
-                'user_events': [e.serialize() for e in
-                                request.user.profile.calendars.get(title='Default').events.all()],
+                'user_events': user_events,
                 'friend_events': friend_events,
                 'should_display': should_display,
                 'is_user': is_user

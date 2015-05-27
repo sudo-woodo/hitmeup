@@ -136,14 +136,14 @@ body {
 }
 
 #request-form {
-    display: block;
+    display: inline-block;
     margin : 0 auto;
     padding: 10px;
-    overflow: hidden;
 }
 
 #request-header {
     text-align: center;
+    margin-top: 20px;
 }
 
 .panel {
