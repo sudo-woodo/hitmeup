@@ -36,7 +36,7 @@
             });
             return (
                 <div className="friends-list">
-                    <div className="container-fluid">
+                    <div className="container">
                         <div className="row">
                             {favorites}
                             {regulars}
