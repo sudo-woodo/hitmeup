@@ -5,9 +5,11 @@ from util.factories import UserFactory, EventFactory, CalendarFactory, WeeklyRec
 
 from util.factories import Event, Calendar, RecurrenceType, SingleRecurrence, WeeklyRecurrence
 
-
+#TODO: test single recurrence,
+#TODO: IMPORTANT test when event does not have recurrence and someone tries to access it
 
 class WeeklyRecurrenceTest(TestCase):
+    # NOTE! start, end, and last_event_end aren't required to have events on them. That is dictated by days_of_week
     def setUp(self):
         self.event = EventFactory()
 
@@ -16,45 +18,165 @@ class WeeklyRecurrenceTest(TestCase):
         self.event.end=datetime.datetime(2014, 5, 24, 10, 46, 45, 349955)
 
         self.w = WeeklyRecurrenceFactory(event=self.event)
-        self.w.days_of_week = [1,0,0,0,0,0,0]
+        self.w.days_of_week = '1000000'
         self.w.last_event_end = datetime.datetime(2014, 5, 29, 10, 46, 45, 349955)
        # self.w.total_number = 5
         self.assertEquals(self.event.get_between(timezone.now(), timezone.now() + timezone.timedelta(hours=1)),[])
 
     def test_starts_before_start_ends_before_end(self):
+        self.event.start=datetime.datetime(2015, 5, 23, 10, 46, 45, 349955)
+        self.event.end=datetime.datetime(2015, 5, 24, 10, 46, 45, 349955)
+
+        self.w = WeeklyRecurrenceFactory(event=self.event)
+        self.w.days_of_week = '1000000'
+        self.w.frequency = 1
+        self.w.last_event_end = datetime.datetime(2015, 5, 27, 10, 46, 45, 349955)
+        self.assertEquals(len(self.event.get_between(datetime.datetime(2015, 5, 25, 10, 46, 45, 349955),
+                              datetime.datetime(2015, 5, 29, 10, 46, 45, 349955))),
+            1)
+
+    def test_starts_before_start_ends_after_end(self):
         self.event.start=timezone.now() - timezone.timedelta(days=1) - timezone.timedelta(hours=1)
         self.event.end=timezone.now() - timezone.timedelta(days=1)
 
         self.w = WeeklyRecurrenceFactory(event=self.event)
-        #self.w.total_number = 2
-        self.w.days_of_week = [1,0,0,0,0,0,0]
+        self.w.frequency = 1
+        self.w.days_of_week = '1000000'
+        self.w.last_event_end = timezone.now() + timezone.timedelta(weeks=6)
 
         self.assertEquals(len(self.event.get_between(timezone.now(), timezone.now() + timezone.timedelta(days=7))),
             1)
-'''
-    def test_starts_before_start_ends_after_end(self):
-    self.event.start=timezone.now() - timezone.timedelta(days=1) - timezone.timedelta(hours=1)
-        self.event.end=timezone.now() - timezone.timedelta(days=1)
+
+
+    def test_starts_after_start_ends_before_end(self):
+        self.event.start=datetime.datetime(2015, 5, 23, 10, 46, 45, 349955)
+        self.event.end=datetime.datetime(2015, 5, 24, 10, 46, 45, 349955)
 
         self.w = WeeklyRecurrenceFactory(event=self.event)
-        self.w.total_number = 2
-        self.w.days_of_week = [1,0,0,0,0,0,0]
-
-        self.assertEquals(len(self.event.get_between(timezone.now(), timezone.now() + timezone.timedelta(days=7))),
+        self.w.days_of_week = '1000000'
+        self.w.frequency = 1
+        self.w.last_event_end = datetime.datetime(2015, 5, 27, 10, 46, 45, 349955)
+        self.assertEquals(len(self.event.get_between(datetime.datetime(2015, 5, 21, 10, 46, 45, 349955),
+                              datetime.datetime(2015, 5, 29, 10, 46, 45, 349955))),
             1)
-'''
-'''
-    def test_starts_after_start_ends_before_end(self):
 
     def test_starts_after_start_ends_after_end(self):
+        self.event.start=datetime.datetime(2015, 5, 23, 10, 46, 45, 349955)
+        self.event.end=datetime.datetime(2015, 5, 24, 10, 46, 45, 349955)
 
-    def test_starts_after_end_ends_before_end(self):
+        self.w = WeeklyRecurrenceFactory(event=self.event)
+        self.w.days_of_week = '1000000'
+        self.w.frequency = 1
+        self.w.last_event_end = datetime.datetime(2015, 5, 31, 10, 46, 45, 349955)
+        self.assertEquals(len(self.event.get_between(datetime.datetime(2015, 5, 21, 10, 46, 45, 349955),
+                              datetime.datetime(2015, 5, 29, 10, 46, 45, 349955))),
+            1)
 
-    #tests a mixture of days_of_week, total_number, and frequency
-    def test_complex
+    def test_starts_after_end_ends_after_end(self):
+        self.event.start=datetime.datetime(2015, 5, 23, 10, 46, 45, 349955)
+        self.event.end=datetime.datetime(2015, 5, 24, 10, 46, 45, 349955)
 
-'''
+        self.w = WeeklyRecurrenceFactory(event=self.event)
+        self.w.days_of_week = '1000000'
+        self.w.frequency = 1
+        self.w.last_event_end = datetime.datetime(2015, 5, 31, 10, 46, 45, 349955)
+        self.assertEquals(len(self.event.get_between(datetime.datetime(2015, 4, 21, 10, 46, 45, 349955),
+                              datetime.datetime(2015, 4, 29, 10, 46, 45, 349955))),
+            0)
 
+    # these tests assume that start/end date have actual events on them
+    def test_starts_on_range_start(self):
+        self.event.start=datetime.datetime(2015, 5, 23, 10, 46, 45, 349955)
+        self.event.end=datetime.datetime(2015, 5, 24, 10, 46, 45, 349955)
 
+        self.w = WeeklyRecurrenceFactory(event=self.event)
+        self.w.days_of_week = '0000010'
+        self.w.frequency = 1
+        self.w.last_event_end = datetime.datetime(2015, 5, 27, 10, 46, 45, 349955)
+        self.assertEquals(len(self.event.get_between(datetime.datetime(2015, 5, 23, 10, 46, 45, 349955),
+                              datetime.datetime(2015, 5, 29, 10, 46, 45, 349955))),
+            1)
+
+    def test_ends_on_range_end(self):
+        self.event.start=datetime.datetime(2015, 5, 23, 10, 46, 45, 349955)
+        self.event.end=datetime.datetime(2015, 5, 24, 10, 46, 45, 349955)
+
+        self.w = WeeklyRecurrenceFactory(event=self.event)
+        self.w.days_of_week = '0000100'
+        self.w.frequency = 1
+        self.w.last_event_end = datetime.datetime(2015, 5, 29, 10, 46, 45, 349955)
+        self.assertEquals(len(self.event.get_between(datetime.datetime(2015, 5, 23, 10, 46, 45, 349955),
+                              datetime.datetime(2015, 5, 29, 10, 46, 45, 349955))),
+            1)
+
+    def test_starts_on_range_end(self):
+        self.event.start=datetime.datetime(2015, 5, 29, 10, 46, 45, 349955)
+        self.event.end=datetime.datetime(2015, 5, 30, 10, 46, 45, 349955)
+
+        self.w = WeeklyRecurrenceFactory(event=self.event)
+        self.w.days_of_week = '0000100'
+        self.w.frequency = 1
+        self.w.last_event_end = datetime.datetime(2015, 6, 29, 10, 46, 45, 349955)
+        self.assertEquals(len(self.event.get_between(datetime.datetime(2015, 5, 23, 10, 46, 45, 349955),
+                              datetime.datetime(2015, 5, 29, 10, 46, 45, 349955))),
+            1)
+
+    def test_ends_on_range_start(self):
+        self.event.start=datetime.datetime(2015, 5, 23, 10, 46, 45, 349955)
+        self.event.end=datetime.datetime(2015, 5, 24, 10, 46, 45, 349955)
+
+        self.w = WeeklyRecurrenceFactory(event=self.event)
+        self.w.days_of_week = '0000100'
+        self.w.frequency = 1
+        self.w.last_event_end = datetime.datetime(2015, 5, 29, 10, 46, 45, 349955)
+        self.assertEquals(len(self.event.get_between(datetime.datetime(2015, 5, 29, 10, 46, 45, 349955),
+                              datetime.datetime(2015, 6, 29, 10, 46, 45, 349955))),
+            1)
+
+    '''
+    def test_days_of_week(self):
+
+    def test_days_of_week2(self):
+
+    def test_frequency(self):
+
+    '''
+    # tests a mixture of days_of_week, and frequency
+
+    def test_complex1(self):
+        self.event.start=datetime.datetime(2014, 1, 1, 1, 46, 45, 349955)
+        self.event.end=datetime.datetime(2015, 1, 1, 1, 46, 45, 349955)
+
+        self.w = WeeklyRecurrenceFactory(event=self.event)
+        self.w.days_of_week = '0000100'
+        self.w.frequency = 1
+        self.w.last_event_end = datetime.datetime(2015, 5, 29, 10, 46, 45, 349955)
+        self.assertEquals(len(self.event.get_between(datetime.datetime(2015, 5, 29, 10, 46, 45, 349955),
+                              datetime.datetime(2015, 6, 29, 10, 46, 45, 349955))),
+            1)
+
+    def test_complex2(self):
+        self.event.start=datetime.datetime(2014, 1, 1, 1, 46, 45, 349955)
+        self.event.end=datetime.datetime(2015, 1, 1, 1, 46, 45, 349955)
+
+        self.w = WeeklyRecurrenceFactory(event=self.event)
+        self.w.days_of_week = '0000100'
+        self.w.frequency = 1
+        self.w.last_event_end = datetime.datetime(2015, 5, 29, 10, 46, 45, 349955)
+        self.assertEquals(len(self.event.get_between(datetime.datetime(2015, 5, 29, 10, 46, 45, 349955),
+                              datetime.datetime(2015, 6, 29, 10, 46, 45, 349955))),
+            1)
+
+    def test_complex3(self):
+        self.event.start=datetime.datetime(2014, 1, 1, 1, 46, 45, 349955)
+        self.event.end=datetime.datetime(2015, 1, 1, 1, 46, 45, 349955)
+
+        self.w = WeeklyRecurrenceFactory(event=self.event)
+        self.w.days_of_week = '0000100'
+        self.w.frequency = 1
+        self.w.last_event_end = datetime.datetime(2015, 5, 29, 10, 46, 45, 349955)
+        self.assertEquals(len(self.event.get_between(datetime.datetime(2015, 5, 29, 10, 46, 45, 349955),
+                              datetime.datetime(2015, 6, 29, 10, 46, 45, 349955))),
+            1)
 
 

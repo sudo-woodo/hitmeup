@@ -50,7 +50,7 @@ class Event(models.Model):
     DEFAULT_TIME_FMT = '%Y-%m-%dT%H:%M:%S'
 #TODO: How do we link event to recurring so that when we make an event, we also make a recurring?
     def __unicode__(self):
-        return "%s -> %s" % (self.start, self.end)
+        return "%s -> %s : %s -> %s" % (self.calendar, self.title, self.start, self.end)
 
     # Serializes the event for the fullcalendar
     def serialize(self):
@@ -158,16 +158,15 @@ class WeeklyRecurrence(RecurrenceType):
 
         # An array of events to return
         events = []
-        if self.event.start < range_end and self.last_event_end > range_start:
-            start = max(self.event.start, range_start)
+        if self.event.start <= range_end and self.last_event_end >= range_start:
+            # Can't be max (self.event.start, range_start) because frequency needs to be calc. from start
+            start = self.event.start
             start = datetime.datetime(start.year, start.month, start.day, self.event.start.hour, self.event.start.minute,
                                       self.event.start.second)
             end = min(self.last_event_end, range_end)
-            print (start)
-            print (end)
-            while start < end: #TODO check for off by one errors
+            while start < end:
 
-                if self.days_of_week[start.weekday()] == '1':
+                if self.days_of_week[start.weekday()] == '1' and start >= range_start:
                     events.append(Event(calendar=self.event.calendar,
                               title=self.event.title,
                               location=self.event.location,
@@ -175,7 +174,10 @@ class WeeklyRecurrence(RecurrenceType):
                               start=start,
                               end=start + (self.event.start - self.event.end))
                               )
-                start = start + timezone.timedelta(days=1)
+                if start.weekday() == 6:
+                    start = start + timezone.timedelta(days=1) + timezone.timedelta(weeks=self.frequency - 1)
+                else:
+                    start = start + timezone.timedelta(days=1)
 
         return events
 

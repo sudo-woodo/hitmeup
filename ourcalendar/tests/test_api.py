@@ -35,7 +35,10 @@ class EventApiTestCase(TestCase):
             'end': '2015-12-12 11:00',
             'title': 'Birthday Bash',
             'description': 'A swell time',
-            'location': 'Everywhere'
+            'location': 'Everywhere',
+            'last_event':  '2016-1-12 08:00',
+            'days_of_week': '1000000',
+            'frequency': '1'
         }
 
     def test_auth(self):

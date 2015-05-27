@@ -34,7 +34,7 @@ def calendar(request):
         ],
         'js_data': {
             'events': [e.serialize() for e in
-                       request.user.profile.calendars.get(title='Default').events.all()],
+                       request.user.profile.calendars.get(title='Default').getbetween()],
         },
     })
 

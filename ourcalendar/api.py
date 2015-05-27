@@ -26,20 +26,22 @@ class EventResource(DjangoResource):
     # GET /api/events/
     # Gets a list of events that belong to the current user within a certain time range.
     def list(self):
+        #TODO: if no range_start or range_end, return error or assume get all?
         errors = defaultdict(list)
         if 'range_start' in self.data:
             range_start = self.data['range_start']
         else:
-            errors['range_start'].append("range start not provided")
+            #errors['range_start'].append("range start not provided")
+            range_start = '1990-01-01 12:12'
         if 'range_end' in self.data:
             range_end = self.data['range_end']
         else:
-            errors['range_end'].append("range end not provided")
+            #errors['range_end'].append("range end not provided")
+            range_end = '3000-01-01 12:12'
 
         if errors:
             raise BadRequest(str(errors))
 
-        #return Event.objects.filter(calendar__owner=self.request.user.profile)
         return itertools.chain([c.get_between(range_start, range_end)
                                 for c in self.request.user.profile.calendars.all()])
 
@@ -129,29 +131,29 @@ class EventResource(DjangoResource):
         else:
             recurrence_type = self.data['recurrence_type']
 
-        # Additional error checks for weekly recurrence
-        if recurrence_type == "weekly":
-            if 'last_event' not in self.data:
-                errors['last_event'].append("Last event not provided")
-            else:
-                try:
-                    last_event = datetime.strptime(self.data['last_event'], '%Y-%m-%d %H:%M')
-                except ValueError:
-                    errors['last_event'].append("Last_event not in the correct format")
+            # Additional error checks for weekly recurrence
+            if recurrence_type == "weekly":
+                if 'last_event' not in self.data:
+                    errors['last_event'].append("Last event not provided")
+                else:
+                    try:
+                        last_event = datetime.strptime(self.data['last_event'], '%Y-%m-%d %H:%M')
+                    except ValueError:
+                        errors['last_event'].append("Last_event not in the correct format")
 
-            if 'frequency' not in self.data:
-                errors['frequency'].append("Frequency not provided")
-            else:
-                frequency = self.data['frequency']
-                if frequency < 1:
-                    errors['frequency'].append("Frequency not valid")
+                if 'frequency' not in self.data:
+                    errors['frequency'].append("Frequency not provided")
+                else:
+                    frequency = self.data['frequency']
+                    if frequency < 1:
+                        errors['frequency'].append("Frequency not valid")
 
-            if 'days_of_week' not in self.data:
-                errors['days_of_week'].append("Days of week not provided")
-            else:
-                days_of_week = self.data['days_of_week']
-                #TODO: How to check that the string is of length 7 and all are 0's and 1's?
-                #TODO: If we do error checks here, do we need to error check again in backend?
+                if 'days_of_week' not in self.data:
+                    errors['days_of_week'].append("Days of week not provided")
+                else:
+                    days_of_week = self.data['days_of_week']
+                    #TODO: How to check that the string is of length 7 and all are 0's and 1's?
+                    #TODO: If we do error checks here, do we need to error check again in backend?
 
         if errors:
             raise BadRequest(str(errors))
@@ -167,7 +169,7 @@ class EventResource(DjangoResource):
             location=self.data.get('location', '')
         )
 
-        if recurrence_type == "single": # TODO: can we check string equality like this?
+        if recurrence_type == "single":
             SingleRecurrence.objects.create(
                 event=event
             )
