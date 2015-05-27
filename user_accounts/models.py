@@ -119,6 +119,17 @@ class UserProfile(models.Model):
             'is_free': self.is_free,
         }
 
+    @property
+    def public_serialized(self):
+        return {
+            'id': self.pk,
+            'username': self.username,
+            'first_name': self.first_name,
+            'last_name': self.last_name,
+            'gravatar_url': self.get_gravatar_url(size=100),
+            'profile_url': self.profile_url,
+        }
+
     def get_friendship(self, other):
         return Friendship.objects.get(from_friend=self, to_friend=other)
 

@@ -2,8 +2,8 @@
     'use strict';
 
     var userSuggestions = new Bloodhound({
-        datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
         queryTokenizer: Bloodhound.tokenizers.whitespace,
+        datumTokenizer: Bloodhound.tokenizers.whitespace,
         remote: {
             url: $HMU._USER_AUTOCOMPLETE_URL + '?q=%QUERY',
             wildcard: '%QUERY',
@@ -18,6 +18,7 @@
     $tt.typeahead(null, {
         name: 'user-suggestions',
         source: userSuggestions,
+        display: 'username',
         limit: 10 // Doesn't work if it's 5 for SOME reason...
     });
 

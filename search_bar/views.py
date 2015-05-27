@@ -4,17 +4,21 @@ from django.http.response import JsonResponse
 from search_bar.logic.user_search import do_user_search
 
 def user_search(request):
-    username, suggestions = do_user_search(request.GET)
+    user, suggestions = do_user_search(request.GET)
 
-    if username:
+    if user:
         return HttpResponseRedirect(
-            reverse('user_accounts:user_profile', args=(username,))
+            reverse('user_accounts:user_profile', args=(user.username,))
         )
     else:
         # TODO: make a nice search results page
-        return JsonResponse({'suggestions': suggestions})
+        return JsonResponse({'suggestions': [
+            s.profile.public_serialized for s in suggestions
+        ]})
 
 def user_autocomplete(request):
-    username, suggestions = do_user_search(request.GET, 5)
+    user, suggestions = do_user_search(request.GET, 5)
 
-    return JsonResponse({'suggestions': suggestions})
+    return JsonResponse({'suggestions': [
+        s.profile.public_serialized for s in suggestions
+    ]})
