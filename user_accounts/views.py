@@ -303,6 +303,7 @@ class UserProfile(View):
                         friendship is not None and friendship.accepted:
                     friend_events = [e.serialize() for e in
                                      friend.calendars.get(title="Default").events.all()]
+
                     should_display = True
             except (User.DoesNotExist, Friendship.DoesNotExist):
                 pass

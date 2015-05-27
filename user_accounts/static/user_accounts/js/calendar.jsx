@@ -1,18 +1,30 @@
 var calendarReactor = (function($HMU, React, $, _)  {
 
     var events = $HMU.user_events;
-    var friend_events = $HMU.friend_events;
+    var friend_events_busy = $HMU.friend_events;
+    var friend_events_free = $.extend(true, [], friend_events_busy);
     var should_display = $HMU.should_display;
 
-    friend_events = friend_events.map(function(event) {
-        event.rendering = "inverse-background";
+    //TODO How safe is it to be setting their id's to 1 and 2?
+    //Will this cause problems or is this ok?
+    friend_events_busy = friend_events_busy.map(function(event) {
+        event.rendering = "background";
         event.id = 1;
-        event.color = '#257e4a';
+        event.color = '#FF0000';
         event.title = "Busy";
         return event;
     });
 
-    $.merge(events, friend_events);
+    friend_events_free = friend_events_free.map(function(event) {
+        event.rendering = "inverse-background";
+        event.id = 2;
+        event.color = '#257e4a';
+        event.title = "Free";
+        return event;
+    });
+
+    $.merge(events, friend_events_busy);
+    $.merge(events, friend_events_free);
 
     var NotFriend = React.createClass({
         render: function()  {
