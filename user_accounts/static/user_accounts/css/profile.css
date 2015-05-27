@@ -167,3 +167,8 @@ body {
         margin-top: 30px;
     }
 }
+
+#checkboxes {
+    text-align: center;
+    margin-bottom: 10px;
+}
