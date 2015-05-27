@@ -50,6 +50,7 @@ class SignUpView(View):
     def get(self, request):
         # if the user is already logged in and is trying to access the signup
         # page, return them to home
+        # check request.GET for params: fb_id, username, email, etc...
         if request.user.is_authenticated():
             return HttpResponseRedirect(reverse('static_pages:home'))
 

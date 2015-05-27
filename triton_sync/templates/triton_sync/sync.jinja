@@ -1,0 +1,66 @@
+{% extends "base.jinja" %}
+
+{% block title %}
+    TritonSync
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <h1>Sign in to TritonLink</h1>
+        <p>
+            We'll import all the classes that you're currently enrolled in
+            into your calendar.
+        </p>
+
+        {% if error_messages %}
+            {% for error in error_messages %}
+                <div class="form-error alert alert-danger alert-dismissible" role="alert">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <strong>{{ error }}</strong>
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        {% if classes %}
+            {% for class in classes %}
+                <p>{{ class.name }}</p>
+                <ul>
+                    {% for field in class %}
+                        <li>{{ class[field] }}</li>
+                    {% endfor %}
+                </ul>
+            {% endfor %}
+        {% endif %}
+
+        {% if login_form %}
+            {% for field in login_form %}
+                {% if field.errors %}
+                    {% for error in field.errors %}
+                        <div class="form-error alert alert-danger alert-dismissible" role="alert">
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                            {{ field.label_tag() }} {{ error|escape }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endfor %}
+
+            <form id="login_form" method="post" action="{{ url('triton_sync:sync') }}">
+            {% csrf_token %}
+
+            {% for field in login_form %}
+                <div class="form-group">
+                    {{ field }}
+                </div>
+            {% endfor %}
+
+            <button type="submit" name="submit" class="btn btn-default">
+                Login
+            </button>
+        </form>
+        {% endif %}
+    </div>
+{% endblock %}

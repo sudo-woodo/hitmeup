@@ -40,6 +40,7 @@ class Event(models.Model):
     end = models.DateTimeField(default=hour_from_now)
     location = models.CharField(max_length=200, blank=True)
     description = models.TextField(max_length=600, blank=True)
+    import_hash = models.BigIntegerField(default=0)
 
     DEFAULT_TIME_FMT = '%Y-%m-%dT%H:%M:%S'
 
