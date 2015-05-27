@@ -11,6 +11,7 @@ class LoginForm(forms.Form):
         'id': 'username',
         'name': 'username',
     }))
+
     password = forms.CharField(widget=forms.PasswordInput(attrs={
         'class': 'form-control',
         'placeholder': 'Password',
@@ -27,9 +28,16 @@ class SignupForm(forms.ModelForm, LoginForm):
         'name': 'email',
     }))
 
+    confirm_password = forms.CharField(required=False, widget=forms.PasswordInput(attrs={
+        'class': 'form-control',
+        'placeholder': 'Confirm Password',
+        'id': 'confirm-password',
+        'name': 'confirm-password',
+    }))
+
     class Meta:
         model = User
-        fields = ('email', 'username', 'password')
+        fields = ('email', 'username', 'password', 'confirm_password')
 
 
 class SignUpExtendedForm(forms.Form):
@@ -77,8 +85,11 @@ class SignUpExtendedForm(forms.Form):
 
 
 class SettingsForm(SignUpExtendedForm):
-    FIELD_ORDER = ['email', 'current_password', 'new_password',
-                   'first_name', 'last_name', 'phone', 'bio']
+    FIELD_ORDER = [
+        'email',
+        'first_name', 'last_name', 'phone', 'bio',
+        'current_password', 'new_password', 'confirm_password',
+    ]
 
     email = forms.CharField(required=False, widget=forms.EmailInput(attrs={
         'class': 'form-control',
@@ -87,18 +98,29 @@ class SettingsForm(SignUpExtendedForm):
         'name': 'email',
     }))
 
-    current_password = forms.CharField(required=False, widget=forms.PasswordInput(attrs={
-        'class': 'form-control',
-        'placeholder': 'Current password',
-        'id': 'current-password',
-        'name': 'current-password',
-    }))
+    current_password = forms.CharField(
+        required=False,
+        label='Current password (if changing password)',
+        widget=forms.PasswordInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'Current password',
+            'id': 'current-password',
+            'name': 'current-password',
+        })
+    )
 
     new_password = forms.CharField(required=False, widget=forms.PasswordInput(attrs={
         'class': 'form-control',
         'placeholder': 'New password',
         'id': 'new-password',
         'name': 'new-password',
+    }))
+
+    confirm_password = forms.CharField(required=False, widget=forms.PasswordInput(attrs={
+        'class': 'form-control',
+        'placeholder': 'Confirm Password',
+        'id': 'confirm-password',
+        'name': 'confirm-password',
     }))
 
     # Reorder fields
