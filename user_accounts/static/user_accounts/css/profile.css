@@ -141,6 +141,10 @@ body {
     padding: 10px;
 }
 
+#request-form textArea {
+    resize: none;
+}
+
 #request-header {
     text-align: center;
     margin-top: 20px;

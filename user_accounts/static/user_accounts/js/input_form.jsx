@@ -29,7 +29,7 @@ var InputForm = (function(React, $)  {
                     <p><input type="text" maxLength="200" className="form-control" placeholder="Title" value={this.state.title} ref="title" onChange={this.handleInput} /></p>
                     <p><DateTimeField ref="datetime" /></p>
                     <p><input type="text" maxLength="200" className="form-control" placeholder="Location" value={this.state.location} ref="location" onChange={this.handleInput} /></p>
-                    <p><textArea maxLength="600" className="form-control" placeholder="Description" value={this.state.description} ref="description" onChange={this.handleInput} /></p>
+                    <p><textArea maxLength="600" rows="3" className="form-control" placeholder="Description" value={this.state.description} ref="description" onChange={this.handleInput} /></p>
                     <button type="submit" className="btn btn-primary pull-right" id="submit">Send Request</button>
                 </div>
             );

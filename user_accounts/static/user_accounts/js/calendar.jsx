@@ -15,6 +15,15 @@ var calendarReactor = (function($HMU, React, $, _)  {
         return event;
     });
 
+    // If viewing friend profile and friend has no events, friend is free at all times
+    if (!$HMU.is_user && friend_events_free.length === 0) {
+        var currTime = moment();
+        friend_events_free.push({
+            start: currTime,
+            end: currTime
+        });
+    }
+
     friend_events_free = friend_events_free.map(function(event) {
         event.rendering = "inverse-background";
         event.id = 2;
@@ -30,8 +39,8 @@ var calendarReactor = (function($HMU, React, $, _)  {
         render: function()  {
             var icon = this.props.initial ? "fa fa-refresh fa-lg" : "fa fa-lock fa-lg";
             var message = this.props.initial ?
-                "You must be friends with this user to view their calendar." :
-                "Please refresh this page to view their calendar.";
+                "Please refresh this page to view their calendar." :
+                "You must be friends with this user to view their calendar.";
             return(
                 <div>
                     <i className={icon}></i>&nbsp; {message}
@@ -59,6 +68,7 @@ var calendarReactor = (function($HMU, React, $, _)  {
                     allDaySlot: false,
                     scrollTime: "08:00:00",
                     selectable: true,
+                    defaultTimedEventDuration: "00:00:00",
                     header: {
                         left: 'prev,next today',
                         center: 'title',
@@ -67,7 +77,6 @@ var calendarReactor = (function($HMU, React, $, _)  {
                     select: function(start, end) {
                         $('#start-picker').data("DateTimePicker").date(start);
                         $('#end-picker').data("DateTimePicker").date(end);
-
                     }
                 });
             }
