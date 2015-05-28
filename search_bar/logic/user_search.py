@@ -2,6 +2,9 @@ from django.contrib.auth.models import User
 from haystack.query import SearchQuerySet
 
 
+MAX_QUERY_LENGTH = 100
+
+
 def do_user_search(data, num_results=None):
     """
     User search logic. Returns a tuple of (User, [User suggestions]).
@@ -11,9 +14,9 @@ def do_user_search(data, num_results=None):
     :param num_results: How many results to return; defaults to all
     :return: (User, [User])
     """
-    # Ensure we have a query
+    # Ensure we have a query and it's not too long
     query = data.get('q')
-    if not query:
+    if (not query) or len(query) > MAX_QUERY_LENGTH:
         return (None, [])
 
     # Try for an exact match
