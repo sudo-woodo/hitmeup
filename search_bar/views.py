@@ -11,8 +11,8 @@ def user_search(request):
         return HttpResponseRedirect('http://hestia.dance/')
     elif query == 'yousmell!':
         return HttpResponseRedirect('https://scontent-sjc2-1.xx.fbcdn.net/'
-                                    'hphotos-xaf1/t31.0-8/'
-                                    '288661_226281527422182_1149433_o.jpg')
+                                    'hphotos-ash2/t31.0-8/'
+                                    '338205_203999436341625_1022386334_o.jpg')
 
     user, suggestions = do_user_search(request.GET)
 
