@@ -309,6 +309,19 @@ class UserProfile(View):
             'js_data': {}
         }
 
+        try:
+            profile = User.objects.get(username=username).profile
+            context['profile'] = {
+                'username': username,
+                'gravatar': profile.get_gravatar_url(125),
+                'full_name': '***** *********',
+                'email': '*******@*****.***',
+                'phone': '**********',
+                'bio': ''
+            }
+        except User.DoesNotExist:
+            raise Http404("User does not exist")
+
         if request.user.is_authenticated():
             state = {
                 'CLEAN': 0,
@@ -316,38 +329,33 @@ class UserProfile(View):
                 'IS_FRIENDS': 2
             }
 
+            # uncensor full_name, bio
+            context['profile']['full_name'] = profile.full_name
+            context['profile']['bio'] = profile.bio
+
+            context['js_data']['showFriendButton'] = request.user.id != profile.pk
+            context['js_data']['profileId'] = profile.pk
+            context['friended'] = False
+            context['censor'] = False
+
             try:
-                profile = User.objects.get(username=username).profile
-                context['profile'] = profile
-                context['js_data']['showFriendButton'] = request.user.id != profile.pk
-                context['js_data']['profileId'] = profile.pk
-                context['friended'] = False
-                context['censor'] = False
+                friendship = Friendship.objects.get(
+                    from_friend=self.request.user.profile,
+                    to_friend=profile
+                )
+                if friendship.accepted:
+                    context['friended'] = True
+                    context['js_data']['status'] = state['IS_FRIENDS']
 
-                try:
-                    friendship = Friendship.objects.get(
-                        from_friend=self.request.user.profile,
-                        to_friend=profile
-                    )
-                    if friendship.accepted:
-                        context['friended'] = True
-                        context['js_data']['status'] = state['IS_FRIENDS']
-                    else:
-                        context['js_data']['status'] = state['PENDING']
-                except Friendship.DoesNotExist:
-                    context['js_data']['status'] = state['CLEAN']
+                    # uncensor email, phone
+                    context['profile']['email'] = profile.email
+                    context['profile']['phone'] = profile.phone
+                else:
+                    context['js_data']['status'] = state['PENDING']
+            except Friendship.DoesNotExist:
+                context['js_data']['status'] = state['CLEAN']
 
-            except User.DoesNotExist:
-                raise Http404("User does not exist")
         else:
-            context['profile'] = {
-                'username': username,
-                'full_name': '***** *********',
-                'email': '*******@*****.***',
-                'phone': '**********',
-                'bio': ''
-            }
-
             return_url = reverse('user_accounts:login')
             return_url += '?next='
             return_url += reverse(
