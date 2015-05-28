@@ -11,6 +11,9 @@ def calendar(request):
             '//cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.3.1/fullcalendar.min.css',
             '//cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.7.14/css/'
             'bootstrap-datetimepicker.min.css',
+            '//cdnjs.cloudflare.com/ajax/libs/bootstrap-switch/3.3.2/css/bootstrap3/'
+            'bootstrap-switch.min.css',
+            '//cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.6.5/css/bootstrap-select.min.css',
         ],
         'css': [
             'ourcalendar/css/calendar.css',
@@ -22,16 +25,20 @@ def calendar(request):
             '//cdnjs.cloudflare.com/ajax/libs/react/0.13.0/JSXTransformer.js',
             '//cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.7.14/js/'
             'bootstrap-datetimepicker.min.js',
+            '//cdnjs.cloudflare.com/ajax/libs/bootstrap-switch/3.3.2/js/'
+            'bootstrap-switch.min.js',
+            '//cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.6.5/js/bootstrap-select.min.js',
         ],
         'js': [
             'ourcalendar/js/events.js',
         ],
         'jsx': [
+            'ourcalendar/jsx/repeat_box.jsx',
             'ourcalendar/jsx/event_modal_error.jsx',
             'ourcalendar/jsx/datetime_field.jsx',
             'ourcalendar/jsx/input_form.jsx',
             'ourcalendar/jsx/create_event_modal.jsx',
-            'ourcalendar/jsx/event_detail_modal.jsx'
+            'ourcalendar/jsx/event_detail_modal.jsx',
         ],
     })
 

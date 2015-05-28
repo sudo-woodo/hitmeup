@@ -3,8 +3,23 @@ var creationReactor = (function(React, $) {
     // a day.  Collects all of the necessary information.
     var EventModal = React.createClass({
 
+        handleSubmitSingle: function(data)  {
+            // Pass in the post data and give it the other relevant info to make it a single.
+
+
+        },
+
+        handleSubmitRepeat: function(data)  {
+            // Pass in the post data and give it the other relevant info to make it a repeat.
+
+        },
+
         // Handle submission of event
         handleSubmit: function(data) {
+            console.log( $("#frequency").val() );
+            var values = $("#days").val();
+            console.log( values );
+
             data.preventDefault();
             var postData = {
                 title: React.findDOMNode(this.refs.inputForm.refs.title).value.trim(),
@@ -12,12 +27,25 @@ var creationReactor = (function(React, $) {
                 end: React.findDOMNode(this.refs.inputForm.refs.datetime.refs.end).value.trim(),
                 location: React.findDOMNode(this.refs.inputForm.refs.location).value.trim(),
                 description: React.findDOMNode(this.refs.inputForm.refs.description).value.trim(),
-                calendar: 'Default',
-                recurrence_type: 'single'
+                calendar: 'Default'
+                // Set this later recurrence_type: 'single'
             };
+
+            // Do some refactoring...
+            // Do everything that is consistent within both types of events, single and repeat.
+            // Then pass that data onto their respective functions, handleSubmitSingle and handleSubmitRepeat.
+
 
             // Error checking to ensure user put in required fields.
             var errors = [];
+
+            // Error checking for days in here since we checked for errors before all else. Might
+            // want to change this.  Also, couldn't get focus to work.
+            if (this.refs.inputForm.state.repeat == true && values == null)  {
+                errors.unshift('Days are required for repeated events.');
+                 this.refs.inputForm.refs.repeat.refs.days.getDOMNode().focus();
+            }
+
             if (postData.end.length === 0) {
                 errors.unshift('End time is required.');
                 this.refs.inputForm.refs.datetime.refs.end.getDOMNode().focus();
@@ -39,6 +67,8 @@ var creationReactor = (function(React, $) {
                 });
             }
             else {
+                //In here we can change it to handle for single and handle for repeat.
+
                 var startMoment = moment(postData.start);
                 var endMoment = moment(postData.end);
 
