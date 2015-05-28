@@ -10,7 +10,7 @@ from django.utils.timezone import datetime
 class EventResource(DjangoResource):
     #TODO: Need to update fields preparer for recurrence, maybe include type of recurrence
     preparer = FieldsPreparer(fields={
-        'event_id': 'pk',
+        'id': 'pk',
         'start': 'start',
         'end': 'end',
         'title': 'title',
@@ -29,13 +29,15 @@ class EventResource(DjangoResource):
     def list(self):
         #TODO: if no range_start or range_end, return error or assume get all?
         errors = defaultdict(list)
-        if 'range_start' in self.data:
-            range_start = datetime.strptime(self.data['range_start'], '%Y-%m-%d %H:%M')
+        start = self.request.GET.get('range_start', None)
+        end = self.request.GET.get('range_end', None)
+        if start is not None:
+            range_start = datetime.strptime(start, '%Y-%m-%d %H:%M')
         else:
             #errors['range_start'].append("range start not provided")
             range_start = datetime.strptime('1990-01-01 12:12', '%Y-%m-%d %H:%M')
-        if 'range_end' in self.data:
-            range_end = datetime.strptime(self.data['range_end'], '%Y-%m-%d %H:%M')
+        if end is not None:
+            range_end = datetime.strptime(end, '%Y-%m-%d %H:%M')
         else:
             #errors['range_end'].append("range end not provided")
             range_end = datetime.strptime('2050-01-01 12:12', '%Y-%m-%d %H:%M')
@@ -47,7 +49,9 @@ class EventResource(DjangoResource):
 
         #return Event.objects.filter(calendar__owner=self.request.user.profile)
         #return self.request.user.profile.calendars.get(title="Default").events.all()
-        return self.request.user.profile.calendars.get(title="Default").get_between(range_start, range_end)
+        # TODO make less sketchy
+        return [e for e in self.request.user.profile.calendars.get(title="Default").get_between(range_start, range_end) if type(e) is not list]
+
     # GET /api/events/<pk>/
     # Gets detail on a specific event.
     def detail(self, pk):

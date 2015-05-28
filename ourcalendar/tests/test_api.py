@@ -69,7 +69,7 @@ class EventApiTestCase(TestCase):
         # Check if all the events are there
         event_ids = [e.id for e in Event.objects.filter(calendar__owner=self.profile)]
         for user in data:
-            self.assertIn(user['event_id'], event_ids)
+            self.assertIn(user['id'], event_ids)
 
     def test_detail(self):
         event = self.events[0]
@@ -78,12 +78,12 @@ class EventApiTestCase(TestCase):
         response = self.client.get(self.GET_DETAIL_URL(event.pk))
         data = json.loads(response.content)
 
-        expected_fields = ['event_id', 'start', 'end', 'title',
+        expected_fields = ['id', 'start', 'end', 'title',
                            'calendar', 'location', 'description']
 
         # Ensure all the fields are present
         for field in expected_fields:
-            if field == 'event_id':
+            if field == 'id':
                 self.assertEqual(data[field], event.pk)
             elif field == 'calendar':
                 self.assertEqual(data[field], event.calendar.pk)
@@ -218,7 +218,7 @@ class EventApiTestCase(TestCase):
                                     json.dumps(self.NEW_DATA),
                                     content_type='text/json')
         data = json.loads(response.content)
-        event_id = data['event_id']
+        event_id = data['id']
 
         # Ensure all the fields are present and updated
         for field in self.NEW_DATA:

@@ -1,5 +1,5 @@
-(function($, $HMU) {
-    var events = $HMU.events;
+(function($, $HMU, _) {
+    var monthlyEvents = {};
 
     $(document).ready(function() {
 
@@ -27,7 +27,6 @@
                 // Dev tip: can use event.id to get the clicked event's id
                 $('#eventDetailModal').modal('show');
             },
-            events: events,
             fixedWeekCount: false,
             height: 600,
             scrollTime: "08:00:00",
@@ -88,7 +87,69 @@
                         console.log(xhr.responseText);
                     }
                 });
+            },
+
+            viewRender: function(view, element) {
+                var beginMonth = view.start.format('YYYY-MM');
+                var endMonth = view.end.format('YYYY-MM');
+
+                // Begin month's events have not been retrieved yet
+                if (!_.has(monthlyEvents, beginMonth)) {
+                    var beginRange = view.start.startOf('month').format('YYYY-MM-DD HH:mm');
+                    var endRange = view.start.endOf('month').format('YYYY-MM-DD HH:mm');
+
+                    $.ajax({
+                        url: '/api/events/?range_start=' + beginRange + '&range_end=' + endRange,
+                        type: "GET",
+                        contentType: "application/json",
+                        success: function (response) {
+                            $('#calendar').fullCalendar('addEventSource', response['objects']);
+                            monthlyEvents[beginMonth] = true;
+                        },
+                        error: function (xhr, textStatus, thrownError) {
+                            alert("An error occurred, please try again later.");
+                            console.log(xhr.responseText);
+                        }
+                    });
+                }
+
+                // End month's events have not been retrieved yet
+                if (!_.has(monthlyEvents, endMonth)) {
+                    beginRange = view.end.startOf('month').format('YYYY-MM-DD HH:mm');
+                    endRange = view.end.endOf('month').format('YYYY-MM-DD HH:mm');
+
+                    $.ajax({
+                        url: '/api/events/?range_start=' + beginRange + '&range_end=' + endRange,
+                        type: "GET",
+                        contentType: "application/json",
+                        success: function (response) {
+                            $('#calendar').fullCalendar('addEventSource', response['objects']);
+                            monthlyEvents[endMonth] = true;
+                        },
+                        error: function (xhr, textStatus, thrownError) {
+                            alert("An error occurred, please try again later.");
+                            console.log(xhr.responseText);
+                        }
+                    });
+                }
             }
-        })
+        });
+
+        // Initial load of current month's events
+        var beginRange = moment().startOf('month').format('YYYY-MM-DD HH:mm');
+        var endRange = moment().endOf('month').format('YYYY-MM-DD HH:mm');
+        $.ajax({
+            url: '/api/events/?range_start=' + beginRange + '&range_end=' + endRange,
+            type: "GET",
+            contentType: "application/json",
+            success: function (response) {
+                $('#calendar').fullCalendar('addEventSource', response['objects']);
+                monthlyEvents[moment().format('YYYY-MM')] = true;
+            },
+            error: function (xhr, textStatus, thrownError) {
+                alert("An error occurred, please try again later.");
+                console.log(xhr.responseText);
+            }
+        });
     });
-})(window.jQuery, window.$HMU);
+})(window.jQuery, window.$HMU, window._);

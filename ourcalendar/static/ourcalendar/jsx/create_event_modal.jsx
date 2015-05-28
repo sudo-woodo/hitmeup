@@ -12,7 +12,8 @@ var creationReactor = (function(React, $) {
                 end: React.findDOMNode(this.refs.inputForm.refs.datetime.refs.end).value.trim(),
                 location: React.findDOMNode(this.refs.inputForm.refs.location).value.trim(),
                 description: React.findDOMNode(this.refs.inputForm.refs.description).value.trim(),
-                calendar: 'Default'      // Necessary for AJAX request
+                calendar: 'Default',
+                recurrence_type: 'single'
             };
 
             // Error checking to ensure user put in required fields.
@@ -52,7 +53,7 @@ var creationReactor = (function(React, $) {
                     data: JSON.stringify(postData),
                     contentType: "application/json",
                     success: function(response) {
-                        postData.id = response.event_id;
+                        postData.id = response.id;
                         $('#create-event-modal').modal('hide');
                         $('#calendar').fullCalendar('renderEvent', postData, true);
                     },

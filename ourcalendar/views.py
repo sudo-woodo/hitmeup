@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 
+
 @login_required
 def calendar(request):
     return render(request, 'ourcalendar/calendar.jinja', {
@@ -32,9 +33,5 @@ def calendar(request):
             'ourcalendar/jsx/create_event_modal.jsx',
             'ourcalendar/jsx/event_detail_modal.jsx'
         ],
-        'js_data': {
-            'events': [e.serialize() for e in
-                       request.user.profile.calendars.get(title='Default').getbetween()],
-        },
     })
 
