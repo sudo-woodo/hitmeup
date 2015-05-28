@@ -1,16 +1,23 @@
 from collections import OrderedDict
 from django.contrib.auth.models import User
 from django import forms
+from django.core.validators import MinLengthValidator
 from user_accounts.models import UserProfile
 
 
+MIN_USERNAME_LENGTH = 5
+
+
 class LoginForm(forms.Form):
-    username = forms.CharField(widget=forms.TextInput(attrs={
-        'class': 'form-control',
-        'placeholder': 'Username',
-        'id': 'username',
-        'name': 'username',
-    }))
+    username = forms.CharField(
+        validators=[MinLengthValidator(MIN_USERNAME_LENGTH)],
+        widget=forms.TextInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'Username',
+            'id': 'username',
+            'name': 'username',
+        }
+    ))
 
     password = forms.CharField(widget=forms.PasswordInput(attrs={
         'class': 'form-control',
