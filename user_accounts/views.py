@@ -10,8 +10,6 @@ from django.utils.html import escape
 from django.views.generic import View
 from user_accounts.forms import LoginForm, SignupForm, SignUpExtendedForm, SettingsForm
 from user_accounts.models import Friendship
-from communications.emails import send_test_mail
-from hitmeup import settings
 
 
 PROFILE_PIC_SIZE = 125
@@ -22,11 +20,6 @@ class SignUpView(View):
         # Fill out form with request data
         signup_form = SignupForm(data=request.POST)
         if signup_form.is_valid():
-            # TODO: PLEASE DON'T CHANGE SETTINGS
-            # IN ANY FILE EXCEPT SETTINGS.PY...
-            #Create an abolute URL for the HitMeUp logo image and save it in settings for later use
-            #settings.LOGO_URL = request.build_absolute_uri()
-            #print settings.LOGO_URL
 
             # Check if passwords match
             data = signup_form.cleaned_data
@@ -87,7 +80,6 @@ class SignUpExtended(View):
 
             user.save()
             profile.save()
-            #send_test_mail()
             return HttpResponseRedirect(reverse('static_pages:home'))
 
         # If there's an form error, rerender with errors

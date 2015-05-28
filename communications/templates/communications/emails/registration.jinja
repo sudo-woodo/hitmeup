@@ -1,0 +1,21 @@
+<!--The Contents of the Welcome Email Message-->
+<html>
+    <head>
+    </head>
+    <body>
+        <p style=""> Hello, {{ profile.username }}</p>
+        <br />
+        <p style="">
+            <!--Message Body-->
+            {{ "Welcome to HitMeUp!" }}
+        </p>
+        <br />
+        <!--Closing-->
+        <p style=""> Sincerely,</p>
+        <p style=""> The HitMeUp Team</p>
+        <br />
+        <!--The HitMeUp Logo-->
+        <img src="{{ static('communications/img/hitmeup_square.png') }}"
+             alt="HitMeUp" style="width:128px;height:128px"/>
+    </body>
+</html>

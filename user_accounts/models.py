@@ -10,7 +10,7 @@ from ourcalendar.logic.intervals import Interval
 from user_accounts.templatetags import gravatar
 from django.utils import timezone
 from django.core.mail import EmailMessage
-from communications.emails import send_welcome_email
+from communications.emails import send_registration_email
 
 
 request_friend = django.dispatch.Signal(providing_args=['from_friend', 'to_friend'])
@@ -194,7 +194,7 @@ def create_user_profile(sender, instance, created, **kwargs):
     if created:
         profile = UserProfile.objects.create(user=instance)
         #send welcome email when profile is created
-        send_welcome_email(profile)
+        send_registration_email(profile)
 
 
 class Friendship(models.Model):
