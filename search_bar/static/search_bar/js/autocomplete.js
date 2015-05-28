@@ -35,17 +35,5 @@
     });
 
     // Submit on selection
-    $tt.on('typeahead:selected', function(event, selection) {
-        $form.submit();
-    });
-
-    // Hehe
-    $form.submit(function(e) {
-        switch ($tt.val()) {
-            case 'hestia!':
-                e.preventDefault();
-                window.location.href = 'http://hestia.dance/';
-                break;
-        }
-    })
+    $tt.on('typeahead:selected', $form.submit);
 })})(window.$HMU, window.jQuery, window.Handlebars, window.Bloodhound);
