@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.core.urlresolvers import reverse
 import django.dispatch
 from django.contrib.auth.models import User
@@ -57,9 +58,15 @@ class UserProfile(models.Model):
     def gravatar_url(self):
         return self.get_gravatar_url()
 
-    def create_email(self, sender='sudowoodohitmeup@gmail.com', *args, **kwargs):
-        #return an EmailMessage Object with the email address to send to being the user's
-        return EmailMessage(from_email=sender, to=[self.email], *args, **kwargs)
+    def create_html_email(self,
+                          sender=settings.EMAIL_HOST_USER,
+                          *args, **kwargs):
+        # Return an EmailMessage Object with recipient = user
+        msg = EmailMessage(from_email=sender, to=[self.email], *args, **kwargs)
+
+        # Also set html content type
+        msg.content_subtype = "html"
+        return msg
 
     def get_gravatar_url(self, size=80):
         return gravatar.gravatar_url(self.user.email, size)
@@ -193,7 +200,7 @@ class UserProfile(models.Model):
 def create_user_profile(sender, instance, created, **kwargs):
     if created:
         profile = UserProfile.objects.create(user=instance)
-        #send welcome email when profile is created
+        # Send welcome email when profile is created
         send_registration_email(profile)
 
 
