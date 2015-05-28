@@ -115,7 +115,7 @@ body {
     padding-left: 5px;
 }
 
-#info-panel {
+#info-panel, #request-panel, #option-panel {
     margin-top: 30px;
     margin-bottom: 0;
     border-color: #bdbdbd;
@@ -125,14 +125,14 @@ body {
     -moz-hyphens: auto;
 }
 
+/* Hide the event request panel temporarily */
 #request-panel {
-    margin-top: 30px;
-    margin-bottom: 0;
-    border-color: #bdbdbd;
-    word-wrap: break-word;
-    hyphens: auto;
-    -ms-hyphens: auto;
-    -moz-hyphens: auto;
+    display: none;
+}
+
+#options-panel {
+    margin: 10px;
+    text-align: center;
 }
 
 #request-form {
@@ -168,7 +168,12 @@ body {
     }
 }
 
-#checkboxes {
-    text-align: center;
+#option-label {
+    font-weight: bold;
+    margin-bottom: 5px;
+    margin-top: 10px;
+}
+
+.bootstrap-switch {
     margin-bottom: 10px;
 }

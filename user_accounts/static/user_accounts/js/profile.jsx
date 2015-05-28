@@ -83,6 +83,7 @@
                             initial: false
                         });
                         requestReactor.setState({display: false});
+                        optionsReactor.setState({display: false});
                     },
                     error: function() {
                         alert('Something went wrong with removing the friend,' +

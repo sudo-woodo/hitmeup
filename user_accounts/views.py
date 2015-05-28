@@ -287,32 +287,13 @@ class SettingsView(View):
 
 class UserProfile(View):
     def get(self, request, username):
-        friend_events = []
-        user_events = []
-        should_display = False
-        is_user = username == request.user.username
-        if request.user.is_authenticated():
-            user_events = [e.serialize() for e in
-                                request.user.profile.calendars.get(title='Default').events.all()]
-            try:
-                if is_user:
-                    should_display = True
-                friend = User.objects.get(username=username).profile
-                friendship = request.user.profile.get_friendship(friend)
-                if username != is_user and \
-                        friendship is not None and friendship.accepted:
-                    friend_events = [e.serialize() for e in
-                                     friend.calendars.get(title="Default").events.all()]
-
-                    should_display = True
-            except (User.DoesNotExist, Friendship.DoesNotExist):
-                pass
-
         context = {
             'ext_css': [
                 '//cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.3.1/fullcalendar.min.css',
                 '//cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.7.14/css/'
                 'bootstrap-datetimepicker.min.css',
+                '//cdnjs.cloudflare.com/ajax/libs/bootstrap-switch/3.3.2/css/bootstrap3/'
+                'bootstrap-switch.min.css'
             ],
             'css': [
                 'user_accounts/css/profile.css'
@@ -324,21 +305,21 @@ class UserProfile(View):
                 '//cdnjs.cloudflare.com/ajax/libs/react/0.13.0/JSXTransformer.js',
                 '//cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.7.14/js/'
                 'bootstrap-datetimepicker.min.js',
+                '//cdnjs.cloudflare.com/ajax/libs/bootstrap-switch/3.3.2/js/'
+                'bootstrap-switch.min.js'
             ],
             'js': [
             ],
             'jsx': [
-                'user_accounts/js/datetime_field.jsx',
+                'ourcalendar/jsx/datetime_field.jsx',
                 'user_accounts/js/input_form.jsx',
                 'user_accounts/js/calendar.jsx',
                 'user_accounts/js/profile.jsx',
                 'user_accounts/js/event_request_box.jsx',
+                'user_accounts/js/options.jsx',
             ],
             'js_data': {
-                'user_events': user_events,
-                'friend_events': friend_events,
-                'should_display': should_display,
-                'is_user': is_user
+
             }
         }
 
@@ -391,5 +372,30 @@ class UserProfile(View):
             context['return_url'] = return_url
             context['js_data']['showFriendButton'] = False
             context['censor'] = True
+
+        friend_events = []
+        user_events = []
+        should_display = False
+        is_user = username == request.user.username
+        if request.user.is_authenticated():
+            user_events = [e.serialize() for e in
+                                request.user.profile.calendars.get(title='Default').events.all()]
+            try:
+                if is_user:
+                    should_display = True
+                friend = User.objects.get(username=username).profile
+                friendship = request.user.profile.get_friendship(friend)
+                if username != is_user and \
+                        friendship is not None and friendship.accepted:
+                    friend_events = [e.serialize() for e in
+                                     friend.calendars.get(title="Default").events.all()]
+
+                    should_display = True
+            except (User.DoesNotExist, Friendship.DoesNotExist):
+                pass
+        context['js_data']['user_events'] = user_events
+        context['js_data']['friend_events'] = friend_events
+        context['js_data']['should_display'] = should_display
+        context['js_data']['is_user'] = is_user
 
         return render(request, 'user_accounts/profile.jinja', context)
