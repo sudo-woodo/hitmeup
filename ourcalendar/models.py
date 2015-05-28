@@ -107,7 +107,7 @@ class RecurrenceType(models.Model):
 class RecurrenceType(models.Model):
 
     event = models.OneToOneField(Event, primary_key=True, related_name="recurrence_type")
-    #event = models.OneToOneField(Event, primary_key=True)
+
     def get_between(self, range_start, range_end):
         raise NotImplementedError("Recurrence Type not implemented!!")
 
@@ -116,7 +116,9 @@ class RecurrenceType(models.Model):
 
 
 class SingleRecurrence(RecurrenceType):
-    #If it's just a single event, we just have to make one check
+
+    # If it's just a single event, we just have to make one check
+
     def get_between(self, range_start, range_end):
         if self.event.start < range_end and self.event.end > range_start:
             return self.event
@@ -161,10 +163,8 @@ class WeeklyRecurrence(RecurrenceType):
         if self.event.start <= range_end and self.last_event_end >= range_start:
             # Can't be max (self.event.start, range_start) because frequency needs to be calc. from start
             start = self.event.start
-            start = datetime.datetime(start.year, start.month, start.day, self.event.start.hour, self.event.start.minute,
-                                      self.event.start.second)
             end = min(self.last_event_end, range_end)
-            while start < end:
+            while start <= end:
 
                 if self.days_of_week[start.weekday()] == '1' and start >= range_start:
                     events.append(Event(calendar=self.event.calendar,
