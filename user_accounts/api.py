@@ -1,7 +1,11 @@
+from django.contrib.auth.models import User
 from restless.dj import DjangoResource
 from restless.preparers import FieldsPreparer
 from restless.exceptions import Unauthorized, BadRequest
 from django.utils.html import escape
+import base64
+import re
+from tokenapi.tokens import token_generator
 from .models import UserProfile, Friendship
 
 
@@ -86,7 +90,24 @@ class FriendResource(DjangoResource):
 
     # Authenticate if the user is currently logged in
     def is_authenticated(self):
-        return self.request.user.is_authenticated()
+        if 'HTTP_AUTHORIZATION' not in self.request.META:
+            return self.request.user.is_authenticated()
+
+        result = True
+        auth_header = self.request.META['HTTP_AUTHORIZATION']
+        auth_regex = re.compile('Basic \w+')
+
+        # For mobile: can also authenticate by token via HTTP authorization header
+        if auth_header and auth_regex.match(auth_header):
+            user_id, token = base64.b64decode(auth_header.split(' ')[1]).split(':')
+            try:
+                user = User.objects.get(pk=user_id)
+                result = token_generator.check_token(user, token)
+                if result:
+                    self.request.user = user
+            except User.DoesNotExist:
+                result = False
+        return result
 
     # GET /api/friends/?type=(accepted|incoming|outgoing)
     # Gets a list of friends of the current user.

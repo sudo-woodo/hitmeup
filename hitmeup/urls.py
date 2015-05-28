@@ -24,7 +24,8 @@ urlpatterns = [
         namespace='notifications_api')),
     url(r'^api/events/', include(EventResource.urls(),
         namespace='events_api')),
-
+    url(r'^api/', include('tokenapi.urls',
+        namespace='auth_api')),
 
     # Other URLs
     url(r'^admin/', include(admin.site.urls)),

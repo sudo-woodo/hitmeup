@@ -44,6 +44,7 @@ INSTALLED_APPS = (
     # Vendor
     'django_jinja',
     'restless',
+    'tokenapi',
 
     # Custom
     'hitmeup',
@@ -184,6 +185,10 @@ SCAFFOLDAPP_FILES = [
 # Authentication
 LOGIN_URL = '/login/'
 CSRF_FAILURE_VIEW = 'hitmeup.views.csrf_failure'
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend',
+    'tokenapi.backends.TokenBackend',
+)
 
 
 # Fullcalendar
