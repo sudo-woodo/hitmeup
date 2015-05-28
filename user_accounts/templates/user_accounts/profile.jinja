@@ -37,16 +37,10 @@
             <div class="container">
                 <div id="header-lower-half-content">
                     <img
-                        {% if not censor %}
-                            src="{{ profile.get_gravatar_url(125) }}"
-                        {% endif %}
+                        src="{{ profile.gravatar }}"
                         alt="Profile picture"
                         id ="pic"
-                        class="img-thumbnail
-                            {% if censor %}
-                                pic-censored
-                            {% endif %}
-                        ">
+                        class="img-thumbnail">
                         {% if not censor %}
                             <div id="friend-button-container"></div>
                         {% endif %}
