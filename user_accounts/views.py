@@ -338,6 +338,11 @@ class UserProfile(View):
             context['friended'] = False
             context['censor'] = False
 
+            # uncensor email, phone if viewing own profile
+            if request.user.id == profile.pk:
+                context['profile']['email'] = profile.email
+                context['profile']['phone'] = profile.phone
+
             try:
                 friendship = Friendship.objects.get(
                     from_friend=self.request.user.profile,
