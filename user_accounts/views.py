@@ -22,9 +22,23 @@ class SignUpView(View):
         # Fill out form with request data
         signup_form = SignupForm(data=request.POST)
         if signup_form.is_valid():
+            # TODO: PLEASE DON'T CHANGE SETTINGS
+            # IN ANY FILE EXCEPT SETTINGS.PY...
             #Create an abolute URL for the HitMeUp logo image and save it in settings for later use
             #settings.LOGO_URL = request.build_absolute_uri()
             #print settings.LOGO_URL
+
+            # Check if passwords match
+            data = signup_form.cleaned_data
+            if data['password'] != data['confirm_password']:
+                # Return the form with errors
+                return render(request, 'user_accounts/signup.jinja', {
+                    'signup_form': signup_form,
+                    'error_messages': [
+                        'Passwords do not match.',
+                    ],
+                })
+
             user = signup_form.save()
             user.set_password(user.password)
             user.save()
@@ -34,8 +48,7 @@ class SignUpView(View):
             new_user = authenticate(username=request.POST['username'],
                                     password=request.POST['password'])
             login(request, new_user)
-            return HttpResponseRedirect(reverse('user_accounts:extended_signup')
-                                        + '?first_visit=true')
+            return HttpResponseRedirect(reverse('user_accounts:extended_signup'))
         else:
             # Return the form with errors
             return render(request, 'user_accounts/signup.jinja',
@@ -61,15 +74,19 @@ class SignUpExtended(View):
         if signup_extended_form.is_valid():
             # if the form is valid, update user and userprofile
             user = request.user
+            profile = user.profile
+
+            profile.did_extended_signup = True
             for key, val in signup_extended_form.cleaned_data.iteritems():
                 if val.strip():
                     if key in {'first_name', 'last_name'}:
                         setattr(user, key, val.strip())
 
                     else:
-                        setattr(user.profile, key, val.strip())
+                        setattr(profile, key, val.strip())
+
             user.save()
-            user.profile.save()
+            profile.save()
             #send_test_mail()
             return HttpResponseRedirect(reverse('static_pages:home'))
 
@@ -81,12 +98,12 @@ class SignUpExtended(View):
 
     def get(self, request):
         # If it's not the user's first visit, return them to home
-        if not request.GET.get('first_visit', False) == 'true':
+        if request.user.profile.did_extended_signup:
             return HttpResponseRedirect(reverse('static_pages:home'))
 
         # Otherwise, return a blank form for the user to fill out
         return render(request, 'user_accounts/signup_extended.jinja', {
-            'signup_extended_form': SignUpExtendedForm()
+            'signup_extended_form': SignUpExtendedForm(),
         })
 
 
@@ -187,18 +204,33 @@ class SettingsView(View):
                               in edit_form.cleaned_data.iteritems() if v}
 
             # Manually check password fields
-            if updated_fields.viewkeys() & {'current_password', 'new_password'}:
+            if updated_fields.viewkeys() & {
+                'current_password', 'new_password', 'confirm_password',
+            }:
                 if 'current_password' not in updated_fields:
                     error_messages.append(
-                        'New password given, but current password was missing.'
+                        'Current password was missing.'
                     )
                     password_valid = False
-                elif 'new_password' not in updated_fields:
+                if 'new_password' not in updated_fields:
                     error_messages.append(
-                        'Current password given, but new password was missing.'
+                        'New password was missing.'
                     )
                     password_valid = False
-                else:
+                if 'confirm_password' not in updated_fields:
+                    error_messages.append(
+                        'Password confirmation was missing.'
+                    )
+                    password_valid = False
+
+                # If we're good so far...
+                if password_valid:
+                    if updated_fields['new_password'] != updated_fields['confirm_password']:
+                        error_messages.append(
+                            'New password and password confirmation don\'t match.'
+                        )
+                        password_valid = False
+
                     # Authenticate the current password
                     user = authenticate(username=request.user.username,
                                         password=updated_fields['current_password'])
