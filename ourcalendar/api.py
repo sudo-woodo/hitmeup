@@ -8,7 +8,7 @@ from django.utils.timezone import datetime
 
 
 class EventResource(DjangoResource):
-    #TODO: Need to update fields preparer for recurrence
+    #TODO: Need to update fields preparer for recurrence, maybe include type of recurrence
     preparer = FieldsPreparer(fields={
         'event_id': 'pk',
         'start': 'start',
@@ -17,6 +17,7 @@ class EventResource(DjangoResource):
         'calendar': 'calendar.id',
         'location': 'location',
         'description': 'description',
+
     })
 
     # Authentication!
@@ -29,24 +30,24 @@ class EventResource(DjangoResource):
         #TODO: if no range_start or range_end, return error or assume get all?
         errors = defaultdict(list)
         if 'range_start' in self.data:
-            range_start = self.data['range_start']
+            range_start = datetime.strptime(self.data['range_start'], '%Y-%m-%d %H:%M')
         else:
             #errors['range_start'].append("range start not provided")
-            range_start = '1990-01-01 12:12'
+            range_start = datetime.strptime('1990-01-01 12:12', '%Y-%m-%d %H:%M')
         if 'range_end' in self.data:
-            range_end = self.data['range_end']
+            range_end = datetime.strptime(self.data['range_end'], '%Y-%m-%d %H:%M')
         else:
             #errors['range_end'].append("range end not provided")
-            range_end = '3000-01-01 12:12'
-
+            range_end = datetime.strptime('2050-01-01 12:12', '%Y-%m-%d %H:%M')
         if errors:
             raise BadRequest(str(errors))
 
-        return itertools.chain([c.get_between(range_start, range_end)
-                                for c in self.request.user.profile.calendars.all()])
+        #return list(itertools.chain([c.get_between(range_start, range_end)
+         #                      for c in self.request.user.profile.calendars.all()]))
 
-        #return self.request.user.profile.calendars
-
+        #return Event.objects.filter(calendar__owner=self.request.user.profile)
+        #return self.request.user.profile.calendars.get(title="Default").events.all()
+        return self.request.user.profile.calendars.get(title="Default").get_between(range_start, range_end)
     # GET /api/events/<pk>/
     # Gets detail on a specific event.
     def detail(self, pk):
@@ -59,6 +60,9 @@ class EventResource(DjangoResource):
         errors = defaultdict(list)
 
         # TODO BE ABLE TO CHANGE CALENDAR OF EVENT
+
+        if hasattr(event.recurrence_type, 'weekly'):
+            return event
 
         if 'start' in self.data:
             try:
@@ -185,6 +189,6 @@ class EventResource(DjangoResource):
     # DELETE /api/events/<pk>/
     # Deletes a specified event.
     def delete(self, pk):
-        Event.objects.get(id=pk, calendar__owner=self.request.user.profile).delete()
-        #TODO delete recurrence here
 
+        Event.objects.get(id=pk, calendar__owner=self.request.user.profile).recurrence_type.delete()
+        Event.objects.get(id=pk, calendar__owner=self.request.user.profile).delete()

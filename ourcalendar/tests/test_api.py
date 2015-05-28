@@ -3,7 +3,7 @@ from django.core.urlresolvers import reverse
 from django.test import TestCase, Client
 from django.utils.crypto import get_random_string
 from ourcalendar.models import Calendar, Event
-from util.factories import EventFactory, UserFactory
+from util.factories import EventFactory, UserFactory, SingleRecurrenceFactory
 
 
 class EventApiTestCase(TestCase):
@@ -24,6 +24,10 @@ class EventApiTestCase(TestCase):
             EventFactory(calendar=self.calendar) for _ in range(self.NUM_EVENTS)
         ]
 
+        # Turn all those events into single events
+        for event in self.events:
+            SingleRecurrenceFactory(event=event)
+
         # Set up client
         self.client = Client()
         self.client.login(username=user.username,
@@ -38,7 +42,12 @@ class EventApiTestCase(TestCase):
             'location': 'Everywhere',
             'last_event':  '2016-1-12 08:00',
             'days_of_week': '1000000',
-            'frequency': '1'
+            'frequency': '1',
+            'recurrence_type': 'single'
+        }
+        self.LIST_DATA= {
+            'range_start': '2015-12-12 08:00',
+            'range_end': '2015-12-12 11:00'
         }
 
     def test_auth(self):
@@ -220,6 +229,14 @@ class EventApiTestCase(TestCase):
                     getattr(Event.objects.get(pk=event_id),
                             field).strftime('%Y-%m-%d %H:%M'),
                     self.NEW_DATA[field])
+            elif field == 'frequency' or field == 'days_of_week' or field == 'last_event':
+                pass
+            elif field == 'recurrence_type':
+                if self.NEW_DATA[field] == 'weekly':
+                    pass
+                    self.assertEqual(data['last_event'], self.NEW_DATA['last_event'])
+                    self.assertEqual(data['days_of_week'], self.NEW_DATA['days_of_week'])
+                    self.assertEqual(data['frequency'], self.NEW_DATA['frequency'])
             else:
                 self.assertEqual(data[field], self.NEW_DATA[field])
                 self.assertEqual(

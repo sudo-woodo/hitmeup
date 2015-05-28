@@ -1,4 +1,5 @@
 import datetime
+from string import lowercase
 from django.contrib.contenttypes.models import ContentType
 from django.core.validators import RegexValidator
 from django.db.models.signals import post_save
@@ -10,6 +11,7 @@ import itertools
 from ourcalendar.logic.intervals import Interval
 from user_accounts.models import UserProfile
 
+#TODO Look at this in future for possible inheritance implementation http://blog.headspin.com/?p=474
 
 class Calendar(models.Model):
     owner = models.ForeignKey(UserProfile, related_name='calendars')
@@ -25,7 +27,7 @@ class Calendar(models.Model):
         return "%s -> %s" % (self.owner, self.title)
 
     def get_between(self, range_start, range_end):
-        itertools.chain([e.get_between(range_start, range_end) for e in self.events.all()])
+        return list(itertools.chain([e.get_between(range_start, range_end) for e in self.events.all()]))
 
 # TODO here to refactor to signals.py
 @receiver(post_save, sender=UserProfile)
@@ -48,7 +50,7 @@ class Event(models.Model):
     description = models.TextField(max_length=600, blank=True)
 
     DEFAULT_TIME_FMT = '%Y-%m-%dT%H:%M:%S'
-#TODO: How do we link event to recurring so that when we make an event, we also make a recurring?
+
     def __unicode__(self):
         return "%s -> %s : %s -> %s" % (self.calendar, self.title, self.start, self.end)
 
@@ -74,8 +76,22 @@ class Event(models.Model):
     def happens_when(self, time):
         return self.start < time < self.end
 
+    # Gets events between the range_start and range_end. Need these checks to get proper subclass
     def get_between(self, range_start, range_end):
-        return self.recurrence_type.get_between(range_start, range_end)
+        if self.recurrence_type.__class__.__name__.lower() == 'recurrencetype':
+            try:
+
+                subclass = self.recurrence_type.singlerecurrence
+            except SingleRecurrence.DoesNotExist:
+                try:
+                    subclass = self.recurrence_type.weeklyrecurrence
+                except WeeklyRecurrence.DoesNotExist:
+                    pass
+
+        else:
+            subclass = self.recurrence_type
+
+        return subclass.get_between(range_start, range_end)
 
 '''
 # This is using abstract, don't really know how to implement
@@ -120,11 +136,15 @@ class SingleRecurrence(RecurrenceType):
     # If it's just a single event, we just have to make one check
 
     def get_between(self, range_start, range_end):
-        if self.event.start < range_end and self.event.end > range_start:
+
+        if self.event.start <= range_end and self.event.end >= range_start:
             return self.event
+        else:
+            return []
 
     def __unicode__(self):
         return "%s -> SingleRecurrenceType" % self.event
+
 
 '''
 Input: after n occurrences, needed if we want to support this functionality
@@ -144,7 +164,7 @@ class WeeklyRecurrence(RecurrenceType):
     #TODO: Make sure that the length is only 7!
     #TODO: Make sure at least one day is 1
     #TODO: CAUTION: event.start is not necessarily the first date in the recurring series
-
+    #TODO: Implement edit and delete on weekly... idk how to do this yet ):
     # Days of the week, M T W TH F Sa Su
     days_of_week = models.CharField(default="1000000", max_length=7)
     # The number of weeks between each occurrence
@@ -172,8 +192,9 @@ class WeeklyRecurrence(RecurrenceType):
                               location=self.event.location,
                               description=self.event.description,
                               start=start,
-                              end=start + (self.event.start - self.event.end))
-                              )
+                              end=start + (self.event.start - self.event.end),
+                              id=self.event.id)
+                    )
                 if start.weekday() == 6:
                     start = start + timezone.timedelta(days=1) + timezone.timedelta(weeks=self.frequency - 1)
                 else:
