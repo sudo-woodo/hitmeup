@@ -43,6 +43,7 @@ class SignUpTestCase(TestCase):
         self.SIGNUP_INFO = {
             'username': 'X' + self.user.username,
             'password': 'X' + self.password,
+            'confirm_password': 'X' + self.password,
             'email': 'X' + self.user.email,
         }
 
