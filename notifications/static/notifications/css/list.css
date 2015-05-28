@@ -1,7 +1,7 @@
 body{
-    background-color: #EFEFEF;
-
+    background-color: #e0e0e0;
 }
+
 .main-content {
     margin-top: 20px;
 }
@@ -20,17 +20,22 @@ a.panel {
     transition: background-color 0.2s ease;
 }
 
-.panel-body:hover {
-    background-color: #E5E5E5;
-    cursor: pointer;
-}
-
 .notification {
     word-wrap: break-word;
 }
 
+.notification:hover {
+    background-color: #E5E5E5;
+    cursor: pointer;
+}
+
 .notification.read {
     opacity: .5;
+}
+
+.no-notification-text {
+    text-align: center;
+    font-size: 1.7em;
 }
 
 .notification-img {
