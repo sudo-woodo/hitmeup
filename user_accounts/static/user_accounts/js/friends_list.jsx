@@ -34,19 +34,39 @@
                     regulars.push(friendNode);
                 }
             });
-            return (
-                <div className="friends-list">
+
+            // No friends?
+            var mainContent;
+            if (!this.state.friends.length)
+                mainContent = (
+                    <div className="container">
+                        <div className="panel panel-default">
+                            <div className="panel-body no-friends-panel">
+                                <em>
+                                    No friends - go add some by searching for them!
+                                </em>
+                            </div>
+                        </div>
+                    </div>
+                );
+            else
+                mainContent = (
                     <div className="container">
                         <div className="row">
                             {favorites}
                             {regulars}
                         </div>
-                        <div
-                            className="btn btn-lg btn-default refresh-button"
-                            onClick={this.refreshHandler}
-                        >
-                            <i className="fa fa-refresh refresh-icon"></i>
-                        </div>
+                    </div>
+                );
+
+            return (
+                <div className="friends-list">
+                    {mainContent}
+                    <div
+                        className="btn btn-lg btn-default refresh-button"
+                        onClick={this.refreshHandler}
+                    >
+                        <i className="fa fa-refresh refresh-icon"></i>
                     </div>
                 </div>
             );
