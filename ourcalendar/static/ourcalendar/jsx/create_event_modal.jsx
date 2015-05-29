@@ -14,10 +14,8 @@ var creationReactor = (function(React, $) {
                 data: JSON.stringify(data),
                 contentType: "application/json",
                 success: function(response) {
-                    // Assuming that id for single events remains the same.
-                    // postData.id = response.id;
                     $('#create-event-modal').modal('hide');
-                    $('#calendar').fullCalendar('renderEvent', data, true);
+                    $('#calendar').fullCalendar('renderEvent', response, true);
                 },
                 error: function (xhr, textStatus, thrownError) {
                     alert("An error occurred, please try again later.");
@@ -31,8 +29,23 @@ var creationReactor = (function(React, $) {
             // Pass in the post data and give it the other relevant info to make it a repeat.
             // Get frequency here.  Since days was obtained for error checking, it will already be in data.
             var frequency = $("#frequency").val();
-            // How to add frequency?  Currently it is an array of strings.
-            data.frequency = frequency;
+            data.frequency = 1;   // By default frequency is weekly.
+            if ( frequency != null ) {
+                data.frequency = frequency[0];
+            }
+
+            data.recurrence_type = 'weekly';
+            data.last_event = data.last_event.format('YYYY-MM-DD HH:mm');
+
+            var days_of_week = ['0', '0', '0', '0', '0', '0', '0'];
+            for (var i = 0; i < data.days_of_week.length; i++ )  {
+                days_of_week[data.days_of_week[i]] = '1';
+            }
+            data.days_of_week = days_of_week.join("");
+
+            console.log( "******DEBUG******");
+            console.log( data.days_of_week );
+            console.log( data.frequency );
             // AJAX request goes here.
             $.ajax({
                 url: '/api/events/',
@@ -41,9 +54,8 @@ var creationReactor = (function(React, $) {
                 contentType: "application/json",
                 success: function(response) {
                     // what to do with id.
-                    // data.id = response.id;
                     $('#create-event-modal').modal('hide');
-                    $('#calendar').fullCalendar('renderEvent', data, true);
+                    $('#calendar').fullCalendar('renderEvent', response, true);
                 },
                 error: function (xhr, textStatus, thrownError) {
                     alert("An error occurred, please try again later.");
@@ -54,7 +66,7 @@ var creationReactor = (function(React, $) {
 
         // Handle submission of event
         handleSubmit: function(data) {
-            var days = $("#days").val();
+            var days_of_week = $("#days").val();
 
             data.preventDefault();
             var postData = {
@@ -64,22 +76,39 @@ var creationReactor = (function(React, $) {
                 location: React.findDOMNode(this.refs.inputForm.refs.location).value.trim(),
                 description: React.findDOMNode(this.refs.inputForm.refs.description).value.trim(),
                 calendar: 'Default'
-                // Set this later recurrence_type: 'single'
             };
-
-            // Do some refactoring...
-            // Do everything that is consistent within both types of events, single and repeat.
-            // Then pass that data onto their respective functions, handleSubmitSingle and handleSubmitRepeat.
-
 
             // Error checking to ensure user put in required fields.
             var errors = [];
 
             // Error checking for days in here since we checked for errors before all else. Might
             // want to change this.  Also, couldn't get focus to work.
-            if (this.refs.inputForm.state.repeat == true && days == null)  {
-                errors.unshift('Days are required for repeated events.');
-                 this.refs.inputForm.refs.repeat.refs.days.getDOMNode().focus();
+            if (this.refs.inputForm.state.repeat)  {
+                if (days_of_week == null) {
+                    errors.unshift('Days are required for repeated events.');
+                    // this.refs.inputForm.refs.repeat.refs.days.getDOMNode().focus();
+                }
+                //grab the endtime.
+                postData.last_event = React.findDOMNode(this.refs.inputForm.refs.repeat.refs.endDate).value.trim();
+                console.log("length of endDate " + postData.last_event.length);
+                if (postData.last_event.length === 0)  {
+                    errors.unshift('End date for repeat events is required');
+                    this.refs.inputForm.refs.repeat.refs.endDate.getDOMNode().focus();
+                }
+                else {
+                    console.log( "before ");
+                    console.log( postData.last_event );
+                    postData.last_event = moment(postData.last_event);
+                    console.log( "after moment" );
+                    console.log( postData.last_event );
+                    postData.last_event.hour(23).minute(53);
+                    console.log( "after adding time ");
+                    console.log( postData.last_event );
+                    if (!(postData.last_event.isAfter(postData.end))) {
+                        errors.unshift('End date for repeat events must be after end time');
+                        this.refs.inputForm.refs.repeat.refs.endDate.getDOMNode().focus();
+                    }
+                }
             }
 
             if (postData.end.length === 0) {
@@ -112,8 +141,8 @@ var creationReactor = (function(React, $) {
                 postData.start = startMoment.format('YYYY-MM-DD HH:mm');
                 postData.end = endMoment.format('YYYY-MM-DD HH:mm');
 
-                if (this.state.repeat) {
-                    postData.days = days;
+                if (this.refs.inputForm.state.repeat) {
+                    postData.days_of_week = days_of_week;
                     this.handleSubmitRepeat(postData);
                 }
                 else {

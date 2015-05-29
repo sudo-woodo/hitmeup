@@ -31,7 +31,7 @@ class Migration(migrations.Migration):
                 ('recurrencetype_ptr', models.OneToOneField(parent_link=True, auto_created=True, primary_key=True, serialize=False, to='ourcalendar.RecurrenceType')),
                 ('days_of_week', models.CharField(default=b'1000000', max_length=7)),
                 ('frequency', models.IntegerField(default=1)),
-                ('last_event_end', models.DateTimeField(default=ourcalendar.models.hour_from_now)),
+                ('last_event', models.DateTimeField(default=ourcalendar.models.hour_from_now)),
             ],
             bases=('ourcalendar.recurrencetype',),
         ),

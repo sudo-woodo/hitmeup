@@ -9,7 +9,7 @@ from util.factories import Event, Calendar, RecurrenceType, SingleRecurrence, We
 #TODO: IMPORTANT test when event does not have recurrence and someone tries to access it
 
 class WeeklyRecurrenceTest(TestCase):
-    # NOTE! start, end, and last_event_end aren't required to have events on them. That is dictated by days_of_week
+    # NOTE! start, end, and last_event aren't required to have events on them. That is dictated by days_of_week
     def setUp(self):
         self.event = EventFactory()
 

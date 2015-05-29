@@ -46,7 +46,7 @@ var InputForm = (function(React, $)  {
                 isCreation = true;
             }
             var repeatBox = (this.state.repeat && isCreation) ? <RepeatBox ref="repeat"/> : "";
-            var repeatButton = (this.state.repeat && isCreation) ? <p><input id="repeat" name="repeat" type="checkbox" checked={this.state.repeat} /></p> : "";
+            var repeatButton = isCreation ? <p><input id="repeat" name="repeat" type="checkbox" checked={this.state.repeat} /></p> : "";
 
             return (
                 <div>

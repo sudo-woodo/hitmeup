@@ -20,6 +20,9 @@ var RepeatBox = (function(React, $)  {
 
         componentDidMount: function()  {
           $('.selectpicker').selectpicker();
+          $('#end_repeat_picker').datetimepicker({
+                format: 'MM/DD/YYYY'
+          });
         },
 
         // Render necessary repeat information.
@@ -29,6 +32,7 @@ var RepeatBox = (function(React, $)  {
             // TODO add below to bottom of first selectpicker to allow for custom frequency.
             // Giving up on custom for now.  Too hard to dynamically get value and do something with it.
             // <option value="-1">Custom</option>
+            // TODO make the repeat end date linked with the start and end time (since it will look better)
 
             return (
                 <div>
@@ -42,14 +46,23 @@ var RepeatBox = (function(React, $)  {
                         <option value="52">Every 52 weeks</option>
                     </select>
                     <select className="selectpicker" id="days" multiple title="Select days" data-width="50%" ref="days">
-                        <option value="1">Sunday</option>
-                        <option value="2">Monday</option>
-                        <option value="3">Tuesday</option>
-                        <option value="4">Wednesday</option>
-                        <option value="5">Thursday</option>
-                        <option value="6">Friday</option>
-                        <option value="7">Saturday</option>
+                        <option value="6">Sunday</option>
+                        <option value="0">Monday</option>
+                        <option value="1">Tuesday</option>
+                        <option value="2">Wednesday</option>
+                        <option value="3">Thursday</option>
+                        <option value="4">Friday</option>
+                        <option value="5">Saturday</option>
                     </select>
+                    <div className="form-group">
+                        <div className='input-group date' id='end_repeat_picker'>
+                            <input type='text' placeholder="End repeat on" ref="endDate" className="form-control" />
+                            <span className="input-group-addon">
+                                <span className="glyphicon glyphicon-calendar">
+                                </span>
+                            </span>
+                        </div>
+                    </div>
                 </div>
             );
         }
