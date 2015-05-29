@@ -4,11 +4,10 @@ var calendarReactor = (function($HMU, React, $, _)  {
     var BUSY_ID = "FRIEND_BUSY";
     var FREE_ID = "FRIEND_FREE";
 
-    var friend_events_busy = $HMU.friend_events;
-    var friend_events_free = $.extend(true, [], friend_events_busy);
-    var should_display = $HMU.should_display;
+    $HMU.friend_events_busy = $HMU.friend_events;
+    $HMU.friend_events_free = $.extend(true, [], $HMU.friend_events_busy);
 
-    $HMU.friend_events_busy = friend_events_busy.map(function(event) {
+    $HMU.friend_events_busy = $HMU.friend_events_busy.map(function(event) {
         event.rendering = "background";
         event.id = BUSY_ID;
         event.color = '#FF0000';
@@ -17,15 +16,15 @@ var calendarReactor = (function($HMU, React, $, _)  {
     });
 
     // If viewing friend profile and friend has no events, friend is free at all times
-    if (!$HMU.is_user && friend_events_free.length === 0) {
+    if (!$HMU.is_user && $HMU.friend_events_free.length === 0) {
         var currTime = moment();
-        friend_events_free.push({
+        $HMU.friend_events_free.push({
             start: currTime,
             end: currTime
         });
     }
 
-    $HMU.friend_events_free = friend_events_free.map(function(event) {
+    $HMU.friend_events_free = $HMU.friend_events_free.map(function(event) {
         event.rendering = "inverse-background";
         event.id = FREE_ID;
         event.color = '#257e4a';
@@ -51,7 +50,7 @@ var calendarReactor = (function($HMU, React, $, _)  {
 
         getInitialState: function() {
             return  {
-                display: should_display,
+                display: $HMU.should_display,
                 initial: false
             };
         },

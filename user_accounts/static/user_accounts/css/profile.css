@@ -125,13 +125,7 @@ body {
     -moz-hyphens: auto;
 }
 
-/* Hide the event request panel temporarily */
-#request-panel {
-    display: none;
-}
-
 #options-panel {
-    margin: 10px;
     text-align: center;
 }
 

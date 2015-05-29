@@ -385,8 +385,7 @@ class UserProfile(View):
                     should_display = True
                 friend = User.objects.get(username=username).profile
                 friendship = request.user.profile.get_friendship(friend)
-                if username != is_user and \
-                        friendship is not None and friendship.accepted:
+                if friendship is not None and friendship.accepted:
                     friend_events = [e.serialize() for e in
                                      friend.calendars.get(title="Default").events.all()]
 

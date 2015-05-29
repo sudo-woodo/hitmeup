@@ -30,7 +30,6 @@ var optionsReactor = (function($HMU, React, $, _) {
             });
         },
 
-        // TODO figure out how to get calendar DOM node react-ly
         onChangeSelf: function() {
             $('#calendar').fullCalendar(
                 this.state.showSelf ? 'removeEventSource' : 'addEventSource', $HMU.user_events
@@ -78,7 +77,7 @@ var optionsReactor = (function($HMU, React, $, _) {
             };
         },
         render: function() {
-            var checkboxes = this.state.display && $HMU.should_display && !$HMU.is_user ? <Checkboxes /> : '';
+            var checkboxes = this.state.display && $HMU.should_display && !$HMU.is_user ? <Checkboxes /> : null;
             return (
                 <div>
                     {checkboxes}

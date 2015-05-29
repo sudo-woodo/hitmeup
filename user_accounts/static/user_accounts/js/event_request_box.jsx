@@ -36,7 +36,6 @@ var requestReactor = (function($HMU, React, $, _) {
 
            return (
                  <div>
-                    {panel}
                  </div>
            );
        }
