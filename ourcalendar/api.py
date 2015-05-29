@@ -44,13 +44,14 @@ class EventResource(DjangoResource):
         if errors:
             raise BadRequest(str(errors))
 
-        #return list(itertools.chain([c.get_between(range_start, range_end)
-         #                      for c in self.request.user.profile.calendars.all()]))
-
-        #return Event.objects.filter(calendar__owner=self.request.user.profile)
-        #return self.request.user.profile.calendars.get(title="Default").events.all()
-        # TODO make less sketchy
-        return [e for e in self.request.user.profile.calendars.get(title="Default").get_between(range_start, range_end) if type(e) is not list]
+        a = []
+        for e in self.request.user.profile.calendars.get(title="Default").get_between(range_start, range_end):
+            #TODO try type(e) this except typeerror. if e IS a list, wouldn't it still append? [1, [1]] I'm not sure.
+            if type(e) is not list:
+                a.append(e)
+            else:
+                a += e
+        return a
 
     # GET /api/events/<pk>/
     # Gets detail on a specific event.
