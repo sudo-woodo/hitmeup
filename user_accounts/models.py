@@ -61,10 +61,10 @@ class UserProfile(models.Model):
     def create_html_email(self,
                           sender=settings.EMAIL_HOST_USER,
                           *args, **kwargs):
-        # Return an EmailMessage Object with recipient = user
+        # Create an EmailMessage Object with recipient = user
         msg = EmailMessage(from_email=sender, to=[self.email], *args, **kwargs)
 
-        # Also set html content type
+        # Set html content type
         msg.content_subtype = "html"
         return msg
 
