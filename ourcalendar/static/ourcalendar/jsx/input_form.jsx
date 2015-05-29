@@ -40,17 +40,18 @@ var InputForm = (function(React, $)  {
 
         // Returns fields that are then put into the form.
         render: function()  {
-            var repeatBox = this.state.repeat ? <RepeatBox ref="repeat"/> : "";
+            // This is so that this will be used only for creation.  Don't worry about editing an event for now.
+            var isCreation = false;
+            if (this.props.edit == "false")  {
+                isCreation = true;
+            }
+            var repeatBox = (this.state.repeat && isCreation)? <RepeatBox ref="repeat"/> : "";
 
             return (
                 <div>
                     <p><input type="text" maxLength="200" className="form-control" placeholder="Title" value={this.state.title} ref="title" onChange={this.handleInput} /></p>
                     <p><DateTimeField ref="datetime" /></p>
-                    <p>
-                        <div>
-                            <input id="repeat" name="repeat" type="checkbox" checked={this.state.repeat} />
-                        </div>
-                    </p>
+                    <p><input id="repeat" name="repeat" type="checkbox" checked={this.state.repeat} /></p>
                     <p>{repeatBox}</p>
                     <p><input type="text" maxLength="200" className="form-control" placeholder="Location" value={this.state.location} ref="location" onChange={this.handleInput} /></p>
                     <p><textArea maxLength="600" className="form-control" placeholder="Description" value={this.state.description} ref="description" onChange={this.handleInput} /></p>

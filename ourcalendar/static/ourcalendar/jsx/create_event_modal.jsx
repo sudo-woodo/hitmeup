@@ -11,14 +11,13 @@ var creationReactor = (function(React, $) {
 
         handleSubmitRepeat: function(data)  {
             // Pass in the post data and give it the other relevant info to make it a repeat.
-
+            // Get frequency here.  Since days was obtained for error checking, it will already be in data.
+            var frequency = $("#frequency").val();
         },
 
         // Handle submission of event
         handleSubmit: function(data) {
-            console.log( $("#frequency").val() );
-            var values = $("#days").val();
-            console.log( values );
+            var days = $("#days").val();
 
             data.preventDefault();
             var postData = {
@@ -41,7 +40,7 @@ var creationReactor = (function(React, $) {
 
             // Error checking for days in here since we checked for errors before all else. Might
             // want to change this.  Also, couldn't get focus to work.
-            if (this.refs.inputForm.state.repeat == true && values == null)  {
+            if (this.refs.inputForm.state.repeat == true && days == null)  {
                 errors.unshift('Days are required for repeated events.');
                  this.refs.inputForm.refs.repeat.refs.days.getDOMNode().focus();
             }
@@ -140,7 +139,7 @@ var creationReactor = (function(React, $) {
                                     {errorBox}
                                 </div>
                                 <form id="event-form" onSubmit={this.handleSubmit}>
-                                    <InputForm ref="inputForm" />
+                                    <InputForm ref="inputForm" edit="false" />
                                     <button type="submit" className="btn btn-primary pull-right" id="submit">Save Changes</button>
                                 </form>
                             </div>

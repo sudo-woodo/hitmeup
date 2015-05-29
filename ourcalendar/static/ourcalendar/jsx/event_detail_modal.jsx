@@ -163,7 +163,7 @@ var detailReactor = (function(React, $) {
             // This will be the form that will be rendered upon clicking edit button.
             // The Default detail should probably be a larger part including the header of the modal.
             // TODO: ternaries are cool guys, but eventually refactor into 2 components
-            var form = this.state.edit ? <InputForm ref="inputForm" /> : <DefaultDetail location={this.state.location} description={this.state.description} />;
+            var form = this.state.edit ? <InputForm ref="inputForm" edit="true" /> : <DefaultDetail location={this.state.location} description={this.state.description} />;
             var edit_submit_button = this.state.edit ? this.handleSubmit : this.handleEdit;
             var edit_submit_text = this.state.edit ? "Save Changes" : "Edit Event";
             var delete_cancel_button = this.state.edit ? this.handleCancel : this.handleDelete;
