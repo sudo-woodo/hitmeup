@@ -5,7 +5,25 @@ var creationReactor = (function(React, $) {
 
         handleSubmitSingle: function(data)  {
             // Pass in the post data and give it the other relevant info to make it a single.
+            data.recurrence_type = 'single';
 
+            // AJAX request goes here.
+            $.ajax({
+                url: '/api/events/',
+                type: "POST",
+                data: JSON.stringify(data),
+                contentType: "application/json",
+                success: function(response) {
+                    // Assuming that id for single events remains the same.
+                    // postData.id = response.id;
+                    $('#create-event-modal').modal('hide');
+                    $('#calendar').fullCalendar('renderEvent', data, true);
+                },
+                error: function (xhr, textStatus, thrownError) {
+                    alert("An error occurred, please try again later.");
+                    console.log(xhr.responseText);
+                }
+            });
 
         },
 
@@ -13,6 +31,25 @@ var creationReactor = (function(React, $) {
             // Pass in the post data and give it the other relevant info to make it a repeat.
             // Get frequency here.  Since days was obtained for error checking, it will already be in data.
             var frequency = $("#frequency").val();
+            // How to add frequency?  Currently it is an array of strings.
+            data.frequency = frequency;
+            // AJAX request goes here.
+            $.ajax({
+                url: '/api/events/',
+                type: "POST",
+                data: JSON.stringify(data),
+                contentType: "application/json",
+                success: function(response) {
+                    // what to do with id.
+                    // data.id = response.id;
+                    $('#create-event-modal').modal('hide');
+                    $('#calendar').fullCalendar('renderEvent', data, true);
+                },
+                error: function (xhr, textStatus, thrownError) {
+                    alert("An error occurred, please try again later.");
+                    console.log(xhr.responseText);
+                }
+            });
         },
 
         // Handle submission of event
@@ -75,27 +112,17 @@ var creationReactor = (function(React, $) {
                 postData.start = startMoment.format('YYYY-MM-DD HH:mm');
                 postData.end = endMoment.format('YYYY-MM-DD HH:mm');
 
-                // AJAX request goes here.
-                $.ajax({
-                    url: '/api/events/',
-                    type: "POST",
-                    data: JSON.stringify(postData),
-                    contentType: "application/json",
-                    success: function(response) {
-                        postData.id = response.id;
-                        $('#create-event-modal').modal('hide');
-                        $('#calendar').fullCalendar('renderEvent', postData, true);
-                    },
-                    error: function (xhr, textStatus, thrownError) {
-                        alert("An error occurred, please try again later.");
-                        console.log(xhr.responseText);
-                    }
-                });
-
+                if (this.state.repeat) {
+                    postData.days = days;
+                    this.handleSubmitRepeat(postData);
+                }
+                else {
+                    this.handleSubmitSingle(postData);
+                }
             }
         },
 
-        componentDidMount: function()  {
+        componentDidMount: function() {
             // Reset min, max dates when event creation modal is dismissed
             $('#create-event-modal').on('hidden.bs.modal', function (e) {
                 $('#start-picker').data("DateTimePicker").maxDate(false);

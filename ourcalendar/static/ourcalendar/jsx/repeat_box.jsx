@@ -16,8 +16,6 @@ var RepeatBox = (function(React, $)  {
                 frequency: $("#frequency").val(),
                 days: $("#days").val()
             });
-
-            console.log( "hihi");
         },
 
         componentDidMount: function()  {
