@@ -3,6 +3,8 @@ from django.core.urlresolvers import reverse
 from django.http.response import HttpResponseRedirect
 from django.shortcuts import render
 from user_accounts.models import UserProfile
+from django.shortcuts import render_to_response
+from django.template.context import RequestContext
 
 
 def fb(request):
@@ -21,4 +23,9 @@ def fb(request):
    # login(request, new_user)
    # return HttpResponseRedirect(reverse('user_accounts:extended_signup')
    #                              + '?first_visit=true')
-   return render(request, 'fb_login/index.jinja')
+
+   context = RequestContext(request,
+                           {'request': request,
+                            'user': request.user})
+   return render_to_response('fb_login/home.html',
+                             context_instance=context)

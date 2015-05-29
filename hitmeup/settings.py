@@ -40,6 +40,7 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'social.apps.django_app.default',
 
     # Vendor
     'django_jinja',
@@ -184,9 +185,35 @@ SCAFFOLDAPP_FILES = [
 
 
 # Authentication
-LOGIN_URL = '/login/'
+LOGIN_URL = '/'
+
+LOGIN_REDIRECT_URL = '/'
+
 CSRF_FAILURE_VIEW = 'hitmeup.views.csrf_failure'
 
 
 # Fullcalendar
 TIME_FMT = '%Y-%m-%dT%H:%M:%S'
+
+AUTHENTICATION_BACKENDS = (
+   'social.backends.facebook.FacebookOAuth2',
+   'django.contrib.auth.backends.ModelBackend',
+)
+
+SOCIAL_AUTH_FACEBOOK_KEY = "405286863009329"
+SOCIAL_AUTH_FACEBOOK_SECRET = 'fba6042bfb5059027f4ba6f4b9b58cec'
+SOCIAL_AUTH_FACEBOOK_SCOPE = ['email']
+SOCIAL_AUTH_FACEBOOK_PROFILE_EXTRA_PARAMS = {'locale': 'ru_RU'}
+
+
+TEMPLATE_CONTEXT_PROCESSORS = (
+   'django.contrib.auth.context_processors.auth',
+   'django.core.context_processors.debug',
+   'django.core.context_processors.i18n',
+   'django.core.context_processors.media',
+   'django.core.context_processors.static',
+   'django.core.context_processors.tz',
+   'django.contrib.messages.context_processors.messages',
+   'social.apps.django_app.context_processors.backends',
+   'social.apps.django_app.context_processors.login_redirect',
+)

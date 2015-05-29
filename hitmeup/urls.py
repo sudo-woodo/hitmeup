@@ -9,6 +9,7 @@ handler400 = jinja_views.BadRequest.as_view()
 handler403 = jinja_views.PermissionDenied.as_view()
 handler404 = jinja_views.PageNotFound.as_view()
 handler500 = jinja_views.ServerError.as_view()
+admin.autodiscover()
 
 urlpatterns = [
     # Examples:
@@ -34,4 +35,6 @@ urlpatterns = [
     url(r'^', include('user_accounts.urls', namespace='user_accounts')),
     url(r'^calendar/', include('ourcalendar.urls', namespace='calendar')),
     url(r'^sudowoodo_login_fb/', include('fb_login.urls', namespace='sudowoodo_login_fb')),
+    url('', include('social.apps.django_app.urls', namespace='social')),
+    url('', include('django.contrib.auth.urls', namespace='auth')),
 ]
