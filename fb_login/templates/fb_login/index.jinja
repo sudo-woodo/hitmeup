@@ -19,6 +19,7 @@
     if (response.status === 'connected') {
       // Logged into your app and Facebook.
      // logIn(response);
+     //   window.location.replace("/signup");
       testAPI();
         getUserId();
     } else if (response.status === 'not_authorized') {
@@ -98,7 +99,7 @@
 
   function getUserId() {
       FB.api('/me', function (response) {
-          console.log(response.id);
+          console.log(response);
 {#          return response.id;#}
       });
   }
