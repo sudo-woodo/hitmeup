@@ -199,9 +199,7 @@ class UserProfile(models.Model):
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):
     if created:
-        profile = UserProfile.objects.create(user=instance)
-        # Send welcome email when profile is created
-        send_registration_email(profile)
+        UserProfile.objects.create(user=instance)
 
 
 class Friendship(models.Model):
