@@ -37,15 +37,13 @@ var creationReactor = (function(React, $) {
             data.recurrence_type = 'weekly';
             data.last_event = data.last_event.format('YYYY-MM-DD HH:mm');
 
+            // Represents the days of the week selected by the user. 1 indicates they selected the day.
             var days_of_week = ['0', '0', '0', '0', '0', '0', '0'];
             for (var i = 0; i < data.days_of_week.length; i++ )  {
                 days_of_week[data.days_of_week[i]] = '1';
             }
             data.days_of_week = days_of_week.join("");
 
-            console.log( "******DEBUG******");
-            console.log( data.days_of_week );
-            console.log( data.frequency );
             // AJAX request goes here.
             $.ajax({
                 url: '/api/events/',

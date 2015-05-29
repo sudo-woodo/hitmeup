@@ -21,7 +21,8 @@
                     description: event.description,
                     start: event.start.format('LLL'),
                     end: event.end.format('LLL'),
-                    id: event.id
+                    id: event.id,
+                    repeat: event.recurrence_type
                 });
 
                 // Dev tip: can use event.id to get the clicked event's id
@@ -48,45 +49,61 @@
             allDaySlot: false,
 
             eventDrop: function(event, delta, revertFunc)  {
-                $.ajax({
-                    url: '/api/events/' + event.id + '/',
-                    type: "PUT",
-                    data: JSON.stringify({
-                        start: event.start.format('YYYY-MM-DD HH:mm'),
-                        end: event.end.format('YYYY-MM-DD HH:mm')
-                    }),
-                    contentType: "application/json",
-                    success: function (response) {
-                    },
-                    complete: function () {
-                    },
-                    error: function (xhr, textStatus, thrownError) {
-                        revertFunc();
-                        alert("An error occurred, please try again later.");
-                        console.log(xhr.responseText);
-                    }
-                });
+                if (event.recurrence_type === 'weekly')  {
+                    revertFunc();
+                    alert("We currently do not support editing of repeat events.");
+                }
+                else {
+                    $.ajax({
+                        url: '/api/events/' + event.id + '/',
+                        type: "PUT",
+                        data: JSON.stringify({
+                            start: event.start.format('YYYY-MM-DD HH:mm'),
+                            end: event.end.format('YYYY-MM-DD HH:mm')
+                        }),
+                        contentType: "application/json",
+                        success: function (response) {
+                        },
+                        complete: function () {
+                        },
+                        error: function (xhr, textStatus, thrownError) {
+                            revertFunc();
+                            alert("An error occurred, please try again later.");
+                            console.log(xhr.responseText);
+                        }
+                    });
+                }
             },
 
             eventResize: function(event, delta, revertFunc)  {
-                $.ajax({
-                    url: '/api/events/' + event.id + '/',
-                    type: "PUT",
-                    data: JSON.stringify({
-                        start: event.start.format('YYYY-MM-DD HH:mm'),
-                        end: event.end.format('YYYY-MM-DD HH:mm')
-                    }),
-                    contentType: "application/json",
-                    success: function (response) {
-                    },
-                    complete: function () {
-                    },
-                    error: function (xhr, textStatus, thrownError) {
-                        revertFunc();
-                        alert("An error occurred, please try again later.");
-                        console.log(xhr.responseText);
-                    }
-                });
+                if ( event.recurrence_type === 'weekly')  {
+                    revertFunc();
+                    alert("We currently do not support editing of repeat events.");
+                }
+                else {
+                    // Currently the recurrence_type is undefined...Doesn't seem to be a part of the event object.
+                    console.log(event.recurrence_type);
+                    console.log(event);
+
+                    $.ajax({
+                        url: '/api/events/' + event.id + '/',
+                        type: "PUT",
+                        data: JSON.stringify({
+                            start: event.start.format('YYYY-MM-DD HH:mm'),
+                            end: event.end.format('YYYY-MM-DD HH:mm')
+                        }),
+                        contentType: "application/json",
+                        success: function (response) {
+                        },
+                        complete: function () {
+                        },
+                        error: function (xhr, textStatus, thrownError) {
+                            revertFunc();
+                            alert("An error occurred, please try again later.");
+                            console.log(xhr.responseText);
+                        }
+                    });
+                }
             },
 
             viewRender: function(view, element) {

@@ -4,12 +4,14 @@ var detailReactor = (function(React, $) {
         render: function()  {
             var location_text = this.props.location.length == 0 ? "No location" : this.props.location;
             var description_text = this.props.description.length == 0 ? "No description" : this.props.description;
+            var repeat_text = this.props.repeat === 'single' ? "No" : "Yes";
 
             return (
                 <div id="desc-loc-container">
                     <ul className="fa-ul">
                         <li><i className="fa-li fa fa-map-marker"></i><span id="location">{location_text}</span></li>
                         <li><i className="fa-li fa fa-calendar"></i><span id="description">{description_text}</span></li>
+                        <li><i className="fa-li fa fa-repeat"></i><span id="repeat">Repeats:&nbsp;{repeat_text}</span></li>
                     </ul>
                 </div>
             );
@@ -34,7 +36,6 @@ var detailReactor = (function(React, $) {
                 $(this.refs.inputForm.refs.datetime.refs.endpicker.getDOMNode())
                     .data("DateTimePicker").date(moment(this.state.end));
             }
-
         },
 
         // On edit, set edit state to true and render the form.
@@ -149,7 +150,8 @@ var detailReactor = (function(React, $) {
                 end: "",
                 edit: false,
                 id: -1,
-                errors: []
+                errors: [],
+                repeat: ""
             };
         },
 
@@ -163,12 +165,15 @@ var detailReactor = (function(React, $) {
             // This will be the form that will be rendered upon clicking edit button.
             // The Default detail should probably be a larger part including the header of the modal.
             // TODO: ternaries are cool guys, but eventually refactor into 2 components
-            var form = this.state.edit ? <InputForm ref="inputForm" edit="true" /> : <DefaultDetail location={this.state.location} description={this.state.description} />;
+            var form = this.state.edit ? <InputForm ref="inputForm" edit="true" /> : <DefaultDetail location={this.state.location} description={this.state.description} repeat={this.state.repeat} />;
             var edit_submit_button = this.state.edit ? this.handleSubmit : this.handleEdit;
             var edit_submit_text = this.state.edit ? "Save Changes" : "Edit Event";
             var delete_cancel_button = this.state.edit ? this.handleCancel : this.handleDelete;
             var delete_cancel_text = this.state.edit ? "Cancel" : "Delete";
             var delete_cancel_class = this.state.edit ? "btn btn-primary" : "btn btn-danger";
+
+            // Only used to disable editing of repeating events.
+            var edit_disable_if_repeat = this.state.repeat === "weekly" ? "btn btn-primary disabled" : "btn btn-primary";
 
             // Contains all of the info for the errors.  Only displayed while the form is shown.
             var errors = this.state.errors.map(function(error) {
@@ -201,7 +206,7 @@ var detailReactor = (function(React, $) {
                                 <div className="pull-left">
                                     <button type="button" className={delete_cancel_class} onClick={delete_cancel_button}>{delete_cancel_text}</button>
                                 </div>
-                                <button type="button" className="btn btn-primary" onClick={edit_submit_button} >{edit_submit_text}</button>
+                                <button type="button" className={edit_disable_if_repeat} onClick={edit_submit_button} >{edit_submit_text}</button>
                             </div>
                         </div>
                     </div>
