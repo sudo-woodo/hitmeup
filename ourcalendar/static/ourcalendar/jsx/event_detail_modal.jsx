@@ -33,6 +33,10 @@ var detailReactor = (function(React, $) {
                     .data("DateTimePicker").date(moment(this.state.start));
                 $(this.refs.inputForm.refs.datetime.refs.endpicker.getDOMNode())
                     .data("DateTimePicker").date(moment(this.state.end));
+
+                this.refs.inputForm.refs.datetime.setState({
+                   repeat: this.state.repeat === 'weekly'
+                });
             }
         },
 
@@ -70,7 +74,8 @@ var detailReactor = (function(React, $) {
                 end: React.findDOMNode(this.refs.inputForm.refs.datetime.refs.end).value.trim(),
                 location: React.findDOMNode(this.refs.inputForm.refs.location).value.trim(),
                 description: React.findDOMNode(this.refs.inputForm.refs.description).value.trim(),
-                calendar: 'Default'      // Necessary for AJAX request
+                calendar: 'Default',      // Necessary for AJAX request
+                recurrence_type: this.state.repeat
             };
 
             // Error checking: title, start, and end times all required.
@@ -97,8 +102,8 @@ var detailReactor = (function(React, $) {
             }
             else {
                 // These are used to set the resulting event's start and end times.
-                var startMoment = moment(putData.start);
-                var endMoment = moment(putData.end);
+                var startMoment = moment($(this.refs.inputForm.refs.datetime.refs.startpicker.getDOMNode()).data("DateTimePicker").date());
+                var endMoment = moment($(this.refs.inputForm.refs.datetime.refs.endpicker.getDOMNode()).data("DateTimePicker").date());
 
                 putData.start = startMoment.format('YYYY-MM-DD HH:mm');
                 putData.end = endMoment.format('YYYY-MM-DD HH:mm');
