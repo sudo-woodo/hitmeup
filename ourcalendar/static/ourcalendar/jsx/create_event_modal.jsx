@@ -1,4 +1,15 @@
 var creationReactor = (function(React, $) {
+    // Gets a range of the months whose events have been rendered
+    var getRenderedMonthsRange = function() {
+        var months = Object.keys($HMU.monthlyEvents);
+        months.sort();
+
+        return {
+            start: moment(months[0] + '-01').startOf('month').format('YYYY-MM-DD HH:mm'),
+            end: moment(months[months.length - 1] + '-01').endOf('month').format('YYYY-MM-DD HH:mm')
+        }
+    };
+
     // Event modal allows for creation of events.  Is shown whenever a user clicks
     // a day.  Collects all of the necessary information.
     var EventModal = React.createClass({
@@ -7,7 +18,6 @@ var creationReactor = (function(React, $) {
             // Pass in the post data and give it the other relevant info to make it a single.
             data.recurrence_type = 'single';
 
-            // AJAX request goes here.
             $.ajax({
                 url: '/api/events/',
                 type: "POST",
@@ -44,16 +54,30 @@ var creationReactor = (function(React, $) {
             }
             data.days_of_week = days_of_week.join("");
 
-            // AJAX request goes here.
             $.ajax({
                 url: '/api/events/',
                 type: "POST",
                 data: JSON.stringify(data),
                 contentType: "application/json",
                 success: function(response) {
-                    // what to do with id.
                     $('#create-event-modal').modal('hide');
-                    $('#calendar').fullCalendar('renderEvent', response, true);
+
+                    var range = getRenderedMonthsRange();
+
+                    // Get all the individual recurring events in the recurrence
+                    $.ajax({
+                        type: "GET",
+                        url: "/api/events/?range_start=" + range.start +
+                             "&range_end=" + range.end +
+                             "&event_id=" + response.id,
+                        success: function(responseEvents) {
+                            $('#calendar').fullCalendar('addEventSource', responseEvents['objects']);
+                        },
+                        error: function(err) {
+                            alert("An error occurred, please try again later.");
+                            console.log(err);
+                        }
+                    });
                 },
                 error: function (xhr, textStatus, thrownError) {
                     alert("An error occurred, please try again later.");

@@ -1,5 +1,5 @@
 (function($, $HMU, _) {
-    var monthlyEvents = {};
+    $HMU.monthlyEvents = {};
 
     $(document).ready(function() {
 
@@ -111,7 +111,7 @@
                 var endMonth = view.end.format('YYYY-MM');
 
                 // Begin month's events have not been retrieved yet
-                if (!_.has(monthlyEvents, beginMonth)) {
+                if (!_.has($HMU.monthlyEvents, beginMonth)) {
                     var beginRange = view.start.startOf('month').format('YYYY-MM-DD HH:mm');
                     var endRange = view.start.endOf('month').format('YYYY-MM-DD HH:mm');
 
@@ -121,7 +121,7 @@
                         contentType: "application/json",
                         success: function (response) {
                             $('#calendar').fullCalendar('addEventSource', response['objects']);
-                            monthlyEvents[beginMonth] = true;
+                            $HMU.monthlyEvents[beginMonth] = true;
                         },
                         error: function (xhr, textStatus, thrownError) {
                             alert("An error occurred, please try again later.");
@@ -131,7 +131,7 @@
                 }
 
                 // End month's events have not been retrieved yet
-                if (!_.has(monthlyEvents, endMonth)) {
+                if (!_.has($HMU.monthlyEvents, endMonth)) {
                     beginRange = view.end.startOf('month').format('YYYY-MM-DD HH:mm');
                     endRange = view.end.endOf('month').format('YYYY-MM-DD HH:mm');
 
@@ -141,7 +141,7 @@
                         contentType: "application/json",
                         success: function (response) {
                             $('#calendar').fullCalendar('addEventSource', response['objects']);
-                            monthlyEvents[endMonth] = true;
+                            $HMU.monthlyEvents[endMonth] = true;
                         },
                         error: function (xhr, textStatus, thrownError) {
                             alert("An error occurred, please try again later.");
@@ -161,7 +161,7 @@
             contentType: "application/json",
             success: function (response) {
                 $('#calendar').fullCalendar('addEventSource', response['objects']);
-                monthlyEvents[moment().format('YYYY-MM')] = true;
+                $HMU.monthlyEvents[moment().format('YYYY-MM')] = true;
             },
             error: function (xhr, textStatus, thrownError) {
                 alert("An error occurred, please try again later.");

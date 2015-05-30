@@ -30,6 +30,8 @@ class EventResource(DjangoResource):
         errors = defaultdict(list)
         start = self.request.GET.get('range_start', None)
         end = self.request.GET.get('range_end', None)
+        event_id = self.request.GET.get('event_id', None)
+
         if start is not None:
             range_start = datetime.strptime(start, '%Y-%m-%d %H:%M')
         else:
@@ -41,14 +43,19 @@ class EventResource(DjangoResource):
         if errors:
             raise BadRequest(str(errors))
 
-        a = []
-        for e in self.request.user.profile.calendars.get(title="Default").get_between(range_start, range_end):
+        calendar = self.request.user.profile.calendars.get(title="Default")
+        events = calendar.get_between(range_start, range_end)
+        if event_id is not None:
+            events = calendar.events.get(id=event_id).get_between(range_start, range_end)
+
+        flattened_events = []
+        for e in events:
             # TODO try type(e) this except typeerror. if e IS a list, wouldn't it still append? [1, [1]] I'm not sure.
             if type(e) is not list:
-                a.append(e)
+                flattened_events.append(e)
             else:
-                a += e
-        return a
+                flattened_events += e
+        return flattened_events
 
     # GET /api/events/<pk>/
     # Gets detail on a specific event.
@@ -99,7 +106,7 @@ class EventResource(DjangoResource):
         # Error check event fields: calendar, title, start, end
         errors = defaultdict(list)
 
-        start = None  # set a default for each, so PyCharm doesn't complain
+        start = recurrence_type = days_of_week = frequency = last_event = None
         if 'start' not in self.data:
             errors['start'].append("Start not provided")
         else:
