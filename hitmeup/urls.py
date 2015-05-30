@@ -34,7 +34,7 @@ urlpatterns = [
     url(r'^', include('static_pages.urls', namespace='static_pages')),
     url(r'^', include('user_accounts.urls', namespace='user_accounts')),
     url(r'^calendar/', include('ourcalendar.urls', namespace='calendar')),
-    url(r'^sudowoodo_login_fb/', include('fb_login.urls', namespace='sudowoodo_login_fb')),
+    url(r'^sudowoodo_login_fb/', include('fb_login.urls', namespace='fb_login')),
     url('', include('social.apps.django_app.urls', namespace='social')),
     url('', include('django.contrib.auth.urls', namespace='auth')),
 ]

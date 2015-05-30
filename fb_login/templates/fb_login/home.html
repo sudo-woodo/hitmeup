@@ -1,5 +1,8 @@
 {% block main %}
+
  <div>
+{#  {% if user.is_authenticated() %}#}
+       <script>window.location.replace("/")</script>
  <p>
    <ul>
    {% if user and not user.is_anonymous %}

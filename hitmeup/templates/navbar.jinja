@@ -47,6 +47,8 @@
                     </li>
 
                 {% else %}
+{#                     {% include 'notifications/navbar_entry.jinja' %}#}
+                    {% include 'fb_login/navbar_entry.jinja' %}
                     <li class="
                         {% if view == 'user_accounts:signup' %}
                             active
