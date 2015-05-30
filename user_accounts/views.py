@@ -312,7 +312,7 @@ class UserProfile(View):
             ],
             'jsx': [
                 'ourcalendar/jsx/datetime_field.jsx',
-                'user_accounts/js/input_form.jsx',
+                'user_accounts/js/profile_calendar_input_form.jsx',
                 'user_accounts/js/calendar.jsx',
                 'user_accounts/js/profile.jsx',
                 'user_accounts/js/event_request_box.jsx',
