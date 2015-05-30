@@ -173,9 +173,6 @@ var detailReactor = (function(React, $) {
             var repeat_text = this.state.repeat === 'single' ? "One-time" : "Repeating";
             var repeat_icon = this.state.repeat === 'single' ? "fa fa-sun-o" : "fa fa-repeat";
 
-            // Only used to disable editing of repeating events.
-            var edit_disable_if_repeat = this.state.repeat === "weekly" ? "btn btn-primary disabled" : "btn btn-primary";
-
             // Contains all of the info for the errors.  Only displayed while the form is shown.
             var errors = this.state.errors.map(function(error) {
                return (
@@ -209,7 +206,7 @@ var detailReactor = (function(React, $) {
                                 <div className="pull-left">
                                     <button type="button" className={delete_cancel_class} onClick={delete_cancel_button}>{delete_cancel_text}</button>
                                 </div>
-                                <button type="button" className={edit_disable_if_repeat} onClick={edit_submit_button} >{edit_submit_text}</button>
+                                <button type="button" className="btn btn-primary" onClick={edit_submit_button} >{edit_submit_text}</button>
                             </div>
                         </div>
                     </div>
