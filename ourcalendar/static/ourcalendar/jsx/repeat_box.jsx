@@ -36,24 +36,26 @@ var RepeatBox = (function(React, $)  {
 
             return (
                 <div>
-                    <select className="selectpicker" id="frequency" multiple title="Every week" data-width="50%" data-max-options="1">
-                        <option value="1">Every week</option>
-                        <option value="2">Every 2 weeks</option>
-                        <option value="3">Every 3 weeks</option>
-                        <option value="4">Every 4 weeks</option>
-                        <option value="5">Every 5 weeks</option>
-                        <option value="8">Every 8 weeks</option>
-                        <option value="52">Every 52 weeks</option>
+                    <p>
+                        <select className="selectpicker" id="frequency" multiple title="Every week" data-width="49%" data-max-options="1">
+                            <option value="1">Every week</option>
+                            <option value="2">Every 2 weeks</option>
+                            <option value="3">Every 3 weeks</option>
+                            <option value="4">Every 4 weeks</option>
+                            <option value="5">Every 5 weeks</option>
+                            <option value="8">Every 8 weeks</option>
+                            <option value="52">Every 52 weeks</option>
+                        </select>
+                        <select className="selectpicker days-picker" id="days" multiple title="Select days" data-width="49%" ref="days">
+                            <option value="6">Sunday</option>
+                            <option value="0">Monday</option>
+                            <option value="1">Tuesday</option>
+                            <option value="2">Wednesday</option>
+                            <option value="3">Thursday</option>
+                            <option value="4">Friday</option>
+                            <option value="5">Saturday</option>
                     </select>
-                    <select className="selectpicker" id="days" multiple title="Select days" data-width="50%" ref="days">
-                        <option value="6">Sunday</option>
-                        <option value="0">Monday</option>
-                        <option value="1">Tuesday</option>
-                        <option value="2">Wednesday</option>
-                        <option value="3">Thursday</option>
-                        <option value="4">Friday</option>
-                        <option value="5">Saturday</option>
-                    </select>
+                    </p>
                     <div className="form-group">
                         <div className='input-group date' id='end_repeat_picker'>
                             <input type='text' placeholder="End repeat on" ref="endDate" className="form-control" />
