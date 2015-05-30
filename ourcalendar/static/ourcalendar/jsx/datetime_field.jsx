@@ -3,6 +3,12 @@
 var DateTimeField = (function(React, $) {
     return React.createClass({
 
+        getInitialState: function()  {
+            return {
+                repeat: false
+            };
+        },
+
         componentDidMount: function() {
             var start_picker = $(this.refs.startpicker.getDOMNode());
             var end_picker = $(this.refs.endpicker.getDOMNode());
@@ -25,15 +31,21 @@ var DateTimeField = (function(React, $) {
             }.bind(this));
         },
 
+        componentDidUpdate: function() {
+            $(this.refs.startpicker.getDOMNode()).data("DateTimePicker").format(this.state.repeat ? 'LT' : false);
+            $(this.refs.endpicker.getDOMNode()).data("DateTimePicker").format(this.state.repeat ? 'LT' : false);
+        },
+
         // Renders a bootstrap linked date time picker to choose start and end dates.
         render: function() {
-           return (
+            var datetime_icon = this.state.repeat ? "glyphicon glyphicon-time" : "glyphicon glyphicon-calendar";
+            return (
                 <div>
                     <div className="form-group">
                         <div className='input-group date' ref="startpicker" id='start-picker'>
                             <input type='text' ref="start" className="form-control" placeholder="Start time" />
-                                <span className="input-group-addon">
-                                <span className="glyphicon glyphicon-calendar"></span>
+                            <span className="input-group-addon">
+                                <span className={datetime_icon}></span>
                             </span>
                         </div>
                     </div>
@@ -41,12 +53,12 @@ var DateTimeField = (function(React, $) {
                         <div className='input-group date' ref="endpicker" id='end-picker'>
                             <input type='text' ref="end" className="form-control" placeholder="End time" />
                             <span className="input-group-addon">
-                                <span className="glyphicon glyphicon-calendar"></span>
+                                <span className={datetime_icon}></span>
                             </span>
                         </div>
                     </div>
                 </div>
-           );
-       }
+            );
+        }
     });
 })(window.React, window.jQuery);

@@ -33,6 +33,10 @@ var detailReactor = (function(React, $) {
                     .data("DateTimePicker").date(moment(this.state.start));
                 $(this.refs.inputForm.refs.datetime.refs.endpicker.getDOMNode())
                     .data("DateTimePicker").date(moment(this.state.end));
+
+                this.refs.inputForm.refs.datetime.setState({
+                   repeat: this.state.repeat === 'weekly'
+                });
             }
         },
 
@@ -70,7 +74,8 @@ var detailReactor = (function(React, $) {
                 end: React.findDOMNode(this.refs.inputForm.refs.datetime.refs.end).value.trim(),
                 location: React.findDOMNode(this.refs.inputForm.refs.location).value.trim(),
                 description: React.findDOMNode(this.refs.inputForm.refs.description).value.trim(),
-                calendar: 'Default'      // Necessary for AJAX request
+                calendar: 'Default',      // Necessary for AJAX request
+                recurrence_type: this.state.repeat
             };
 
             // Error checking: title, start, and end times all required.
@@ -97,8 +102,8 @@ var detailReactor = (function(React, $) {
             }
             else {
                 // These are used to set the resulting event's start and end times.
-                var startMoment = moment(putData.start);
-                var endMoment = moment(putData.end);
+                var startMoment = moment($(this.refs.inputForm.refs.datetime.refs.startpicker.getDOMNode()).data("DateTimePicker").date());
+                var endMoment = moment($(this.refs.inputForm.refs.datetime.refs.endpicker.getDOMNode()).data("DateTimePicker").date());
 
                 putData.start = startMoment.format('YYYY-MM-DD HH:mm');
                 putData.end = endMoment.format('YYYY-MM-DD HH:mm');
@@ -173,9 +178,6 @@ var detailReactor = (function(React, $) {
             var repeat_text = this.state.repeat === 'single' ? "One-time" : "Repeating";
             var repeat_icon = this.state.repeat === 'single' ? "fa fa-sun-o" : "fa fa-repeat";
 
-            // Only used to disable editing of repeating events.
-            var edit_disable_if_repeat = this.state.repeat === "weekly" ? "btn btn-primary disabled" : "btn btn-primary";
-
             // Contains all of the info for the errors.  Only displayed while the form is shown.
             var errors = this.state.errors.map(function(error) {
                return (
@@ -209,7 +211,7 @@ var detailReactor = (function(React, $) {
                                 <div className="pull-left">
                                     <button type="button" className={delete_cancel_class} onClick={delete_cancel_button}>{delete_cancel_text}</button>
                                 </div>
-                                <button type="button" className={edit_disable_if_repeat} onClick={edit_submit_button} >{edit_submit_text}</button>
+                                <button type="button" className="btn btn-primary" onClick={edit_submit_button} >{edit_submit_text}</button>
                             </div>
                         </div>
                     </div>
