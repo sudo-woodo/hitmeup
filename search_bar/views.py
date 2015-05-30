@@ -1,6 +1,7 @@
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 from django.http.response import JsonResponse
+from django.shortcuts import render
 from search_bar.logic.user_search import do_user_search
 
 def user_search(request):
@@ -22,9 +23,18 @@ def user_search(request):
         )
     else:
         # TODO: make a nice search results page
-        return JsonResponse({'suggestions': [
-            s.profile.public_serialized for s in suggestions
-        ]})
+
+        # return JsonResponse({'suggestions': [
+        #     s.profile.public_serialized for s in suggestions
+        # ]})
+
+        return render(request, 'search_bar/result.jinja', {
+            'css': ['search_bar/css/result.css'],
+            'results': [s.profile.public_serialized for s in suggestions],
+        })
+
+
+
 
 def user_autocomplete(request):
     user, suggestions = do_user_search(request.GET, 5)
