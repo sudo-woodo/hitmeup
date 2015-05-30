@@ -49,61 +49,49 @@
             allDaySlot: false,
 
             eventDrop: function(event, delta, revertFunc)  {
-                if (event.recurrence_type === 'weekly')  {
-                    revertFunc();
-                    alert("We currently do not support editing of repeat events.");
-                }
-                else {
-                    $.ajax({
-                        url: '/api/events/' + event.id + '/',
-                        type: "PUT",
-                        data: JSON.stringify({
-                            start: event.start.format('YYYY-MM-DD HH:mm'),
-                            end: event.end.format('YYYY-MM-DD HH:mm')
-                        }),
-                        contentType: "application/json",
-                        success: function (response) {
-                        },
-                        complete: function () {
-                        },
-                        error: function (xhr, textStatus, thrownError) {
-                            revertFunc();
-                            alert("An error occurred, please try again later.");
-                            console.log(xhr.responseText);
-                        }
-                    });
-                }
+                $.ajax({
+                    url: '/api/events/' + event.id + '/',
+                    type: "PUT",
+                    data: JSON.stringify({
+                        start: event.start.format('YYYY-MM-DD HH:mm'),
+                        end: event.end.format('YYYY-MM-DD HH:mm'),
+                        recurrence_type: event.recurrence_type,
+                        delta_days: delta.days()
+                    }),
+                    contentType: "application/json",
+                    success: function (response) {
+                    },
+                    complete: function () {
+                    },
+                    error: function (xhr, textStatus, thrownError) {
+                        revertFunc();
+                        alert("An error occurred, please try again later.");
+                        console.log(xhr.responseText);
+                    }
+                });
             },
 
             eventResize: function(event, delta, revertFunc)  {
-                if ( event.recurrence_type === 'weekly')  {
-                    revertFunc();
-                    alert("We currently do not support editing of repeat events.");
-                }
-                else {
-                    // Currently the recurrence_type is undefined...Doesn't seem to be a part of the event object.
-                    console.log(event.recurrence_type);
-                    console.log(event);
-
-                    $.ajax({
-                        url: '/api/events/' + event.id + '/',
-                        type: "PUT",
-                        data: JSON.stringify({
-                            start: event.start.format('YYYY-MM-DD HH:mm'),
-                            end: event.end.format('YYYY-MM-DD HH:mm')
-                        }),
-                        contentType: "application/json",
-                        success: function (response) {
-                        },
-                        complete: function () {
-                        },
-                        error: function (xhr, textStatus, thrownError) {
-                            revertFunc();
-                            alert("An error occurred, please try again later.");
-                            console.log(xhr.responseText);
-                        }
-                    });
-                }
+                $.ajax({
+                    url: '/api/events/' + event.id + '/',
+                    type: "PUT",
+                    data: JSON.stringify({
+                        start: event.start.format('YYYY-MM-DD HH:mm'),
+                        end: event.end.format('YYYY-MM-DD HH:mm'),
+                        recurrence_type: event.recurrence_type,
+                        delta_days: delta.days()
+                    }),
+                    contentType: "application/json",
+                    success: function (response) {
+                    },
+                    complete: function () {
+                    },
+                    error: function (xhr, textStatus, thrownError) {
+                        revertFunc();
+                        alert("An error occurred, please try again later.");
+                        console.log(xhr.responseText);
+                    }
+                });
             },
 
             viewRender: function(view, element) {
@@ -112,11 +100,11 @@
 
                 // Begin month's events have not been retrieved yet
                 if (!_.has($HMU.monthlyEvents, beginMonth)) {
-                    var beginRange = view.start.startOf('month').format('YYYY-MM-DD HH:mm');
-                    var endRange = view.start.endOf('month').format('YYYY-MM-DD HH:mm');
+                    var beginRangePrev = view.start.startOf('month').format('YYYY-MM-DD HH:mm');
+                    var endRangePrev = view.start.endOf('month').format('YYYY-MM-DD HH:mm');
 
                     $.ajax({
-                        url: '/api/events/?range_start=' + beginRange + '&range_end=' + endRange,
+                        url: '/api/events/?range_start=' + beginRangePrev + '&range_end=' + endRangePrev,
                         type: "GET",
                         contentType: "application/json",
                         success: function (response) {
@@ -132,11 +120,11 @@
 
                 // End month's events have not been retrieved yet
                 if (!_.has($HMU.monthlyEvents, endMonth)) {
-                    beginRange = view.end.startOf('month').format('YYYY-MM-DD HH:mm');
-                    endRange = view.end.endOf('month').format('YYYY-MM-DD HH:mm');
+                    var beginRangeNext = view.end.startOf('month').format('YYYY-MM-DD HH:mm');
+                    var endRangeNext = view.end.endOf('month').format('YYYY-MM-DD HH:mm');
 
                     $.ajax({
-                        url: '/api/events/?range_start=' + beginRange + '&range_end=' + endRange,
+                        url: '/api/events/?range_start=' + beginRangeNext + '&range_end=' + endRangeNext,
                         type: "GET",
                         contentType: "application/json",
                         success: function (response) {

@@ -1,5 +1,6 @@
 from collections import defaultdict
 import itertools
+from datetime import timedelta
 from restless.dj import DjangoResource
 from restless.exceptions import BadRequest
 from restless.preparers import FieldsPreparer
@@ -65,23 +66,57 @@ class EventResource(DjangoResource):
     # PUT /api/events/<pk>/
     # Updates some fields on a specified event.
     def update(self, pk):
+
+        # Helper function to shift days_of_week array by some integer offset
+        def shift_days(days_of_week, offset):
+            prev_days = list(days_of_week)
+            next_days = list(days_of_week)
+            for i in range(len(days_of_week)):
+                next_days[(i + offset) % 7] = prev_days[i]
+            return ''.join(next_days)
+
         event = Event.objects.get(id=pk, calendar__owner=self.request.user.profile)
         errors = defaultdict(list)
+        is_recurring = False
+        days_diff = 0
 
-        # TODO BE ABLE TO CHANGE CALENDAR OF EVENT
+        if 'delta_days' in self.data:
+            days_diff = self.data['delta_days']
 
-        if hasattr(event.recurrence_type, 'weekly'):
-            return event
+        if 'recurrence_type' in self.data and self.data['recurrence_type'] == 'weekly':
+            recurrence = WeeklyRecurrence.objects.get(event=event)
+            is_recurring = True
+        else:
+            recurrence = SingleRecurrence.objects.get(event=event)
 
         if 'start' in self.data:
             try:
-                event.start = datetime.strptime(self.data['start'], '%Y-%m-%d %H:%M')
+                data_start = datetime.strptime(self.data['start'], '%Y-%m-%d %H:%M')
+                if not is_recurring:
+                    event.start = data_start
+                else:
+                    prev_hour = event.start.hour
+                    prev_minute = event.start.minute
+                    event.start = event.end.replace(hour=data_start.hour, minute=data_start.minute)
+                    if prev_hour == 0 and prev_minute == 0:
+                        event.start = event.start - timedelta(days=1)
+
+                    event.start = event.start + timedelta(days=days_diff)
+                    recurrence.last_event_end = recurrence.last_event_end + timedelta(days=days_diff)
+
+                    recurrence.days_of_week = shift_days(recurrence.days_of_week, days_diff)
+                    recurrence.save()
             except ValueError:
                 errors['start'].append("Start not in the correct format")
 
         if 'end' in self.data:
             try:
-                event.end = datetime.strptime(self.data['end'], '%Y-%m-%d %H:%M')
+                data_end = datetime.strptime(self.data['end'], '%Y-%m-%d %H:%M')
+                if not is_recurring:
+                    event.end = datetime.strptime(self.data['end'], '%Y-%m-%d %H:%M')
+                else:
+                    event.end = event.end.replace(hour=data_end.hour, minute=data_end.minute)
+                    event.end = event.end + timedelta(days=days_diff)
             except ValueError:
                 errors['end'].append("End not in the correct format")
 
