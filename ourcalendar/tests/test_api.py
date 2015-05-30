@@ -2,7 +2,7 @@ import json
 from django.core.urlresolvers import reverse
 from django.test import TestCase, Client
 from django.utils.crypto import get_random_string
-from ourcalendar.models import Calendar, Event
+from ourcalendar.models import Calendar, Event, SingleRecurrence
 from util.factories import EventFactory, UserFactory, SingleRecurrenceFactory
 
 
@@ -49,6 +49,7 @@ class EventApiTestCase(TestCase):
             'range_start': '2015-12-12 08:00',
             'range_end': '2015-12-12 11:00'
         }
+        self.REPEATING_EVENT_FIELDS = ['days_of_week', 'frequency', 'recurrence_type', 'last_event']
 
     def test_auth(self):
         # Tests if request rejected when not authenticated
@@ -97,6 +98,7 @@ class EventApiTestCase(TestCase):
     def test_update(self):
         # Create a event that belongs to another user
         new_event = EventFactory()
+        new_event.recurrence_type = SingleRecurrence()
 
         # Try to update an event that isn't ours
         response = self.client.put(self.GET_DETAIL_URL(new_event.pk),
@@ -153,7 +155,7 @@ class EventApiTestCase(TestCase):
                     getattr(Event.objects.get(pk=event.pk),
                             field).strftime('%Y-%m-%d %H:%M'),
                     self.NEW_DATA[field])
-            else:
+            elif field not in self.REPEATING_EVENT_FIELDS:
                 self.assertEqual(data[field], self.NEW_DATA[field])
                 self.assertEqual(
                     getattr(Event.objects.get(pk=event.pk), field),

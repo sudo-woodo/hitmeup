@@ -83,14 +83,14 @@ var creationReactor = (function(React, $) {
             // want to change this.  Also, couldn't get focus to work.
             if (this.refs.inputForm.state.repeat)  {
                 if (days_of_week == null) {
-                    errors.unshift('Days are required for repeated events.');
+                    errors.unshift('Days are required for repeating events.');
                     // this.refs.inputForm.refs.repeat.refs.days.getDOMNode().focus();
                 }
                 //grab the endtime.
                 postData.last_event = React.findDOMNode(this.refs.inputForm.refs.repeat.refs.endDate).value.trim();
                 console.log("length of endDate " + postData.last_event.length);
                 if (postData.last_event.length === 0)  {
-                    errors.unshift('End date for repeat events is required');
+                    errors.unshift('End date for repeating events is required.');
                     this.refs.inputForm.refs.repeat.refs.endDate.getDOMNode().focus();
                 }
                 else {
@@ -103,7 +103,7 @@ var creationReactor = (function(React, $) {
                     console.log( "after adding time ");
                     console.log( postData.last_event );
                     if (!(postData.last_event.isAfter(postData.end))) {
-                        errors.unshift('End date for repeat events must be after end time');
+                        errors.unshift('End date for repeating events must be after end time.');
                         this.refs.inputForm.refs.repeat.refs.endDate.getDOMNode().focus();
                     }
                 }
