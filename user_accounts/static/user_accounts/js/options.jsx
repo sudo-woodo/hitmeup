@@ -56,14 +56,14 @@ var optionsReactor = (function($HMU, React, $, _) {
                 <div className="panel panel-default">
                     <div id="option-label">Show my events</div>
                     <div>
-                        <input type="checkbox" name="showSelf" id="showSelf" checked={this.state.showSelf} />
+                        <input type="checkbox" name="showSelf" id="showSelf" defaultChecked={this.state.showSelf} />
                     </div>
                     <div id="option-label">Show friend's events</div>
                     <div>
-                        <input type="checkbox" name="showFree" id="showFree" checked={this.state.showFree} />
+                        <input type="checkbox" name="showFree" id="showFree" defaultChecked={this.state.showFree} />
                     </div>
                     <div>
-                        <input type="checkbox" name="showBusy" id="showBusy" checked={this.state.showBusy} />
+                        <input type="checkbox" name="showBusy" id="showBusy" defaultChecked={this.state.showBusy} />
                     </div>
                 </div>
             );
@@ -77,12 +77,7 @@ var optionsReactor = (function($HMU, React, $, _) {
             };
         },
         render: function() {
-            var checkboxes = this.state.display && $HMU.should_display && !$HMU.is_user ? <Checkboxes /> : null;
-            return (
-                <div>
-                    {checkboxes}
-                </div>
-            );
+            return this.state.display && $HMU.should_display && !$HMU.is_user ? <Checkboxes /> : null;
         }
     });
 
