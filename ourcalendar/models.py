@@ -192,7 +192,7 @@ class WeeklyRecurrence(RecurrenceType):
                               location=self.event.location,
                               description=self.event.description,
                               start=start,
-                              end=start + (self.event.start - self.event.end),
+                              end=start + (self.event.end - self.event.start),
                               id=self.event.id)
                     )
                 if start.weekday() == 6:
