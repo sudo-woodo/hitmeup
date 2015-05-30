@@ -29,12 +29,12 @@ class SearchTestCase(TestCase):
             'password': self.password,
         }
 
-    def test_navbar_entry_loggedout(self):
+    def test_search_loggedout(self):
         # Tests that the search bar does not show while the user is not logged in
         response = self.client.get(HOME_URL)
         self.assertNotContains(response=response, text=SEARCH_BAR_HTML)
 
-    def test_navbar_entry_loggedin(self):
+    def test_search_loggedin(self):
         # Tests that the search bar does show while the user is logged in
         self.client.post(LOGIN_URL, self.LOGIN_INFO) # login
         response = self.client.get(HOME_URL)
@@ -49,6 +49,10 @@ class SearchTestCase(TestCase):
         search_request = self.client.get(SEARCH_URL, {'q': 'ThaDoggFather'})
         self.assertEqual(user1.profile, User.objects.get(username=user1.username).profile)
         self.assertRedirects(search_request, reverse('user_accounts:user_profile', args=(user1.username,)))
+
+        # Tests that an incomplete query will redirect to a suggested results page
+        search_request = self.client.get(SEARCH_URL, {'q': 'ThaD'})
+        self.assertRedirects()
 
 
 
