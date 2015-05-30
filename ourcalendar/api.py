@@ -8,7 +8,7 @@ from django.utils.timezone import datetime
 
 
 class EventResource(DjangoResource):
-    #TODO: Need to update fields preparer for recurrence, maybe include type of recurrence
+    # TODO: Need to update fields preparer for recurrence, maybe include type of recurrence
     preparer = FieldsPreparer(fields={
         'id': 'pk',
         'start': 'start',
@@ -17,7 +17,7 @@ class EventResource(DjangoResource):
         'calendar': 'calendar.id',
         'location': 'location',
         'description': 'description',
-
+        'recurrence_type': 'recurrence_type.type',
     })
 
     # Authentication!
@@ -27,26 +27,23 @@ class EventResource(DjangoResource):
     # GET /api/events/
     # Gets a list of events that belong to the current user within a certain time range.
     def list(self):
-        #TODO: if no range_start or range_end, return error or assume get all?
         errors = defaultdict(list)
         start = self.request.GET.get('range_start', None)
         end = self.request.GET.get('range_end', None)
         if start is not None:
             range_start = datetime.strptime(start, '%Y-%m-%d %H:%M')
         else:
-            #errors['range_start'].append("range start not provided")
             range_start = datetime.strptime('1990-01-01 12:12', '%Y-%m-%d %H:%M')
         if end is not None:
             range_end = datetime.strptime(end, '%Y-%m-%d %H:%M')
         else:
-            #errors['range_end'].append("range end not provided")
             range_end = datetime.strptime('2050-01-01 12:12', '%Y-%m-%d %H:%M')
         if errors:
             raise BadRequest(str(errors))
 
         a = []
         for e in self.request.user.profile.calendars.get(title="Default").get_between(range_start, range_end):
-            #TODO try type(e) this except typeerror. if e IS a list, wouldn't it still append? [1, [1]] I'm not sure.
+            # TODO try type(e) this except typeerror. if e IS a list, wouldn't it still append? [1, [1]] I'm not sure.
             if type(e) is not list:
                 a.append(e)
             else:
@@ -161,8 +158,8 @@ class EventResource(DjangoResource):
                     errors['days_of_week'].append("Days of week not provided")
                 else:
                     days_of_week = self.data['days_of_week']
-                    #TODO: How to check that the string is of length 7 and all are 0's and 1's?
-                    #TODO: If we do error checks here, do we need to error check again in backend?
+                    # TODO: How to check that the string is of length 7 and all are 0's and 1's?
+                    # TODO: If we do error checks here, do we need to error check again in backend?
 
         if errors:
             raise BadRequest(str(errors))
@@ -183,12 +180,12 @@ class EventResource(DjangoResource):
                 event=event
             )
         else:
-           WeeklyRecurrence.objects.create(
+            WeeklyRecurrence.objects.create(
                 days_of_week=days_of_week,
                 frequency=frequency,
                 last_event_end=last_event,
                 event=event
-        )
+            )
         return event
 
     # DELETE /api/events/<pk>/
