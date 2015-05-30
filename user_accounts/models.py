@@ -26,6 +26,7 @@ class UserProfile(models.Model):
         message="Phone number must be between 10 to 15 digits.")
     phone = models.CharField(max_length=16, validators=[phone_regex], blank=True)
     bio = models.TextField(max_length=300, blank=True)
+    registration_id = models.CharField(max_length=300, blank=True)
 
     def __unicode__(self):
         return self.user.username
