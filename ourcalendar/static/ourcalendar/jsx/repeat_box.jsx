@@ -19,10 +19,16 @@ var RepeatBox = (function(React, $)  {
         },
 
         componentDidMount: function()  {
-          $('.selectpicker').selectpicker();
-          $('#end_repeat_picker').datetimepicker({
+            $('.selectpicker').selectpicker();
+            $('#end_repeat_picker').datetimepicker({
                 format: 'MM/DD/YYYY'
-          });
+            });
+
+            // Set the day on the selectpicker to whatever day of the week user selected.
+            var date = $('#start-picker').data("DateTimePicker").date();
+            var days_picker = $('#days');
+            days_picker.selectpicker('val', moment(date).weekday());
+            days_picker.selectpicker('render');
         },
 
         // Render necessary repeat information.
