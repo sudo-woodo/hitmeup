@@ -1,0 +1,39 @@
+{% extends "base.jinja" %}
+
+{% block title %}
+    Results
+{% endblock %}
+
+{% block content %}
+    <div class="main_content">
+        <h2> Suggestions</h2>
+        {% if not results %}
+            <div class="jumbotron">
+                <p>No results found for your query. Try another search item.</p>
+            </div>
+
+        {% endif %}
+        {% for result in results %}
+            {{ result }}
+            <div class="info-box">
+                <div class="col-xs-12 col-sm-6 col-md-4">
+                    <div class="panel panel-default">
+                        <div class="profile-info panel-body">
+                            <div class="profile-pic-container">
+                                <img src= {{ "http:" ~ result.gravatar_url }}> </img>
+                            </div>
+                            <div class="profile-info-container overflow-control">
+                                <ul class="fa-ul info-container">
+                                    <li class="fa fa-li fav-icon-o fav-icon">{{ result.first_name ~ result.last_name }}</li>
+
+                                    <li class="fa fa-li fa-check-circle free-icon"></li>
+                                </ul>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}
