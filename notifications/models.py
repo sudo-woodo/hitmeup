@@ -4,6 +4,7 @@ from django.db import models
 from django.dispatch.dispatcher import receiver
 from user_accounts.models import UserProfile, request_friend, accept_friend
 from django.utils import timezone
+from util.push_notifications import push_notification
 
 
 class Notification(models.Model):
@@ -62,6 +63,14 @@ def send_friend_request_notification(sender, from_friend, to_friend, **kwargs):
         text=Notification.NOTIFICATION_STRINGS[Notification.REQUEST_FRIEND] % from_friend,
     )
 
+    name = from_friend.full_name if len(from_friend.full_name) > 0 else from_friend.username
+
+    push_notification(
+        to_friend.registration_id,
+        "New friend request",
+        "%s has added you as a friend." % name
+    )
+
     if not created:
         notification.refresh()
 
@@ -73,6 +82,14 @@ def send_friend_accept_notification(sender, from_friend, to_friend, **kwargs):
         image_url=from_friend.get_gravatar_url(IMAGE_SIZE),
         action_url=from_friend.profile_url,
         text=Notification.NOTIFICATION_STRINGS[Notification.ACCEPT_FRIEND] % from_friend,
+    )
+
+    name = from_friend.full_name if len(from_friend.full_name) > 0 else from_friend.username
+
+    push_notification(
+        to_friend.registration_id,
+        "Friend request accepted",
+        "%s has accepted your friend request." % name
     )
 
     if not created:

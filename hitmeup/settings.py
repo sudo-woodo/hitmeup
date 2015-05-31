@@ -190,6 +190,8 @@ AUTHENTICATION_BACKENDS = (
     'tokenapi.backends.TokenBackend',
 )
 
+# Google Cloud Messaging
+SENDER_ID = "AIzaSyBKW1jYv9uyOJGPLaSLqZuSpETerkRYIF8"
 
 # Fullcalendar
 TIME_FMT = '%Y-%m-%dT%H:%M:%S'
