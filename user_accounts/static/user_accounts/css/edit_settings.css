@@ -1,0 +1,18 @@
+.edit-section {
+    margin-top: 20px;
+}
+
+.edit-pic-col {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.edit-pic-button-container {
+    margin-top: 10px;
+}
+
+@media (min-width: 768px) {
+    .edit-pic-col {
+        margin-bottom: 0;
+    }
+}
