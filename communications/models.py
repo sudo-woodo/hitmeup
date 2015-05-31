@@ -15,6 +15,6 @@ class Subscription(models.Model):
 @receiver(post_save, sender=UserProfile)
 def create_subscription(sender, instance, created, **kwargs):
     if created:
-        Subscription.objects.create(user=instance)
+        Subscription.objects.create(profile=instance)
         # Send welcome email when profile is created
         send_registration_email(instance)
