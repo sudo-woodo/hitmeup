@@ -1,5 +1,4 @@
 from collections import defaultdict
-import itertools
 from datetime import timedelta
 from restless.dj import DjangoResource
 from restless.exceptions import BadRequest
@@ -9,7 +8,6 @@ from django.utils.timezone import datetime
 
 
 class EventResource(DjangoResource):
-    # TODO: Need to update fields preparer for recurrence, maybe include type of recurrence
     preparer = FieldsPreparer(fields={
         'id': 'pk',
         'start': 'start',
@@ -32,15 +30,14 @@ class EventResource(DjangoResource):
         start = self.request.GET.get('range_start', None)
         end = self.request.GET.get('range_end', None)
         event_id = self.request.GET.get('event_id', None)
+        range_start = range_end = None
 
         if start is not None:
             range_start = datetime.strptime(start, '%Y-%m-%d %H:%M')
-        else:
-            range_start = datetime.strptime('1990-01-01 12:12', '%Y-%m-%d %H:%M')
+
         if end is not None:
             range_end = datetime.strptime(end, '%Y-%m-%d %H:%M')
-        else:
-            range_end = datetime.strptime('2050-01-01 12:12', '%Y-%m-%d %H:%M')
+
         if errors:
             raise BadRequest(str(errors))
 
@@ -51,11 +48,10 @@ class EventResource(DjangoResource):
 
         flattened_events = []
         for e in events:
-            # TODO try type(e) this except typeerror. if e IS a list, wouldn't it still append? [1, [1]] I'm not sure.
-            if type(e) is not list:
-                flattened_events.append(e)
-            else:
+            try:
                 flattened_events += e
+            except TypeError:
+                flattened_events.append(e)
         return flattened_events
 
     # GET /api/events/<pk>/

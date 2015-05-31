@@ -1,6 +1,4 @@
-import datetime
-from string import lowercase
-from django.contrib.contenttypes.models import ContentType
+from django.utils.timezone import datetime
 from django.core.validators import RegexValidator
 from django.db.models.signals import post_save
 from django.dispatch.dispatcher import receiver
@@ -79,9 +77,10 @@ class Event(models.Model):
 
     # Gets events between the range_start and range_end. Need these checks to get proper subclass
     def get_between(self, range_start, range_end):
+        subclass = self.recurrence_type
+
         if self.recurrence_type.__class__.__name__.lower() == 'recurrencetype':
             try:
-
                 subclass = self.recurrence_type.singlerecurrence
             except SingleRecurrence.DoesNotExist:
                 try:
@@ -89,36 +88,10 @@ class Event(models.Model):
                 except WeeklyRecurrence.DoesNotExist:
                     pass
 
-        else:
-            subclass = self.recurrence_type
+        range_start = range_start if range_start is not None else datetime.strptime('1990-01-01 12:12', '%Y-%m-%d %H:%M')
+        range_end = range_end if range_end is not None else datetime.strptime('2050-01-01 12:12', '%Y-%m-%d %H:%M')
 
         return subclass.get_between(range_start, range_end)
-
-'''
-# This is using abstract, don't really know how to implement
-class RecurrenceType(models.Model):
-
-    class Meta:
-        abstract = True
-
-    event = models.ForeignKey(Event, related_name="recurrence_type")
-
-    ''
-    Website used to let us call get_between of the respective subtype
-    http://stackoverflow.com/questions/929029/how-do-i-access-the-child-classes-of-an-object-in-django-without-knowing-the-name/929982#929982
-    ''
-    #TODO in the comments he says we should use inheritance manager but that would mean we would have to do concrete inheritance. thoughts?
-    real_type = models.ForeignKey(ContentType, editable=False)
-
-    def _get_real_type(self):
-        return ContentType.objects.get_for_model(type(self))
-
-    def cast(self):
-        return self.real_type.get_object_for_this_type(pk=self.pk)
-
-    def get_between(self, range_start, range_end):
-        raise NotImplementedError("Recurrence Type not implemented!!")
-'''
 
 
 class RecurrenceType(models.Model):
@@ -155,32 +128,14 @@ class SingleRecurrence(RecurrenceType):
         return "%s -> SingleRecurrenceType" % self.event
 
 
-'''
-Input: after n occurrences, needed if we want to support this functionality
-def find_last_occurrence(time, frequency, total_number, days_of_week):
-    print(days_of_week)
-    return time
-
-For future:
-
-end = (start + 7 * total_number/days_per_week * frequency).move_forward(total_number % days_per_week - 1)
-
-move_forward: moves number of days forward (could be backwards if negative) according to days_of_week
-'''
-
-
 class WeeklyRecurrence(RecurrenceType):
     # TODO: Make sure that the length is only 7!
     # TODO: Make sure at least one day is 1
     # TODO: CAUTION: event.start is not necessarily the first date in the recurring series
-    # TODO: Implement edit and delete on weekly... idk how to do this yet ):
     # Days of the week, M T W TH F Sa Su
     days_of_week = models.CharField(default="1000000", max_length=7)
     # The number of weeks between each occurrence
     frequency = models.IntegerField(default=1)
-
-    # Total number of occurrences
-    # total_number = models.IntegerField(default=1)
 
     last_event_end = models.DateTimeField(default=hour_from_now)
 
@@ -218,12 +173,3 @@ class WeeklyRecurrence(RecurrenceType):
 
     def __unicode__(self):
         return "%s -> WeeklyRecurrenceType" % self.event
-
-
-'''
-Input: after n occurrences
-    @property
-    def end(self):
-        return find_last_occurrence(self.event.end, self.frequency, self.total_number, self.days_of_week)
-'''
-

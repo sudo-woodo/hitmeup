@@ -108,6 +108,10 @@ var detailReactor = (function(React, $) {
                 putData.start = startMoment.format('YYYY-MM-DD HH:mm');
                 putData.end = endMoment.format('YYYY-MM-DD HH:mm');
 
+                // For updating recurring events, need the change in times in milliseconds
+                putData.start_delta = startMoment.diff(moment(this.state.start));
+                putData.end_delta = endMoment.diff(moment(this.state.end));
+
                 // AJAX request to edit the event
                 $.ajax({
                     url: '/api/events/' + this.state.id + '/',
