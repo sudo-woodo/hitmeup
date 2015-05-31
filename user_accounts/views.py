@@ -10,7 +10,7 @@ from django.shortcuts import render
 from django.utils.html import escape
 from django.views.generic import View
 from user_accounts.forms import LoginForm, SignupForm, SignUpExtendedForm, EditProfileForm, \
-    EditPasswordForm
+    EditPasswordForm, EditSubscriptionForm
 from user_accounts.models import Friendship
 
 
@@ -183,8 +183,9 @@ def friends_list(request):
         },
     })
 
-def render_settings(request, tab='profile', profile_form=None, password_form=None,
-                  success_messages=None, error_messages=None):
+def render_settings(request, tab='profile', profile_form=None,
+                    password_form=None, subscription_form=None,
+                    success_messages=None, error_messages=None):
     profile = request.user.profile
 
     return render(request, 'user_accounts/edit_settings.jinja', {
@@ -203,6 +204,9 @@ def render_settings(request, tab='profile', profile_form=None, password_form=Non
             'phone': profile.phone,
             'bio': profile.bio,
         }),
+        'subscription_form': subscription_form or EditSubscriptionForm(
+            instance=profile.subscription,
+        ),
         'password_form': password_form or EditPasswordForm(),
         'success_messages': success_messages or [],
         'error_messages': error_messages or [],
@@ -233,6 +237,28 @@ def profile_settings(request):
     # Return to form
     return render_settings(request, tab='profile', profile_form=profile_form,
                          success_messages=success_messages)
+
+@login_required
+def subscription_settings(request):
+    subscription_form = None
+    success_messages = None
+
+    if request.method == 'POST':
+        subscription_form = EditSubscriptionForm(data=request.POST)
+        success_messages = []
+
+        if subscription_form.is_valid():
+            # Generate the model, assign the profile, then actually save
+            subscription = subscription_form.save(commit=False)
+            subscription.profile = request.user.profile
+            subscription.save()
+
+            success_messages.append('Successfully updated subscriptions!')
+
+    # Return to form
+    return render_settings(request, tab='subscription',
+                           subscription_form=subscription_form,
+                           success_messages=success_messages)
 
 @login_required
 def password_settings(request):

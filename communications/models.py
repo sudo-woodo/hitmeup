@@ -11,6 +11,9 @@ class Subscription(models.Model):
     general = models.BooleanField(default=True)
     friend_notifications = models.BooleanField(default=True)
 
+    def __unicode__(self):
+        return self.profile.username
+
 # Auto-create a Subscription when creating a UserProfile
 @receiver(post_save, sender=UserProfile)
 def create_subscription(sender, instance, created, **kwargs):
