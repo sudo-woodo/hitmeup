@@ -15,7 +15,7 @@ before_script:
 - psql -c "alter user hmu createdb;" -U postgres
 - psql -c "create database hitmeup owner hmu;" -U postgres
 script:
-- python manage.py rebuild_index
+- yes | python manage.py rebuild_index
 - python manage.py test
 branches:
   only:
