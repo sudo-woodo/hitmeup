@@ -13,8 +13,7 @@ before_script:
 - sleep 10
 - psql -c "create user hmu with password 'hmu';" -U postgres
 - psql -c "alter user hmu createdb;" -U postgres
-- python manage.py rebuild_index
-- y
+- yes | python manage.py rebuild_index
 script: python manage.py test
 branches:
   only:
