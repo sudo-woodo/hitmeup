@@ -45,6 +45,7 @@ INSTALLED_APPS = (
     # Vendor
     'django_jinja',
     'restless',
+    'django_facebook',
 
     # Custom
     'hitmeup',
@@ -55,6 +56,7 @@ INSTALLED_APPS = (
     'notifications',
     'triton_sync',
     'fb_login',
+
 )
 
 MIDDLEWARE_CLASSES = (
@@ -198,7 +200,11 @@ TIME_FMT = '%Y-%m-%dT%H:%M:%S'
 AUTHENTICATION_BACKENDS = (
    'social.backends.facebook.FacebookOAuth2',
    'django.contrib.auth.backends.ModelBackend',
+   'django_facebook.auth_backends.FacebookBackend',
 )
+FACEBOOK_APP_ID = "405286863009329"
+FACEBOOK_APP_SECRET = 'fba6042bfb5059027f4ba6f4b9b58cec'
+
 
 SOCIAL_AUTH_FACEBOOK_KEY = "405286863009329"
 SOCIAL_AUTH_FACEBOOK_SECRET = 'fba6042bfb5059027f4ba6f4b9b58cec'
@@ -216,4 +222,6 @@ TEMPLATE_CONTEXT_PROCESSORS = (
    'django.contrib.messages.context_processors.messages',
    'social.apps.django_app.context_processors.backends',
    'social.apps.django_app.context_processors.login_redirect',
+   'django.core.context_processors.request',
+    'django_facebook.context_processors.facebook',
 )
