@@ -31,3 +31,11 @@ body {
 .red-bg {
     background-color: #EF5350;
 }
+
+.settings-icon {
+    margin-right: 5px;
+}
+
+.logout-icon {
+    margin-right: 5px;
+}

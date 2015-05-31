@@ -4,6 +4,7 @@ body {
 
 #calendar-container {
     margin-top: 20px;
+    border-color: #bdbdbd;
 }
 
 .modal-body textArea {
