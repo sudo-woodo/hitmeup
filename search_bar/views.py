@@ -33,9 +33,6 @@ def user_search(request):
             'results': [s.profile.public_serialized for s in suggestions],
         })
 
-
-
-
 def user_autocomplete(request):
     user, suggestions = do_user_search(request.GET, 5)
 

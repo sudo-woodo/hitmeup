@@ -1,18 +1,14 @@
 from django.test import TestCase, Client, RequestFactory
-from django.http import HttpRequest, QueryDict
 from django.core.urlresolvers import reverse
 from util.factories import UserFactory, UserProfileFactory
 from django.utils.crypto import get_random_string
-from views import user_search, user_autocomplete
 from django.contrib.auth.models import User
-
-
-# TODO: ADD TESTS
 
 HOME_URL = reverse('static_pages:home')
 LOGIN_URL = reverse('user_accounts:login')
 SEARCH_URL = reverse('search_bar:user_search')
 SEARCH_BAR_HTML = 'form id="user-search-form"'
+SUGGESTIONS_HTML = '<h2> Suggestions</h2>'
 PROFILE_HTML = 'id="profile-body"'
 
 class SearchTestCase(TestCase):
@@ -46,13 +42,15 @@ class SearchTestCase(TestCase):
         user1.first_name = 'Snoop'
         user1.last_name = 'Dogg'
         user1.profile = UserProfileFactory()
-        search_request = self.client.get(SEARCH_URL, {'q': 'ThaDoggFather'})
+        search_response= self.client.get(SEARCH_URL, {'q': 'ThaDoggFather'})
+
         self.assertEqual(user1.profile, User.objects.get(username=user1.username).profile)
-        self.assertRedirects(search_request, reverse('user_accounts:user_profile', args=(user1.username,)))
+        self.assertRedirects(search_response, reverse('user_accounts:user_profile', args=(user1.username,)))
 
         # Tests that an incomplete query will redirect to a suggested results page
-        search_request = self.client.get(SEARCH_URL, {'q': 'ThaD'})
-        self.assertRedirects()
+        search_response = self.client.get(SEARCH_URL, {'q': 'ThaD'})
+        self.assertContains(search_response, SUGGESTIONS_HTML, msg_prefix='Failed to render suggestions page')
+        self.assertContains(search_response, 'ThaDoggFather', msg_prefix='Suggestions page autocomplete unsuccessful')
 
 
 
