@@ -195,6 +195,31 @@ CSRF_FAILURE_VIEW = 'hitmeup.views.csrf_failure'
 # Fullcalendar
 TIME_FMT = '%Y-%m-%dT%H:%M:%S'
 
+def save_profile(backend, user, response, *args, **kwargs):
+    if backend.name == 'facebook':
+        # profile = user.get_profile()
+        # if profile is None:
+        #     profile = Profile(user_id=user.id)
+        # profile.gender = response.get('gender')
+        # profile.link = response.get('link')
+        # profile. = response.get('timezone')
+        # profile.save()
+        print response
+        # print user.id
+
+SOCIAL_AUTH_PIPELINE = (
+    'social.pipeline.social_auth.social_details',
+    'social.pipeline.social_auth.social_uid',
+    'hitmeup.settings.save_profile',
+    'social.pipeline.social_auth.auth_allowed',
+    'social.pipeline.social_auth.social_user',
+    'social.pipeline.user.get_username',
+    'social.pipeline.user.create_user',
+
+    'social.pipeline.social_auth.associate_user',
+    'social.pipeline.social_auth.load_extra_data',
+    'social.pipeline.user.user_details'
+)
 AUTHENTICATION_BACKENDS = (
    'social.backends.facebook.FacebookOAuth2',
    'django.contrib.auth.backends.ModelBackend',
@@ -204,6 +229,7 @@ SOCIAL_AUTH_FACEBOOK_KEY = "405286863009329"
 SOCIAL_AUTH_FACEBOOK_SECRET = 'fba6042bfb5059027f4ba6f4b9b58cec'
 SOCIAL_AUTH_FACEBOOK_SCOPE = ['email']
 SOCIAL_AUTH_FACEBOOK_PROFILE_EXTRA_PARAMS = {'locale': 'ru_RU'}
+
 
 
 TEMPLATE_CONTEXT_PROCESSORS = (
