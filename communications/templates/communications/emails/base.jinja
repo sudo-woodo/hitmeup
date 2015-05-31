@@ -30,7 +30,7 @@
     </head>
     <body>
         {% block logo %}
-            <img src="{{ BASE_URL }}static/communications/img/hitmeup_small.png"
+            <img src="{{ BASE_URL }}/static/communications/img/hitmeup_small.png"
                  alt="HitMeUp" class="logo"/>
         {% endblock %}
 
@@ -61,7 +61,9 @@
         {% block footer %}
             <div class="footer">
                 <div class="email-settings">
-                    <a href="">Manage Email Settings</a>
+                    <a href="{{ BASE_URL + url('user_accounts:subscription_settings') }}">
+                        Manage Email Settings
+                    </a>
                 </div>
 
                 <div class="copyright">

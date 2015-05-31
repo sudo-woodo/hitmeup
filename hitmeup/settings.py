@@ -15,7 +15,7 @@ import os
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-BASE_URL = os.environ.get('HMU_BASE_URL', 'http://localhost:8000/')
+BASE_URL = os.environ.get('HMU_BASE_URL', 'http://localhost:8000')
 
 # Honor the 'X-Forwarded-Proto' header for request.is_secure()
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
@@ -195,9 +195,6 @@ EMAIL_HOST_USER = 'sudowoodohitmeup@gmail.com'
 EMAIL_HOST_PASSWORD = 'bobandkavin'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-
-#EMAIL_BACKEND = 'django.core.mail.backends.dummy.EmailBackend'
-#EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 
 
 # Fullcalendar
