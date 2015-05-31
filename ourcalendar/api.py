@@ -78,10 +78,18 @@ class EventResource(DjangoResource):
         event = Event.objects.get(id=pk, calendar__owner=self.request.user.profile)
         errors = defaultdict(list)
         is_recurring = False
-        days_diff = 0
+        # days_diff = 0
+        start_diff = 0
+        end_diff = 0
 
-        if 'delta_days' in self.data:
-            days_diff = self.data['delta_days']
+        # if 'delta_days' in self.data:
+        #    days_diff = self.data['delta_days']
+
+        if 'start_delta' in self.data:
+            start_diff = self.data['start_delta']
+
+        if 'end_delta' in self.data:
+            end_diff = self.data['end_delta']
 
         if 'recurrence_type' in self.data and self.data['recurrence_type'] == 'weekly':
             recurrence = WeeklyRecurrence.objects.get(event=event)
@@ -95,28 +103,20 @@ class EventResource(DjangoResource):
                 if not is_recurring:
                     event.start = data_start
                 else:
-                    prev_hour = event.start.hour
-                    prev_minute = event.start.minute
-                    event.start = event.end.replace(hour=data_start.hour, minute=data_start.minute)
-                    if prev_hour == 0 and prev_minute == 0:
-                        event.start = event.start - timedelta(days=1)
-
-                    event.start = event.start + timedelta(days=days_diff)
-                    recurrence.last_event_end = recurrence.last_event_end + timedelta(days=days_diff)
-
-                    recurrence.days_of_week = shift_days(recurrence.days_of_week, days_diff)
+                    event.start = event.start + timedelta(milliseconds=start_diff)
+                    recurrence.last_event_end = recurrence.last_event_end + timedelta(milliseconds=start_diff)
+                    start_days = timedelta(milliseconds=start_diff).days
+                    recurrence.days_of_week = shift_days(recurrence.days_of_week, start_days)
                     recurrence.save()
             except ValueError:
                 errors['start'].append("Start not in the correct format")
 
         if 'end' in self.data:
             try:
-                data_end = datetime.strptime(self.data['end'], '%Y-%m-%d %H:%M')
                 if not is_recurring:
                     event.end = datetime.strptime(self.data['end'], '%Y-%m-%d %H:%M')
                 else:
-                    event.end = event.end.replace(hour=data_end.hour, minute=data_end.minute)
-                    event.end = event.end + timedelta(days=days_diff)
+                    event.end = event.end + timedelta(milliseconds=end_diff)
             except ValueError:
                 errors['end'].append("End not in the correct format")
 

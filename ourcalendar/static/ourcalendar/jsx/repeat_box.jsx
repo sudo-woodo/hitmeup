@@ -27,7 +27,13 @@ var RepeatBox = (function(React, $)  {
             // Set the day on the selectpicker to whatever day of the week user selected.
             var date = $('#start-picker').data("DateTimePicker").date();
             var days_picker = $('#days');
-            days_picker.selectpicker('val', moment(date).weekday());
+
+            // Because we have sunday at end.
+            var date_val = moment(date).weekday()-1;
+            if ( date_val === -1 )  {
+                date_val = 6;
+            }
+            days_picker.selectpicker('val', date_val);
             days_picker.selectpicker('render');
         },
 

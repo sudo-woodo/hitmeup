@@ -56,7 +56,8 @@
                         start: event.start.format('YYYY-MM-DD HH:mm'),
                         end: event.end.format('YYYY-MM-DD HH:mm'),
                         recurrence_type: event.recurrence_type,
-                        delta_days: delta.days()
+                        start_delta: delta.asMilliseconds(),
+                        end_delta: delta.asMilliseconds()
                     }),
                     contentType: "application/json",
                     success: function (response) {
@@ -79,7 +80,8 @@
                         start: event.start.format('YYYY-MM-DD HH:mm'),
                         end: event.end.format('YYYY-MM-DD HH:mm'),
                         recurrence_type: event.recurrence_type,
-                        delta_days: delta.days()
+                        start_delta: 0,
+                        end_delta: delta.asMilliseconds()
                     }),
                     contentType: "application/json",
                     success: function (response) {
