@@ -39,6 +39,13 @@ class SignupForm(forms.ModelForm, LoginForm):
         model = User
         fields = ('email', 'username', 'password', 'confirm_password')
 
+    def clean_email(self):
+        email = self.cleaned_data.get('email')
+        username = self.cleaned_data.get('username')
+        if email and User.objects.filter(email=email).exclude(username=username).count():
+            raise forms.ValidationError(u'Email address has been used')
+        return email
+
 
 class SignUpExtendedForm(forms.Form):
     first_name = forms.CharField(required=False, widget=forms.TextInput(attrs={
