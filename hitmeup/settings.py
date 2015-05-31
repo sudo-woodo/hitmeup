@@ -195,27 +195,16 @@ CSRF_FAILURE_VIEW = 'hitmeup.views.csrf_failure'
 # Fullcalendar
 TIME_FMT = '%Y-%m-%dT%H:%M:%S'
 
-def save_profile(backend, user, response, *args, **kwargs):
-    if backend.name == 'facebook':
-        # profile = user.get_profile()
-        # if profile is None:
-        #     profile = Profile(user_id=user.id)
-        # profile.gender = response.get('gender')
-        # profile.link = response.get('link')
-        # profile. = response.get('timezone')
-        # profile.save()
-        print response
-        # print user.id
+
 
 SOCIAL_AUTH_PIPELINE = (
     'social.pipeline.social_auth.social_details',
     'social.pipeline.social_auth.social_uid',
-    'hitmeup.settings.save_profile',
     'social.pipeline.social_auth.auth_allowed',
     'social.pipeline.social_auth.social_user',
     'social.pipeline.user.get_username',
     'social.pipeline.user.create_user',
-
+    'hitmeup.logic.save_profile',
     'social.pipeline.social_auth.associate_user',
     'social.pipeline.social_auth.load_extra_data',
     'social.pipeline.user.user_details'

@@ -17,7 +17,7 @@ class Migration(migrations.Migration):
         ),
         migrations.AddField(
             model_name='userprofile',
-            name='verified',
-            field=models.BooleanField(default=False),
+            name='fb_id',
+            field=models.CharField(max_length=30, null=True),
         ),
     ]
