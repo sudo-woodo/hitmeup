@@ -1,0 +1,12 @@
+body {
+    background-color: #e0e0e0;
+}
+
+.login-panel {
+    border-color: #bdbdbd;
+    margin-top: 10px;
+}
+
+.login-title {
+    font-size: 2em;
+}

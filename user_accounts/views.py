@@ -49,8 +49,10 @@ class SignUpView(View):
             return HttpResponseRedirect(reverse('user_accounts:extended_signup'))
         else:
             # Return the form with errors
-            return render(request, 'user_accounts/signup.jinja',
-                          {'signup_form': signup_form})
+            return render(request, 'user_accounts/signup.jinja', {
+                'signup_form': signup_form,
+                'css': ['user_accounts/css/signup.css']
+            })
 
     def get(self, request):
         # if the user is already logged in and is trying to access the signup
@@ -60,7 +62,8 @@ class SignUpView(View):
 
         # Otherwise, return a blank form for the user to fill out
         return render(request, 'user_accounts/signup.jinja', {
-            'signup_form': SignupForm()
+            'signup_form': SignupForm(),
+            'css': ['user_accounts/css/signup.css']
         })
 
 
@@ -90,6 +93,7 @@ class SignUpExtended(View):
         # If there's an form error, rerender with errors
         else:
             return render(request, 'user_accounts/signup_extended.jinja', {
+                'css': ['user_accounts/css/signup_extended.css'],
                 'signup_extended_form': signup_extended_form
             })
 
@@ -100,6 +104,7 @@ class SignUpExtended(View):
 
         # Otherwise, return a blank form for the user to fill out
         return render(request, 'user_accounts/signup_extended.jinja', {
+            'css': ['user_accounts/css/signup_extended.css'],
             'signup_extended_form': SignUpExtendedForm(),
         })
 
@@ -124,6 +129,7 @@ class LoginView(View):
 
                 else:
                     return render(request, 'user_accounts/login.jinja', {
+                        'css': ['user_accounts/css/login.css'],
                         'login_form': login_form,
                         'error_messages': [
                             'This account has been marked as inactive.'
@@ -132,6 +138,7 @@ class LoginView(View):
             # If user provided wrong info, rerender with errors
             else:
                 return render(request, 'user_accounts/login.jinja', {
+                    'css': ['user_accounts/css/login.css'],
                     'login_form': login_form,
                     'error_messages': [
                         'Incorrect username or password.'
@@ -140,6 +147,7 @@ class LoginView(View):
         # If there's an form error, rerender with errors
         else:
             return render(request, 'user_accounts/login.jinja', {
+                'css': ['user_accounts/css/login.css'],
                 'login_form': login_form
             })
 
@@ -151,6 +159,7 @@ class LoginView(View):
 
         # Else, display a empty form for the user
         return render(request, 'user_accounts/login.jinja', {
+            'css': ['user_accounts/css/login.css'],
             'login_form': LoginForm()
         })
 
