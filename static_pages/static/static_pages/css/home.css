@@ -1,0 +1,25 @@
+body {
+    background-color: #e0e0e0;
+}
+
+.header {
+    height: 200px;
+    width: 100%;
+}
+
+.block {
+    background-color: white;
+    border: solid #BDBDBD 1px;
+}
+
+.text {
+    text-align: center;
+    vertical-align: middle;
+    line-height: 70px;
+}
+
+.img {
+    max-width: 100%;
+    height: auto;
+    width: auto\9;
+}

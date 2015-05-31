@@ -7,8 +7,34 @@
 {% block content %}
     <div class="jumbotron">
         <div class="container">
-            <h1>HitMeUp.</h1>
-            <h2>Kiss your scheduling problems goodbye.</h2>
+            <h2>HitMeUp.</h2>
+            <h3>Kiss your scheduling problems goodbye.</h3>
         </div>
     </div>
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12 col-sm-12 col-md-4">
+                <div class="left-block block">
+                    <h4 class="text">Customize your profile</h4>
+                    <img class="profile-img img" src="{{ static('static_pages/img/Profile.jpg') }}" />
+
+                </div>
+            </div>
+            <div class="col-xs-12 col-sm-12 col-md-4">
+                <div class="mid-block block">
+                    <h4 class="text">Create your calendar</h4>
+                    <img class="calendar-img img" src="{{ static('static_pages/img/Calendar.jpg') }}" />
+
+                </div>
+            </div>
+            <div class="col-xs-12 col-sm-12 col-md-4">
+                <div class="right-block block">
+                    <h4 class="text">Meet with friends</h4>
+                    <img class="friends-img img" src="{{ static('static_pages/img/Friends.jpg') }}" />
+
+                </div>
+            </div>
+        </div>
+    </div>
+
 {% endblock %}
