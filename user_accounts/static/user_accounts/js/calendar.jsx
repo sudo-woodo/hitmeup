@@ -27,7 +27,7 @@ var calendarReactor = (function($HMU, React, $, _)  {
     $HMU.friend_events_free = $HMU.friend_events_free.map(function(event) {
         event.rendering = "inverse-background";
         event.id = FREE_ID;
-        event.color = '#257e4a';
+        event.color = '#0dcf00';
         event.title = "Free";
         return event;
     });
