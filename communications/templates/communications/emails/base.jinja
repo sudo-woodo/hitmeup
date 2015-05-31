@@ -1,0 +1,73 @@
+<html>
+    <head>
+        <link rel="stylesheet" type="text/css" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+        <style type="text/css">
+            .logo {
+                margin-bottom: 2em;
+                height: 35px;
+                width: auto;
+            }
+
+            .message {
+                font-size: 1em;
+            }
+
+            .greeting {
+                margin-bottom: 2em;
+            }
+
+            .content {
+                margin-bottom: 2em;
+            }
+
+            .footer {
+                font-size: 0.8em;
+            }
+
+            {% block style %}
+            {% endblock %}
+        </style>
+    </head>
+    <body>
+        {% block logo %}
+            <img src="{{ BASE_URL }}static/communications/img/hitmeup_small.png"
+                 alt="HitMeUp" class="logo"/>
+        {% endblock %}
+
+        {% block message %}
+            <div class="message">
+                <div class="greeting">
+                    {% block greeting %}
+                        Hello, {{ profile.username }}
+                    {% endblock %}
+                </div>
+
+                <div class="content">
+                    {%  block content %}
+                    {% endblock %}
+                </div>
+
+                <div class="signature">
+                    {% block signature %}
+                        Sincerely, <br />
+                        <em>The HitMeUp Team</em>
+                    {% endblock %}
+                </div>
+            </div>
+        {% endblock %}
+
+        <hr/>
+
+        {% block footer %}
+            <div class="footer">
+                <div class="email-settings">
+                    <a href="">Manage Email Settings</a>
+                </div>
+
+                <div class="copyright">
+                    <p>&copy 2015 HitMeup All Rights Reserved</p>
+                </div>
+            </div>
+        {% endblock %}
+    </body>
+</html>
