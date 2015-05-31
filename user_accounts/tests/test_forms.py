@@ -9,7 +9,8 @@ from util.factories import UserFactory
 SIGNUP_URL = reverse('user_accounts:signup')
 SIGNUP_EXTENDED_URL = reverse('user_accounts:extended_signup')
 LOGIN_URL = reverse('user_accounts:login')
-SETTINGS_URL = reverse('user_accounts:settings')
+PROFILE_SETTINGS_URL = reverse('user_accounts:profile_settings')
+PASSWORD_SETTINGS_URL = reverse('user_accounts:password_settings')
 HOME_URL = reverse('static_pages:home')
 
 
@@ -149,7 +150,7 @@ class EditSettingsTestCase(TestCase):
         ]
 
         for case in test_cases:
-            self.client.post(SETTINGS_URL, case['post_data'])
+            self.client.post(PROFILE_SETTINGS_URL, case['post_data'])
             assertFields(case['to'], case['equality'])
 
 
@@ -227,6 +228,6 @@ class EditSettingsTestCase(TestCase):
         ]
 
         for case in test_cases:
-            self.client.post(SETTINGS_URL, case['post_data'])
+            self.client.post(PASSWORD_SETTINGS_URL, case['post_data'])
             self.assertTrue(check_password(case['expected_password'],
                                            self.get_user().password))
