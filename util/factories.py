@@ -45,6 +45,7 @@ class UserProfileFactory(DjangoModelFactory):
     bio = factory.LazyAttribute(lambda p: "%s's biography..." % p.user.username)
 
     calendar = factory.RelatedFactory('util.factories.CalendarFactory', 'owner')
+    subscription = factory.RelatedFactory('util.factories.SubscriptionFactory', 'profile')
 
     @classmethod
     def _generate(cls, create, attrs):
