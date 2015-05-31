@@ -1,3 +1,4 @@
+from django.contrib import messages
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
@@ -8,11 +9,15 @@ from django.http.response import HttpResponseRedirect
 from django.shortcuts import render
 from django.utils.html import escape
 from django.views.generic import View
-from user_accounts.forms import LoginForm, SignupForm, SignUpExtendedForm, SettingsForm
+from user_accounts.forms import LoginForm, SignupForm, SignUpExtendedForm, EditProfileForm, \
+    EditPasswordForm, EditSubscriptionForm
 from user_accounts.models import Friendship
 
 
 PROFILE_PIC_SIZE = 125
+SETTINGS_TAB = 'settings_tab'
+PROFILE_SETTINGS_TAB = 'profile'
+PASSWORD_SETTINGS_TAB = 'password'
 
 
 class SignUpView(View):
@@ -178,112 +183,125 @@ def friends_list(request):
         },
     })
 
+def render_settings(request, tab='profile', profile_form=None,
+                    password_form=None, subscription_form=None,
+                    success_messages=None, error_messages=None):
+    profile = request.user.profile
 
-class SettingsView(View):
-    def post(self, request):
-        profile = request.user.profile
-        edit_form = SettingsForm(data=request.POST)
+    return render(request, 'user_accounts/edit_settings.jinja', {
+        'css': [
+            'user_accounts/css/edit_settings.css'
+        ],
+        'js': [
+            'user_accounts/js/edit_settings.js'
+        ],
+        'tab': tab,
+        'profile_pic': profile.get_gravatar_url(PROFILE_PIC_SIZE),
+        'profile_form': profile_form or EditProfileForm(initial={
+            'first_name': profile.first_name,
+            'last_name': profile.last_name,
+            'email': profile.email,
+            'phone': profile.phone,
+            'bio': profile.bio,
+        }),
+        'subscription_form': subscription_form or EditSubscriptionForm(
+            instance=profile.subscription,
+        ),
+        'password_form': password_form or EditPasswordForm(),
+        'success_messages': success_messages or [],
+        'error_messages': error_messages or [],
+    })
+
+@login_required
+def profile_settings(request):
+    profile_form = None
+    success_messages = None
+
+    if request.method == 'POST':
+        user = request.user
+        profile = user.profile
+        profile_form = EditProfileForm(data=request.POST)
+        success_messages = []
+
+        if profile_form.is_valid():
+            for key, val in profile_form.cleaned_data.iteritems():
+                if key in {'first_name', 'last_name', 'email'}:
+                    setattr(user, key, val.strip())
+                else:
+                    setattr(profile, key, val.strip())
+            user.save()
+            profile.save()
+
+            success_messages.append('Successfully updated profile!')
+
+    # Return to form
+    return render_settings(request, tab='profile', profile_form=profile_form,
+                         success_messages=success_messages)
+
+@login_required
+def subscription_settings(request):
+    subscription_form = None
+    success_messages = None
+
+    if request.method == 'POST':
+        subscription_form = EditSubscriptionForm(data=request.POST)
+        success_messages = []
+
+        if subscription_form.is_valid():
+            # Generate the model, assign the profile, then actually save
+            subscription = subscription_form.save(commit=False)
+            subscription.profile = request.user.profile
+            subscription.save()
+
+            success_messages.append('Successfully updated subscriptions!')
+
+    # Return to form
+    return render_settings(request, tab='subscription',
+                           subscription_form=subscription_form,
+                           success_messages=success_messages)
+
+@login_required
+def password_settings(request):
+    password_form = None
+    error_messages = None
+    success_messages = None
+
+    if request.method == 'POST':
+        password_form = EditPasswordForm(data=request.POST)
         error_messages = []
         success_messages = []
 
-        # To see if we need to update password
-        update_password = False
-        password_valid = True
+        if password_form.is_valid():
+            current_password = password_form.cleaned_data['current_password']
+            new_password = password_form.cleaned_data['new_password']
+            confirm_password = password_form.cleaned_data['confirm_password']
 
-        if edit_form.is_valid():
-            # Get non-empty field values
-            updated_fields = {k: v for k, v
-                              in edit_form.cleaned_data.iteritems() if v}
+            if new_password != confirm_password:
+                error_messages.append(
+                    'New password and password confirmation don\'t match.'
+                )
 
-            # Manually check password fields
-            if updated_fields.viewkeys() & {
-                'current_password', 'new_password', 'confirm_password',
-            }:
-                if 'current_password' not in updated_fields:
-                    error_messages.append(
-                        'Current password was missing.'
-                    )
-                    password_valid = False
-                if 'new_password' not in updated_fields:
-                    error_messages.append(
-                        'New password was missing.'
-                    )
-                    password_valid = False
-                if 'confirm_password' not in updated_fields:
-                    error_messages.append(
-                        'Password confirmation was missing.'
-                    )
-                    password_valid = False
+            # Authenticate the current password
+            user = authenticate(username=request.user.username,
+                                password=current_password)
+            if not user:
+                error_messages.append('Incorrect password.')
 
-                # If we're good so far...
-                if password_valid:
-                    if updated_fields['new_password'] != updated_fields['confirm_password']:
-                        error_messages.append(
-                            'New password and password confirmation don\'t match.'
-                        )
-                        password_valid = False
+            # Update the password if no errors
+            if not error_messages:
+                # Set password
+                user.set_password(new_password)
+                user.save()
+                # Sign user in again
+                new_user = authenticate(username=request.user.username,
+                                        password=new_password)
+                login(request, new_user)
+                success_messages.append('Successfully updated password!')
 
-                    # Authenticate the current password
-                    user = authenticate(username=request.user.username,
-                                        password=updated_fields['current_password'])
-                    if user:
-                        update_password = True
-                    else:
-                        error_messages.append('Incorrect password.')
-                        password_valid = False
-
-            # Only proceed if password valid
-            if password_valid:
-                # Update password
-                if update_password:
-                    # Set password
-                    request.user.set_password(updated_fields['new_password'])
-                    request.user.save()
-                    profile.save()
-                    # Sign user in again
-                    new_user = authenticate(username=request.user.username,
-                                            password=updated_fields['new_password'])
-                    login(request, new_user)
-
-                # Update other fields
-                if not error_messages:
-                    for key, val in updated_fields.iteritems():
-                        if key in {'first_name', 'last_name', 'email'}:
-                            setattr(request.user, key, val.strip())
-                        else:
-                            setattr(profile, key, val.strip())
-                    request.user.save()
-                    profile.save()
-
-                success_messages.append('Successfully updated!')
-
-        # Return to form
-        return render(request, 'user_accounts/edit_settings.jinja', {
-            'css': [
-                'user_accounts/css/edit_settings.css'
-            ],
-            'profile_pic': profile.get_gravatar_url(PROFILE_PIC_SIZE),
-            'edit_form': edit_form,
-            'error_messages': error_messages,
-            'success_messages': success_messages,
-        })
-
-    def get(self, request):
-        profile = request.user.profile
-        return render(request, 'user_accounts/edit_settings.jinja', {
-            'css': [
-                'user_accounts/css/edit_settings.css'
-            ],
-            'profile_pic': profile.get_gravatar_url(PROFILE_PIC_SIZE),
-            'edit_form': SettingsForm(initial={
-                'first_name': profile.first_name,
-                'last_name': profile.last_name,
-                'email': profile.email,
-                'phone': profile.phone,
-                'bio': profile.bio
-            })
-        })
-
+    # Return to form
+    return render_settings(request, tab='password', password_form=password_form,
+                         error_messages=error_messages,
+                         success_messages=success_messages)
 
 class UserProfile(View):
     def get(self, request, username):
@@ -342,6 +360,7 @@ class UserProfile(View):
             if request.user.id == profile.pk:
                 context['profile']['email'] = profile.email
                 context['profile']['phone'] = profile.phone
+                context['profile']['is_free'] = profile.is_free
 
             try:
                 friendship = Friendship.objects.get(
@@ -355,6 +374,7 @@ class UserProfile(View):
                     # uncensor email, phone
                     context['profile']['email'] = profile.email
                     context['profile']['phone'] = profile.phone
+                    context['profile']['is_free'] = profile.is_free
                 else:
                     context['js_data']['status'] = state['PENDING']
             except Friendship.DoesNotExist:
