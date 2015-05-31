@@ -21,3 +21,13 @@ def send_registration_email(profile):
         subject='Welcome to HitMeUp!',
         body=render_email('communications/emails/registration.jinja', profile)
     ).send(fail_silently=False)
+
+def send_notification_email(notification):
+    # Send the notification email
+
+    notification.recipient.create_html_email(
+        subject='A Notification from HitMeUp',
+        body=render_email('communications/emails/notification.jinja', notification.recipient, {
+            'notification': notification,
+        })
+    ).send(fail_silently=False)

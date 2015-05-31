@@ -1,53 +1,24 @@
 <html>
-    <head>
-        <link rel="stylesheet" type="text/css" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
-        <style type="text/css">
-            .logo {
-                margin-bottom: 2em;
-                height: 35px;
-                width: auto;
-            }
-
-            .message {
-                font-size: 1em;
-            }
-
-            .greeting {
-                margin-bottom: 2em;
-            }
-
-            .content {
-                margin-bottom: 2em;
-            }
-
-            .footer {
-                font-size: 0.8em;
-            }
-
-            {% block style %}
-            {% endblock %}
-        </style>
-    </head>
     <body>
         {% block logo %}
             <img src="{{ BASE_URL }}/static/communications/img/hitmeup_small.png"
-                 alt="HitMeUp" class="logo"/>
+                 alt="HitMeUp" style="margin-bottom: 2em; height: 40px; width: 147px;"/>
         {% endblock %}
 
         {% block message %}
-            <div class="message">
-                <div class="greeting">
+            <div style="font-size: 1em; margin-bottom: 2em;">
+                <div style="margin-bottom: 2em;">
                     {% block greeting %}
                         Hello, {{ profile.username }},
                     {% endblock %}
                 </div>
 
-                <div class="content">
+                <div style="margin-bottom: 2em;">
                     {%  block content %}
                     {% endblock %}
                 </div>
 
-                <div class="signature">
+                <div>
                     {% block signature %}
                         Sincerely, <br />
                         <em>The HitMeUp Team</em>
@@ -59,15 +30,15 @@
         <hr/>
 
         {% block footer %}
-            <div class="footer">
-                <div class="email-settings">
+            <div style="font-size: 0.8em;">
+                <div>
                     <a href="{{ BASE_URL + url('user_accounts:subscription_settings') }}">
                         Manage Email Settings
                     </a>
                 </div>
 
-                <div class="copyright">
-                    <p>&copy 2015 HitMeUp All Rights Reserved</p>
+                <div>
+                    <p>&copy; 2015 HitMeUp All Rights Reserved</p>
                 </div>
             </div>
         {% endblock %}

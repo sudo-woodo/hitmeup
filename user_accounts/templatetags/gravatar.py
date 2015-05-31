@@ -7,7 +7,7 @@ import hashlib
 def gravatar_url(email, size=80):
     default = 'retro'
 
-    url = "//www.gravatar.com/avatar/" + \
+    url = "http://www.gravatar.com/avatar/" + \
           hashlib.md5(email.lower()).hexdigest() + "?"
     url += urllib.urlencode({'d': default, 's': str(size)})
 
