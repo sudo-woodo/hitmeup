@@ -385,16 +385,30 @@ class UserProfile(View):
         should_display = False
         is_user = username == request.user.username
         if request.user.is_authenticated():
-            user_events = [e.serialize() for e in
-                                request.user.profile.calendars.get(title='Default').events.all()]
+            # By default, will grab all events from 1990 -> 2050
+            events = request.user.profile.calendars.get(title='Default').get_between()
+            flattened_events = []
+            for e in events:
+                try:
+                    flattened_events += e
+                except TypeError:
+                    flattened_events.append(e)
+            user_events = [e.serialize() for e in flattened_events]
             try:
                 if is_user:
                     should_display = True
                 friend = User.objects.get(username=username).profile
                 friendship = request.user.profile.get_friendship(friend)
                 if friendship is not None and friendship.accepted:
-                    friend_events = [e.serialize() for e in
-                                     friend.calendars.get(title="Default").events.all()]
+                    # By default, will grab all events from 1990 -> 2050
+                    events = friend.calendars.get(title="Default").get_between()
+                    flattened_events = []
+                    for e in events:
+                        try:
+                            flattened_events += e
+                        except TypeError:
+                            flattened_events.append(e)
+                    friend_events = [e.serialize() for e in flattened_events]
 
                     should_display = True
             except (User.DoesNotExist, Friendship.DoesNotExist):

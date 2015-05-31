@@ -29,6 +29,7 @@
                 $('#eventDetailModal').modal('show');
             },
             fixedWeekCount: false,
+            defaultView: "agendaWeek",
             height: 600,
             scrollTime: "08:00:00",
             selectable: true,

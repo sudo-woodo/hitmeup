@@ -25,7 +25,7 @@ class Calendar(models.Model):
     def __unicode__(self):
         return "%s -> %s" % (self.owner, self.title)
 
-    def get_between(self, range_start, range_end):
+    def get_between(self, range_start=None, range_end=None):
         return list(itertools.chain([e.get_between(range_start, range_end) for e in self.events.all()]))
 
 # TODO here to refactor to signals.py
@@ -76,7 +76,7 @@ class Event(models.Model):
         return self.start < time < self.end
 
     # Gets events between the range_start and range_end. Need these checks to get proper subclass
-    def get_between(self, range_start, range_end):
+    def get_between(self, range_start=None, range_end=None):
         subclass = self.recurrence_type
 
         if self.recurrence_type.__class__.__name__.lower() == 'recurrencetype':
