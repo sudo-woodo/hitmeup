@@ -2,7 +2,7 @@ import json
 from django.core.urlresolvers import reverse
 from django.test import TestCase, Client
 from django.utils.crypto import get_random_string
-from ourcalendar.models import Calendar, Event
+from ourcalendar.models import Calendar, Event, SingleRecurrence
 from util.factories import EventFactory, UserFactory, SingleRecurrenceFactory
 
 
@@ -49,6 +49,7 @@ class EventApiTestCase(TestCase):
             'range_start': '2015-12-12 08:00',
             'range_end': '2015-12-12 11:00'
         }
+        self.REPEATING_EVENT_FIELDS = ['days_of_week', 'frequency', 'recurrence_type', 'last_event']
 
     def test_auth(self):
         # Tests if request rejected when not authenticated
@@ -69,7 +70,7 @@ class EventApiTestCase(TestCase):
         # Check if all the events are there
         event_ids = [e.id for e in Event.objects.filter(calendar__owner=self.profile)]
         for user in data:
-            self.assertIn(user['event_id'], event_ids)
+            self.assertIn(user['id'], event_ids)
 
     def test_detail(self):
         event = self.events[0]
@@ -78,12 +79,12 @@ class EventApiTestCase(TestCase):
         response = self.client.get(self.GET_DETAIL_URL(event.pk))
         data = json.loads(response.content)
 
-        expected_fields = ['event_id', 'start', 'end', 'title',
+        expected_fields = ['id', 'start', 'end', 'title',
                            'calendar', 'location', 'description']
 
         # Ensure all the fields are present
         for field in expected_fields:
-            if field == 'event_id':
+            if field == 'id':
                 self.assertEqual(data[field], event.pk)
             elif field == 'calendar':
                 self.assertEqual(data[field], event.calendar.pk)
@@ -97,6 +98,7 @@ class EventApiTestCase(TestCase):
     def test_update(self):
         # Create a event that belongs to another user
         new_event = EventFactory()
+        new_event.recurrence_type = SingleRecurrence()
 
         # Try to update an event that isn't ours
         response = self.client.put(self.GET_DETAIL_URL(new_event.pk),
@@ -153,7 +155,7 @@ class EventApiTestCase(TestCase):
                     getattr(Event.objects.get(pk=event.pk),
                             field).strftime('%Y-%m-%d %H:%M'),
                     self.NEW_DATA[field])
-            else:
+            elif field not in self.REPEATING_EVENT_FIELDS:
                 self.assertEqual(data[field], self.NEW_DATA[field])
                 self.assertEqual(
                     getattr(Event.objects.get(pk=event.pk), field),
@@ -218,7 +220,7 @@ class EventApiTestCase(TestCase):
                                     json.dumps(self.NEW_DATA),
                                     content_type='text/json')
         data = json.loads(response.content)
-        event_id = data['event_id']
+        event_id = data['id']
 
         # Ensure all the fields are present and updated
         for field in self.NEW_DATA:

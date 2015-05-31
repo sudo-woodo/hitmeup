@@ -15,3 +15,7 @@
 #desc-loc-container {
     word-wrap: break-word;
 }
+
+.days-picker {
+    float: right !important;
+}

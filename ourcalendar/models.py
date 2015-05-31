@@ -11,7 +11,8 @@ import itertools
 from ourcalendar.logic.intervals import Interval
 from user_accounts.models import UserProfile
 
-#TODO Look at this in future for possible inheritance implementation http://blog.headspin.com/?p=474
+# TODO Look at this in future for possible inheritance implementation http://blog.headspin.com/?p=474
+
 
 class Calendar(models.Model):
     owner = models.ForeignKey(UserProfile, related_name='calendars')
@@ -127,8 +128,12 @@ class RecurrenceType(models.Model):
     def get_between(self, range_start, range_end):
         raise NotImplementedError("Recurrence Type not implemented!!")
 
+    @property
+    def type(self):
+        pass
+
     def __unicode__(self):
-        return "%s -> RecurrenceType" % (self.event)
+        return "%s -> RecurrenceType" % self.event
 
 
 class SingleRecurrence(RecurrenceType):
@@ -141,6 +146,10 @@ class SingleRecurrence(RecurrenceType):
             return self.event
         else:
             return []
+
+    @property
+    def type(self):
+        return "single"
 
     def __unicode__(self):
         return "%s -> SingleRecurrenceType" % self.event
@@ -161,21 +170,21 @@ move_forward: moves number of days forward (could be backwards if negative) acco
 
 
 class WeeklyRecurrence(RecurrenceType):
-    #TODO: Make sure that the length is only 7!
-    #TODO: Make sure at least one day is 1
-    #TODO: CAUTION: event.start is not necessarily the first date in the recurring series
-    #TODO: Implement edit and delete on weekly... idk how to do this yet ):
+    # TODO: Make sure that the length is only 7!
+    # TODO: Make sure at least one day is 1
+    # TODO: CAUTION: event.start is not necessarily the first date in the recurring series
+    # TODO: Implement edit and delete on weekly... idk how to do this yet ):
     # Days of the week, M T W TH F Sa Su
     days_of_week = models.CharField(default="1000000", max_length=7)
     # The number of weeks between each occurrence
     frequency = models.IntegerField(default=1)
 
     # Total number of occurrences
-    #total_number = models.IntegerField(default=1)
+    # total_number = models.IntegerField(default=1)
 
     last_event_end = models.DateTimeField(default=hour_from_now)
 
-    #TODO: implement with frequency
+    # TODO: implement with frequency
     def get_between(self, range_start, range_end):
 
         # An array of events to return
@@ -187,20 +196,25 @@ class WeeklyRecurrence(RecurrenceType):
             while start <= end:
 
                 if self.days_of_week[start.weekday()] == '1' and start >= range_start:
-                    events.append(Event(calendar=self.event.calendar,
-                              title=self.event.title,
-                              location=self.event.location,
-                              description=self.event.description,
-                              start=start,
-                              end=start + (self.event.start - self.event.end),
-                              id=self.event.id)
-                    )
+                    event = Event(calendar=self.event.calendar,
+                                  title=self.event.title,
+                                  location=self.event.location,
+                                  description=self.event.description,
+                                  start=start,
+                                  end=start + (self.event.end - self.event.start),
+                                  id=self.event.id)
+                    events.append(event)
+                    event.recurrence_type = WeeklyRecurrence()
                 if start.weekday() == 6:
                     start = start + timezone.timedelta(days=1) + timezone.timedelta(weeks=self.frequency - 1)
                 else:
                     start = start + timezone.timedelta(days=1)
 
         return events
+
+    @property
+    def type(self):
+        return "weekly"
 
     def __unicode__(self):
         return "%s -> WeeklyRecurrenceType" % self.event
