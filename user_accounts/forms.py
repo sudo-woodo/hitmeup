@@ -1,16 +1,24 @@
 from collections import OrderedDict
 from django.contrib.auth.models import User
 from django import forms
+from django.core.validators import MinLengthValidator
 from user_accounts.models import UserProfile
 
 
+MIN_USERNAME_LENGTH = 5
+
+
 class LoginForm(forms.Form):
-    username = forms.CharField(widget=forms.TextInput(attrs={
-        'class': 'form-control',
-        'placeholder': 'Username',
-        'id': 'username',
-        'name': 'username',
-    }))
+    username = forms.CharField(
+        validators=[MinLengthValidator(MIN_USERNAME_LENGTH)],
+        widget=forms.TextInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'Username',
+            'id': 'username',
+            'name': 'username',
+        }
+    ))
+
     password = forms.CharField(widget=forms.PasswordInput(attrs={
         'class': 'form-control',
         'placeholder': 'Password',
@@ -27,9 +35,16 @@ class SignupForm(forms.ModelForm, LoginForm):
         'name': 'email',
     }))
 
+    confirm_password = forms.CharField(required=False, widget=forms.PasswordInput(attrs={
+        'class': 'form-control',
+        'placeholder': 'Confirm Password',
+        'id': 'confirm-password',
+        'name': 'confirm-password',
+    }))
+
     class Meta:
         model = User
-        fields = ('email', 'username', 'password')
+        fields = ('email', 'username', 'password', 'confirm_password')
 
 
 class SignUpExtendedForm(forms.Form):
@@ -76,9 +91,11 @@ class SignUpExtendedForm(forms.Form):
     )
 
 
-class SettingsForm(SignUpExtendedForm):
-    FIELD_ORDER = ['email', 'current_password', 'new_password',
-                   'first_name', 'last_name', 'phone', 'bio']
+class EditProfileForm(SignUpExtendedForm):
+    FIELD_ORDER = [
+        'email',
+        'first_name', 'last_name', 'phone', 'bio',
+    ]
 
     email = forms.CharField(required=False, widget=forms.EmailInput(attrs={
         'class': 'form-control',
@@ -87,24 +104,32 @@ class SettingsForm(SignUpExtendedForm):
         'name': 'email',
     }))
 
-    current_password = forms.CharField(required=False, widget=forms.PasswordInput(attrs={
+    # Reorder fields
+    def __init__(self, *args, **kwargs):
+        super(EditProfileForm, self).__init__(*args, **kwargs)
+        self.fields = OrderedDict((k, self.fields[k]) for k in self.FIELD_ORDER
+                                  # Remaining fields
+                                  + list(set(self.fields) -
+                                         set(self.FIELD_ORDER)))
+
+class EditPasswordForm(forms.Form):
+    current_password = forms.CharField(required=True, widget=forms.PasswordInput(attrs={
         'class': 'form-control',
         'placeholder': 'Current password',
         'id': 'current-password',
         'name': 'current-password',
     }))
 
-    new_password = forms.CharField(required=False, widget=forms.PasswordInput(attrs={
+    new_password = forms.CharField(required=True, widget=forms.PasswordInput(attrs={
         'class': 'form-control',
         'placeholder': 'New password',
         'id': 'new-password',
         'name': 'new-password',
     }))
 
-    # Reorder fields
-    def __init__(self, *args, **kwargs):
-        super(SettingsForm, self).__init__(*args, **kwargs)
-        self.fields = OrderedDict((k, self.fields[k]) for k in self.FIELD_ORDER
-                                  # Remaining fields
-                                  + list(set(self.fields) -
-                                         set(self.FIELD_ORDER)))
+    confirm_password = forms.CharField(required=True, widget=forms.PasswordInput(attrs={
+        'class': 'form-control',
+        'placeholder': 'Confirm Password',
+        'id': 'confirm-password',
+        'name': 'confirm-password',
+    }))

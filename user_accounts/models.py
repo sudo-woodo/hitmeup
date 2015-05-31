@@ -17,6 +17,7 @@ accept_friend = django.dispatch.Signal(providing_args=['from_friend', 'to_friend
 
 class UserProfile(models.Model):
     user = models.OneToOneField(User, primary_key=True, related_name='profile')
+    did_extended_signup = models.BooleanField(default=False)
     outgoing_friends = models.ManyToManyField('self', through='Friendship',
                                               symmetrical=False,
                                               related_name='incoming_friends')
@@ -64,7 +65,7 @@ class UserProfile(models.Model):
     def flatten_busy(self, other, show_range):
         from ourcalendar.models import Event
 
-        events = Event.objects.filter(calendar__ownder=self,
+        events = Event.objects.filter(calendar__owner=self,
                                       start__gt=show_range.start,
                                       end__lt=show_range.end)
 

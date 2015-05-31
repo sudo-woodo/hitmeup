@@ -6,6 +6,11 @@ body {
     margin-top: 20px;
 }
 
+.no-friends-panel {
+    text-align: center;
+    font-size: 2em;
+}
+
 .panel-default {
     border-color: #bdbdbd;
 }

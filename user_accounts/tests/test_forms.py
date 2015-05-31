@@ -8,9 +8,9 @@ from util.factories import UserFactory
 
 SIGNUP_URL = reverse('user_accounts:signup')
 SIGNUP_EXTENDED_URL = reverse('user_accounts:extended_signup')
-SIGNUP_EXTENDED_URL += '?first_visit=true'
 LOGIN_URL = reverse('user_accounts:login')
-SETTINGS_URL = reverse('user_accounts:settings')
+PROFILE_SETTINGS_URL = reverse('user_accounts:profile_settings')
+PASSWORD_SETTINGS_URL = reverse('user_accounts:password_settings')
 HOME_URL = reverse('static_pages:home')
 
 
@@ -31,6 +31,7 @@ class SignUpTestCase(TestCase):
         self.SIGNUP_INFO = {
             'username': 'X' + self.user.username,
             'password': 'X' + self.password,
+            'confirm_password': 'X' + self.password,
             'email': 'X' + self.user.email,
         }
 
@@ -149,7 +150,7 @@ class EditSettingsTestCase(TestCase):
         ]
 
         for case in test_cases:
-            self.client.post(SETTINGS_URL, case['post_data'])
+            self.client.post(PROFILE_SETTINGS_URL, case['post_data'])
             assertFields(case['to'], case['equality'])
 
 
@@ -165,6 +166,7 @@ class EditSettingsTestCase(TestCase):
                 'post_data': {
                     'current_password': self.password,
                     'new_password': new_password,
+                    'confirm_password': new_password,
                 }
             },
 
@@ -174,6 +176,17 @@ class EditSettingsTestCase(TestCase):
                 'post_data': {
                     'current_password': bad_password,
                     'new_password': bad_new_password,
+                    'confirm_password': bad_new_password,
+                }
+            },
+
+            # Not matching confirm password
+            {
+                'expected_password': new_password,
+                'post_data': {
+                    'current_password': new_password,
+                    'new_password': bad_new_password,
+                    'confirm_password': 'X' + bad_new_password,
                 }
             },
 
@@ -182,6 +195,7 @@ class EditSettingsTestCase(TestCase):
                 'expected_password': new_password,
                 'post_data': {
                     'new_password': bad_new_password,
+                    'confirm_password': bad_new_password,
                 }
             },
 
@@ -190,6 +204,7 @@ class EditSettingsTestCase(TestCase):
                 'expected_password': new_password,
                 'post_data': {
                     'current_password': bad_password,
+                    'confirm_password': bad_new_password,
                 }
             },
 
@@ -198,11 +213,21 @@ class EditSettingsTestCase(TestCase):
                 'expected_password': new_password,
                 'post_data': {
                     'current_password': new_password,
+                    'confirm_password': bad_new_password,
+                }
+            },
+
+            # Confirm not provided
+            {
+                'expected_password': new_password,
+                'post_data': {
+                    'new_password': bad_new_password,
+                    'current_password': bad_new_password,
                 }
             },
         ]
 
         for case in test_cases:
-            self.client.post(SETTINGS_URL, case['post_data'])
+            self.client.post(PASSWORD_SETTINGS_URL, case['post_data'])
             self.assertTrue(check_password(case['expected_password'],
                                            self.get_user().password))

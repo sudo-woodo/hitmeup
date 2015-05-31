@@ -16,6 +16,18 @@ body {
     border-color: #BDBDBD;
 }
 
+.navbar-my-profile-image {
+    position: absolute;
+    top: 10px;
+    height: 30px;
+    width: 30px;
+}
+
+.navbar-my-profile-text {
+    display: inline-block;
+    margin-left: 35px;
+}
+
 .red-bg {
     background-color: #EF5350;
 }

@@ -36,6 +36,19 @@
                 return <Notification data={notif} />
             });
 
+            if (!notifications.length)
+                notifications = (
+                    <div className="panel panel-default">
+                        <div className="panel-body">
+                            <div className="no-notification-text">
+                                <em>
+                                    No notifications.
+                                </em>
+                            </div>
+                        </div>
+                    </div>
+                );
+
             return (
                 <div className="container notification-list">
                     {notifications}
