@@ -13,19 +13,19 @@ var optionsReactor = (function($HMU, React, $, _) {
             $("[name='showSelf']").bootstrapSwitch({
                 onSwitchChange: this.onChangeSelf,
                 size: 'normal',
-                labelText: "events",
+                labelText: "Events",
                 handleWidth: 50
             });
             $("[name='showFree']").bootstrapSwitch({
                 onSwitchChange: this.onChangeFree,
                 size: 'normal',
-                labelText: "free",
+                labelText: "Free",
                 handleWidth: 50
             });
             $("[name='showBusy']").bootstrapSwitch({
                 onSwitchChange: this.onChangeBusy,
                 size: 'normal',
-                labelText: "busy",
+                labelText: "Busy",
                 handleWidth: 50
             });
         },
