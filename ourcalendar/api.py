@@ -78,12 +78,8 @@ class EventResource(DjangoResource):
         event = Event.objects.get(id=pk, calendar__owner=self.request.user.profile)
         errors = defaultdict(list)
         is_recurring = False
-        # days_diff = 0
         start_diff = 0
         end_diff = 0
-
-        # if 'delta_days' in self.data:
-        #    days_diff = self.data['delta_days']
 
         if 'start_delta' in self.data:
             start_diff = self.data['start_delta']

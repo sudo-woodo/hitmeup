@@ -2,22 +2,6 @@ var RepeatBox = (function(React, $)  {
 
     return React.createClass({
 
-        getInitialState: function()  {
-            return  {
-                frequency: 0,
-                days: []
-            }
-        },
-
-        // Want to use this to dynamically get user input so that a custom box can appear.
-        // However, finding a very hard time getting it to work as it doesn't seem to get called
-        handleInput: function()  {
-            this.setState({
-                frequency: $("#frequency").val(),
-                days: $("#days").val()
-            });
-        },
-
         componentDidMount: function()  {
             $('.selectpicker').selectpicker();
             $('#end_repeat_picker').datetimepicker({
@@ -40,9 +24,7 @@ var RepeatBox = (function(React, $)  {
         // Render necessary repeat information.
         render: function()  {
             // Would have been used to customly render an input form if user selects custom.
-            // var customFreqs
-            // TODO add below to bottom of first selectpicker to allow for custom frequency.
-            // Giving up on custom for now.  Too hard to dynamically get value and do something with it.
+            // TODO add below to bottom of first selectpicker to allow for custom frequency. Need to dynamically get value of selectpicker.
             // <option value="-1">Custom</option>
             // TODO make the repeat end date linked with the start and end time (since it will look better)
 

@@ -15,7 +15,6 @@ var creationReactor = (function(React, $) {
     var EventModal = React.createClass({
 
         handleSubmitSingle: function(data)  {
-            // Pass in the post data and give it the other relevant info to make it a single.
             data.recurrence_type = 'single';
 
             $.ajax({
@@ -36,7 +35,6 @@ var creationReactor = (function(React, $) {
         },
 
         handleSubmitRepeat: function(data)  {
-            // Pass in the post data and give it the other relevant info to make it a repeat.
             // Get frequency here.  Since days was obtained for error checking, it will already be in data.
             var frequency = $("#frequency").val();
             data.frequency = 1;   // By default frequency is weekly.
@@ -103,29 +101,20 @@ var creationReactor = (function(React, $) {
             // Error checking to ensure user put in required fields.
             var errors = [];
 
-            // Error checking for days in here since we checked for errors before all else. Might
-            // want to change this.  Also, couldn't get focus to work.
+            // Error checking for days.  Only done if event is repeat.
             if (this.refs.inputForm.state.repeat)  {
                 if (days_of_week == null) {
                     errors.unshift('Days are required for repeating events.');
-                    // this.refs.inputForm.refs.repeat.refs.days.getDOMNode().focus();
                 }
                 //grab the endtime.
                 postData.last_event = React.findDOMNode(this.refs.inputForm.refs.repeat.refs.endDate).value.trim();
-                console.log("length of endDate " + postData.last_event.length);
                 if (postData.last_event.length === 0)  {
                     errors.unshift('End date for repeating events is required.');
                     this.refs.inputForm.refs.repeat.refs.endDate.getDOMNode().focus();
                 }
                 else {
-                    console.log( "before ");
-                    console.log( postData.last_event );
                     postData.last_event = moment(postData.last_event);
-                    console.log( "after moment" );
-                    console.log( postData.last_event );
-                    postData.last_event.hour(23).minute(53);
-                    console.log( "after adding time ");
-                    console.log( postData.last_event );
+                    postData.last_event.hour(23).minute(59);
                     if (!(postData.last_event.isAfter(postData.end))) {
                         errors.unshift('End date for repeating events must be after end time.');
                         this.refs.inputForm.refs.repeat.refs.endDate.getDOMNode().focus();
@@ -154,8 +143,6 @@ var creationReactor = (function(React, $) {
                 });
             }
             else {
-                //In here we can change it to handle for single and handle for repeat.
-
                 var startMoment = moment(postData.start);
                 var endMoment = moment(postData.end);
 
@@ -163,6 +150,7 @@ var creationReactor = (function(React, $) {
                 postData.start = startMoment.format('YYYY-MM-DD HH:mm');
                 postData.end = endMoment.format('YYYY-MM-DD HH:mm');
 
+                // Handle repeat and single separately.
                 if (this.refs.inputForm.state.repeat) {
                     postData.days_of_week = days_of_week;
                     this.handleSubmitRepeat(postData);
@@ -183,8 +171,7 @@ var creationReactor = (function(React, $) {
             });
         },
 
-        // Initialize all of the states. These are separate from inputForm.  Do they still need
-        // to be reset like this?  What can be done differently?
+        // Initialize all of the states.
         getInitialState: function()  {
             // Reset the error box.
             return {

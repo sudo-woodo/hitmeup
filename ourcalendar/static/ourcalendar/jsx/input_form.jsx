@@ -5,7 +5,7 @@ var InputForm = (function(React, $)  {
     return React.createClass({
 
         // State in regards to the frequency and days of repetition are held in create_event_modal
-        // since they accessed using jQuery.
+        // since they are accessed using jQuery.
         getInitialState: function()  {
             return  {
                 title: '',
@@ -18,6 +18,7 @@ var InputForm = (function(React, $)  {
         },
 
         componentDidMount: function()  {
+            // Repeat button switch. Toggle the repeat box.
             $("[name='repeat']").bootstrapSwitch({
                 onSwitchChange: this.onChangeRepeat,
                 size: 'normal',
@@ -40,7 +41,7 @@ var InputForm = (function(React, $)  {
 
         // Returns fields that are then put into the form.
         render: function()  {
-            // This is so that this will be used only for creation.  Don't worry about editing an event to add repetiton for now
+            // User has ability to make an event repeating only upon creation, not edit.
             var isCreation = false;
             if (this.props.edit == "false")  {
                 isCreation = true;
