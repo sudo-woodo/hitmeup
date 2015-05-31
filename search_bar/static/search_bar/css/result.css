@@ -31,6 +31,12 @@ body {
     text-overflow: clip;
 }
 
+.profile-name{
+    font-weight: bold;
+    margin-left: 10px;
+    color: black;
+}
+
 .overflow-control {
     position: relative;
     pointer-events: none;
@@ -98,4 +104,11 @@ body {
     color: #d50000;
 }
 
+.mail-info{
+    font-weight: bold;
+}
 
+
+.unfriend{
+    color: darkgray;
+}

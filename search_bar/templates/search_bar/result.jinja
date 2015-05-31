@@ -1,5 +1,6 @@
 {% extends "base.jinja" %}
 
+
 {% block title %}
     Results
 {% endblock %}
@@ -14,7 +15,7 @@
 
         {% endif %}
         {% for result in results %}
-            {{ result }}
+{#            {{ result }}#}
             <div class="info-box">
                 <div class="col-xs-12 col-sm-6 col-md-4">
                     <div class="panel panel-default">
@@ -24,9 +25,36 @@
                             </div>
                             <div class="profile-info-container overflow-control">
                                 <ul class="fa-ul info-container">
-                                    <li class="fa fa-li fav-icon-o fav-icon">{{ result.first_name ~ result.last_name }}</li>
+                                    <li><i class="fa fa-li fa-user"></i><a href="{{ result.profile_url }}">{{ result.first_name ~" " ~ result.last_name }}</a></li>
+                                    {% if 'phone' in result %}
 
-                                    <li class="fa fa-li fa-check-circle free-icon"></li>
+                                        {% if result.is_free %}
+                                            <li><i class="fa fa-li fa-check-circle free-icon"></i><span class="info free">Free</span></li>
+                                        {% else %}
+                                             <li><i class="fa fa-li fa-clock-o busy-icon"></i><span class="info busy">Busy</span></li>
+                                        {% endif %}
+
+                                        <li><i class="fa fa-li fa-envelope"></i>
+                                            {% if result.email %}
+                                                <a href="mailto:" ~ result.email>{{ result.email }}</a>
+                                            {% else %}
+                                                <a href="mailto:#"></a>
+                                            {% endif %}
+                                        </li>
+                                            <li><i class="fa fa-li fa-phone"></i>
+                                                {% if result.phone %}
+                                                    <a href="tel:" ~ result.phone>{{ result.phone }}</a>
+                                                {% else %}
+                                                    <a href="tel:#">-</a>
+                                                {% endif %}
+                                            </li>
+                                    {% else %}
+                                        <li><i class="fa fa-li fa-minus unfriend"></i><span class="info unfriend">Not friends</span></li>
+                                        <li><i class="fa fa-li fa-envelope"></i>-</li>
+                                        <li><i class="fa fa-li fa-phone"></i>-</li>
+
+
+                                    {% endif %}
                                 </ul>
 
                             </div>
