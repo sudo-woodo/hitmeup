@@ -25,7 +25,7 @@ def do_user_search(data, num_results=None):
     except User.DoesNotExist:
         user = None
 
-    # The second parameter is the default value. Returns SearchResult object.
+    # Returns SearchResult object.
     try:
         auto_results = SearchQuerySet()\
             .filter_or(username_auto=query)\

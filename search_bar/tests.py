@@ -10,6 +10,7 @@ SEARCH_URL = reverse('search_bar:user_search')
 SEARCH_BAR_HTML = 'form id="user-search-form"'
 SUGGESTIONS_HTML = '<h2> Suggestions</h2>'
 PROFILE_HTML = 'id="profile-body"'
+NO_RESULTS = 'No results found for your query. Try another search item.'
 
 class SearchTestCase(TestCase):
     """
@@ -51,6 +52,10 @@ class SearchTestCase(TestCase):
         search_response = self.client.get(SEARCH_URL, {'q': 'ThaD'})
         self.assertContains(search_response, SUGGESTIONS_HTML, msg_prefix='Failed to render suggestions page')
         self.assertContains(search_response, 'ThaDoggFather', msg_prefix='Suggestions page autocomplete unsuccessful')
+
+        # Tests that a no matching query redirects to a "no results" page
+        search_response = self.client.get(SEARCH_URL, {'q': 'advjnaol12'})
+        self.assertContains(search_response, NO_RESULTS, msg_prefix='Failed to render no results page')
 
 
 
