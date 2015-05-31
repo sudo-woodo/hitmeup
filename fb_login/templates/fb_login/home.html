@@ -2,7 +2,7 @@
 
  <div>
 {#  {% if user.is_authenticated() %}#}
- <!--      <script>window.location.replace("/")</script>-->
+{#       <script>window.location.replace("/")</script>#}
  <p>
    <ul>
    {% if user and not user.is_anonymous %}
@@ -11,6 +11,7 @@
 
         <div class="user-details">
           You are logged in as <code>{{ user.username }}</code>!
+            Your email is <code>{{ user.email }}</code>
         </div>
      </li>
      <li>

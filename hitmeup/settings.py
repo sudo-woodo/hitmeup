@@ -197,6 +197,21 @@ CSRF_FAILURE_VIEW = 'hitmeup.views.csrf_failure'
 # Fullcalendar
 TIME_FMT = '%Y-%m-%dT%H:%M:%S'
 
+
+
+SOCIAL_AUTH_PIPELINE = (
+    'social.pipeline.social_auth.social_details',
+    'social.pipeline.social_auth.social_uid',
+    #'social.pipeline.social_auth.auth_allowed',
+    #'social.pipeline.social_auth.social_user',
+    #'social.pipeline.user.get_username',
+    # 'social.pipeline.user.create_user',
+    'hitmeup.logic.save_profile',
+    'hitmeup.logic.login_user',
+    # 'social.pipeline.social_auth.associate_user',
+    'social.pipeline.social_auth.load_extra_data',
+    #'social.pipeline.user.user_details'
+)
 AUTHENTICATION_BACKENDS = (
    'social.backends.facebook.FacebookOAuth2',
    'django.contrib.auth.backends.ModelBackend',
@@ -210,6 +225,7 @@ SOCIAL_AUTH_FACEBOOK_KEY = "405286863009329"
 SOCIAL_AUTH_FACEBOOK_SECRET = 'fba6042bfb5059027f4ba6f4b9b58cec'
 SOCIAL_AUTH_FACEBOOK_SCOPE = ['email']
 SOCIAL_AUTH_FACEBOOK_PROFILE_EXTRA_PARAMS = {'locale': 'ru_RU'}
+
 
 
 TEMPLATE_CONTEXT_PROCESSORS = (
