@@ -3,6 +3,8 @@ from django.http import HttpResponseRedirect
 from django.http.response import JsonResponse
 from django.shortcuts import render
 from search_bar.logic.user_search import do_user_search
+from user_accounts.models import Friendship
+
 
 def user_search(request):
     query = request.GET.get('q')
@@ -28,9 +30,21 @@ def user_search(request):
         #     s.profile.public_serialized for s in suggestions
         # ]})
 
+        friends = []
+        others = []
+
+        for suggestion in suggestions:
+            profile = suggestion.profile
+            try:
+                request.user.profile.get_friendship(profile)
+                friends.append(profile.basic_serialized)
+            except Friendship.DoesNotExist:
+                others.append(profile.public_serialized)
+
         return render(request, 'search_bar/result.jinja', {
             'css': ['search_bar/css/result.css'],
-            'results': [s.profile.public_serialized for s in suggestions],
+            'results': friends + others,
+
         })
 
 def user_autocomplete(request):
