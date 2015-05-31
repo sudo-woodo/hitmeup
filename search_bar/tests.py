@@ -23,7 +23,8 @@ class SearchTestCase(TestCase):
         self.client = Client()
         self.factory = RequestFactory()
         self.password = get_random_string()
-        self.user = UserFactory.create(password=self.password)
+        #self.user = UserFactory.create(password=self.password, first_name='test', last_name='name')
+        self.user = UserFactory(username='TestUser', password=self.password, first_name='Test', last_name='Name')
         self.LOGIN_INFO = {
             'username': self.user.username,
             'password': self.password,
@@ -42,9 +43,9 @@ class SearchTestCase(TestCase):
 
     def test_search_submit(self):
         # Tests that searching an exact match will redirect to the user's profile
+        self.client.post(LOGIN_URL, self.LOGIN_INFO) # login
         user1 = UserFactory(username='ThaDoggFather', first_name='Snoop', last_name='Dogg')
         search_response= self.client.get(SEARCH_URL, {'q': 'ThaDoggFather'})
-
         self.assertEqual(user1.profile, User.objects.get(username=user1.username).profile)
         self.assertEqual(user1.profile.first_name, User.objects.get(username=user1.username).profile.first_name)
         self.assertRedirects(search_response, reverse('user_accounts:user_profile', args=(user1.username,)))
