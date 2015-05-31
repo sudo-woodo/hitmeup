@@ -342,6 +342,7 @@ class UserProfile(View):
             if request.user.id == profile.pk:
                 context['profile']['email'] = profile.email
                 context['profile']['phone'] = profile.phone
+                context['profile']['is_free'] = profile.is_free
 
             try:
                 friendship = Friendship.objects.get(
@@ -355,6 +356,7 @@ class UserProfile(View):
                     # uncensor email, phone
                     context['profile']['email'] = profile.email
                     context['profile']['phone'] = profile.phone
+                    context['profile']['is_free'] = profile.is_free
                 else:
                     context['js_data']['status'] = state['PENDING']
             except Friendship.DoesNotExist:
