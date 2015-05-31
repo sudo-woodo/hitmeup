@@ -11,6 +11,9 @@ SEARCH_BAR_HTML = 'form id="user-search-form"'
 SUGGESTIONS_HTML = '<h2> Suggestions</h2>'
 PROFILE_HTML = 'id="profile-body"'
 NO_RESULTS = 'No results found for your query. Try another search item.'
+SUGGESTION_FAIL = 'Failed to render suggestions page'
+AUTOCOMPLETE_FAIL = 'Suggestions page autocomplete unsuccessful'
+NO_RESULT_FAIL = 'Failed to render no results page'
 
 class SearchTestCase(TestCase):
     """
@@ -39,23 +42,33 @@ class SearchTestCase(TestCase):
 
     def test_search_submit(self):
         # Tests that searching an exact match will redirect to the user's profile
-        user1 = UserFactory(username='ThaDoggFather')
-        user1.first_name = 'Snoop'
-        user1.last_name = 'Dogg'
-        user1.profile = UserProfileFactory()
+        user1 = UserFactory(username='ThaDoggFather', first_name='Snoop', last_name='Dogg')
         search_response= self.client.get(SEARCH_URL, {'q': 'ThaDoggFather'})
 
         self.assertEqual(user1.profile, User.objects.get(username=user1.username).profile)
+        self.assertEqual(user1.profile.first_name, User.objects.get(username=user1.username).profile.first_name)
         self.assertRedirects(search_response, reverse('user_accounts:user_profile', args=(user1.username,)))
 
         # Tests that an incomplete query will redirect to a suggested results page
         search_response = self.client.get(SEARCH_URL, {'q': 'ThaD'})
-        self.assertContains(search_response, SUGGESTIONS_HTML, msg_prefix='Failed to render suggestions page')
-        self.assertContains(search_response, 'ThaDoggFather', msg_prefix='Suggestions page autocomplete unsuccessful')
+        self.assertContains(search_response, SUGGESTIONS_HTML, msg_prefix=SUGGESTION_FAIL)
+        self.assertContains(search_response, 'ThaDoggFather', msg_prefix=AUTOCOMPLETE_FAIL)
+
+        # Test first name query
+        search_response = self.client.get(SEARCH_URL, {'q': 'snoop'})
+        self.assertContains(search_response, SUGGESTIONS_HTML, msg_prefix=SUGGESTION_FAIL)
+        self.assertContains(search_response, 'ThaDoggFather', msg_prefix=AUTOCOMPLETE_FAIL)
+
+        # Test last name query
+        search_response = self.client.get(SEARCH_URL, {'q': 'dogg'})
+        self.assertContains(search_response, SUGGESTIONS_HTML, msg_prefix=SUGGESTION_FAIL)
+        self.assertContains(search_response, 'ThaDoggFather', msg_prefix=AUTOCOMPLETE_FAIL)
+
+        # Test full name query
+        search_response = self.client.get(SEARCH_URL, {'q': 'snoop dogg'})
+        self.assertContains(search_response, SUGGESTIONS_HTML, msg_prefix=SUGGESTION_FAIL)
+        self.assertContains(search_response, 'ThaDoggFather', msg_prefix=AUTOCOMPLETE_FAIL)
 
         # Tests that a no matching query redirects to a "no results" page
         search_response = self.client.get(SEARCH_URL, {'q': 'advjnaol12'})
-        self.assertContains(search_response, NO_RESULTS, msg_prefix='Failed to render no results page')
-
-
-
+        self.assertContains(search_response, NO_RESULTS, msg_prefix=NO_RESULT_FAIL)
