@@ -5,6 +5,9 @@ from django.contrib.auth.models import User
 class UserIndex(indexes.SearchIndex, indexes.Indexable):
     text = indexes.CharField(document=True, use_template=True)
     username_auto = indexes.NgramField(model_attr='username', boost=2)
+    #full_name_auto = indexes.EdgeNgramField(model_attr='get_full_name')
+    first_name_auto = indexes.EdgeNgramField(model_attr='first_name')
+    last_name_auto = indexes.EdgeNgramField(model_attr='last_name')
     full_name_auto = indexes.EdgeNgramField(model_attr='get_full_name')
 
     def get_model(self):

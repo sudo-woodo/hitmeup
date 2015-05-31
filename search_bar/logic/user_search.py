@@ -29,6 +29,8 @@ def do_user_search(data, num_results=None):
     try:
         auto_results = SearchQuerySet()\
             .filter_or(username_auto=query)\
+            .filter_or(first_name_auto=query)\
+            .filter_or(last_name_auto=query)\
             .filter_or(full_name_auto=query)
 
         suggestions = [result.object for result in auto_results]
