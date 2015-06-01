@@ -112,3 +112,7 @@ body {
 .unfriend{
     color: darkgray;
 }
+
+.result-list{
+    margin-top: 20px;
+}
