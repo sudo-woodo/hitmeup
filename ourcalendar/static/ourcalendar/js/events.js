@@ -1,5 +1,5 @@
-(function($, $HMU) {
-    var events = $HMU.events;
+(function($, $HMU, _) {
+    $HMU.monthlyEvents = {};
 
     $(document).ready(function() {
 
@@ -21,14 +21,15 @@
                     description: event.description,
                     start: event.start.format('LLL'),
                     end: event.end.format('LLL'),
-                    id: event.id
+                    id: event.id,
+                    repeat: event.recurrence_type
                 });
 
                 // Dev tip: can use event.id to get the clicked event's id
                 $('#eventDetailModal').modal('show');
             },
-            events: events,
             fixedWeekCount: false,
+            defaultView: "agendaWeek",
             height: 600,
             scrollTime: "08:00:00",
             selectable: true,
@@ -54,7 +55,10 @@
                     type: "PUT",
                     data: JSON.stringify({
                         start: event.start.format('YYYY-MM-DD HH:mm'),
-                        end: event.end.format('YYYY-MM-DD HH:mm')
+                        end: event.end.format('YYYY-MM-DD HH:mm'),
+                        recurrence_type: event.recurrence_type,
+                        start_delta: delta.asMilliseconds(),
+                        end_delta: delta.asMilliseconds()
                     }),
                     contentType: "application/json",
                     success: function (response) {
@@ -75,7 +79,10 @@
                     type: "PUT",
                     data: JSON.stringify({
                         start: event.start.format('YYYY-MM-DD HH:mm'),
-                        end: event.end.format('YYYY-MM-DD HH:mm')
+                        end: event.end.format('YYYY-MM-DD HH:mm'),
+                        recurrence_type: event.recurrence_type,
+                        start_delta: 0,
+                        end_delta: delta.asMilliseconds()
                     }),
                     contentType: "application/json",
                     success: function (response) {
@@ -88,7 +95,69 @@
                         console.log(xhr.responseText);
                     }
                 });
+            },
+
+            viewRender: function(view, element) {
+                var beginMonth = view.start.format('YYYY-MM');
+                var endMonth = view.end.format('YYYY-MM');
+
+                // Begin month's events have not been retrieved yet
+                if (!_.has($HMU.monthlyEvents, beginMonth)) {
+                    var beginRangePrev = view.start.startOf('month').format('YYYY-MM-DD HH:mm');
+                    var endRangePrev = view.start.endOf('month').format('YYYY-MM-DD HH:mm');
+
+                    $.ajax({
+                        url: '/api/events/?range_start=' + beginRangePrev + '&range_end=' + endRangePrev,
+                        type: "GET",
+                        contentType: "application/json",
+                        success: function (response) {
+                            $('#calendar').fullCalendar('addEventSource', response['objects']);
+                            $HMU.monthlyEvents[beginMonth] = true;
+                        },
+                        error: function (xhr, textStatus, thrownError) {
+                            alert("An error occurred, please try again later.");
+                            console.log(xhr.responseText);
+                        }
+                    });
+                }
+
+                // End month's events have not been retrieved yet
+                if (!_.has($HMU.monthlyEvents, endMonth)) {
+                    var beginRangeNext = view.end.startOf('month').format('YYYY-MM-DD HH:mm');
+                    var endRangeNext = view.end.endOf('month').format('YYYY-MM-DD HH:mm');
+
+                    $.ajax({
+                        url: '/api/events/?range_start=' + beginRangeNext + '&range_end=' + endRangeNext,
+                        type: "GET",
+                        contentType: "application/json",
+                        success: function (response) {
+                            $('#calendar').fullCalendar('addEventSource', response['objects']);
+                            $HMU.monthlyEvents[endMonth] = true;
+                        },
+                        error: function (xhr, textStatus, thrownError) {
+                            alert("An error occurred, please try again later.");
+                            console.log(xhr.responseText);
+                        }
+                    });
+                }
             }
-        })
+        });
+
+        // Initial load of current month's events
+        var beginRange = moment().startOf('month').format('YYYY-MM-DD HH:mm');
+        var endRange = moment().endOf('month').format('YYYY-MM-DD HH:mm');
+        $.ajax({
+            url: '/api/events/?range_start=' + beginRange + '&range_end=' + endRange,
+            type: "GET",
+            contentType: "application/json",
+            success: function (response) {
+                $('#calendar').fullCalendar('addEventSource', response['objects']);
+                $HMU.monthlyEvents[moment().format('YYYY-MM')] = true;
+            },
+            error: function (xhr, textStatus, thrownError) {
+                alert("An error occurred, please try again later.");
+                console.log(xhr.responseText);
+            }
+        });
     });
-})(window.jQuery, window.$HMU);
+})(window.jQuery, window.$HMU, window._);
