@@ -8,7 +8,7 @@ HOME_URL = reverse('static_pages:home')
 LOGIN_URL = reverse('user_accounts:login')
 SEARCH_URL = reverse('search_bar:user_search')
 SEARCH_BAR_HTML = 'form id="user-search-form"'
-SUGGESTIONS_HTML = '<h2> Suggestions</h2>'
+SUGGESTIONS_HTML = 'Search Results'
 PROFILE_HTML = 'id="profile-body"'
 NO_RESULTS = 'No results found for your query. Try another search item.'
 SUGGESTION_FAIL = 'Failed to render suggestions page'

@@ -24,12 +24,6 @@ def user_search(request):
             reverse('user_accounts:user_profile', args=(user.username,))
         )
     else:
-        # TODO: make a nice search results page
-
-        # return JsonResponse({'suggestions': [
-        #     s.profile.public_serialized for s in suggestions
-        # ]})
-
         friends = []
         others = []
 
@@ -37,12 +31,15 @@ def user_search(request):
             profile = suggestion.profile
             try:
                 request.user.profile.get_friendship(profile)
-                friends.append(profile.basic_serialized)
+                friends.append(profile)
             except Friendship.DoesNotExist:
-                others.append(profile.public_serialized)
+                others.append(profile)
 
         return render(request, 'search_bar/result.jinja', {
-            'css': ['search_bar/css/result.css'],
+            'css': [
+                'search_bar/css/result.css',
+                'user_accounts/css/friends_list.css',
+            ],
             'results': friends + others,
 
         })

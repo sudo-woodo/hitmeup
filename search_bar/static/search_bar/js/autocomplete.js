@@ -35,5 +35,7 @@
     });
 
     // Submit on selection
-    $tt.on('typeahead:selected', $form.submit);
+    $tt.on('typeahead:selected', function() {
+        $form.submit();
+    });
 })})(window.$HMU, window.jQuery, window.Handlebars, window.Bloodhound);
