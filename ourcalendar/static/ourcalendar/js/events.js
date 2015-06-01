@@ -99,6 +99,7 @@
 
             viewRender: function(view, element) {
                 var beginMonth = view.start.format('YYYY-MM');
+                var currMonth = view.intervalStart.format('YYYY-MM');
                 var endMonth = view.end.format('YYYY-MM');
 
                 // Begin month's events have not been retrieved yet
@@ -112,13 +113,34 @@
                         contentType: "application/json",
                         success: function (response) {
                             $('#calendar').fullCalendar('addEventSource', response['objects']);
-                            $HMU.monthlyEvents[beginMonth] = true;
                         },
                         error: function (xhr, textStatus, thrownError) {
                             alert("An error occurred, please try again later.");
                             console.log(xhr.responseText);
                         }
                     });
+                    $HMU.monthlyEvents[beginMonth] = true;
+                }
+
+                // End month's events have not been retrieved yet
+                if (!_.has($HMU.monthlyEvents, currMonth)) {
+                    var beginRangeCurr = view.intervalStart.startOf('month').format('YYYY-MM-DD HH:mm');
+                    var endRangeCurr = view.intervalStart.endOf('month').format('YYYY-MM-DD HH:mm');
+
+                    $.ajax({
+                        url: '/api/events/?range_start=' + beginRangeCurr + '&range_end=' + endRangeCurr,
+                        type: "GET",
+                        contentType: "application/json",
+                        success: function (response) {
+                            $('#calendar').fullCalendar('addEventSource', response['objects']);
+                            $HMU.monthlyEvents[endMonth] = true;
+                        },
+                        error: function (xhr, textStatus, thrownError) {
+                            alert("An error occurred, please try again later.");
+                            console.log(xhr.responseText);
+                        }
+                    });
+                    $HMU.monthlyEvents[currMonth] = true;
                 }
 
                 // End month's events have not been retrieved yet
@@ -139,24 +161,8 @@
                             console.log(xhr.responseText);
                         }
                     });
+                    $HMU.monthlyEvents[endMonth] = true;
                 }
-            }
-        });
-
-        // Initial load of current month's events
-        var beginRange = moment().startOf('month').format('YYYY-MM-DD HH:mm');
-        var endRange = moment().endOf('month').format('YYYY-MM-DD HH:mm');
-        $.ajax({
-            url: '/api/events/?range_start=' + beginRange + '&range_end=' + endRange,
-            type: "GET",
-            contentType: "application/json",
-            success: function (response) {
-                $('#calendar').fullCalendar('addEventSource', response['objects']);
-                $HMU.monthlyEvents[moment().format('YYYY-MM')] = true;
-            },
-            error: function (xhr, textStatus, thrownError) {
-                alert("An error occurred, please try again later.");
-                console.log(xhr.responseText);
             }
         });
     });

@@ -88,8 +88,8 @@ class Event(models.Model):
                 except WeeklyRecurrence.DoesNotExist:
                     pass
 
-        range_start = range_start if range_start is not None else datetime.strptime('1990-01-01 12:12', '%Y-%m-%d %H:%M')
-        range_end = range_end if range_end is not None else datetime.strptime('2050-01-01 12:12', '%Y-%m-%d %H:%M')
+        range_start = range_start or datetime.min
+        range_end = range_end or datetime.max
 
         return subclass.get_between(range_start, range_end)
 
@@ -116,7 +116,7 @@ class SingleRecurrence(RecurrenceType):
     def get_between(self, range_start, range_end):
 
         if self.event.start <= range_end and self.event.end >= range_start:
-            return self.event
+            return [self.event]
         else:
             return []
 
@@ -139,7 +139,6 @@ class WeeklyRecurrence(RecurrenceType):
 
     last_event_end = models.DateTimeField(default=hour_from_now)
 
-    # TODO: implement with frequency
     def get_between(self, range_start, range_end):
 
         # An array of events to return
@@ -160,10 +159,9 @@ class WeeklyRecurrence(RecurrenceType):
                                   id=self.event.id)
                     events.append(event)
                     event.recurrence_type = WeeklyRecurrence()
+                start += timezone.timedelta(days=1)
                 if start.weekday() == 6:
-                    start = start + timezone.timedelta(days=1) + timezone.timedelta(weeks=self.frequency - 1)
-                else:
-                    start = start + timezone.timedelta(days=1)
+                    start += timezone.timedelta(weeks=self.frequency - 1)
 
         return events
 
