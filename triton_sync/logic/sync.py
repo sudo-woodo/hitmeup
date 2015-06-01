@@ -1,11 +1,12 @@
-from datetime import datetime, timedelta
 import re
+from datetime import timedelta
+from django.utils.datetime_safe import datetime
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.common.exceptions import TimeoutException
 from bs4 import BeautifulSoup
-from ourcalendar.models import Event
+from ourcalendar.models import Event, WeeklyRecurrence
 
 PHANTOMJS_BIN = './node_modules/phantomjs/bin/phantomjs'
 TRITONLINK_URL = 'http://mytritonlink.ucsd.edu/'
@@ -118,7 +119,7 @@ def get_classes(username, password):
     return classes
 
 
-def create_event(user, cls):
+def create_event(user, cls, date):
     """Creates an event on the user's calendar with the given class information.
 
     :param user: the UserProfile whose calendar the events will be created on
@@ -134,12 +135,9 @@ def create_event(user, cls):
     start_time, end_time = [extract_time(t.strip()) for t in time.split('-')]
 
     # Get datetime for next occurrence of day of week, starting from today
-    # TODO specify start and end time of current UC San Diego quarter
-    # TODO create recurring events instead of one-off
-    date = next_day_of_week(datetime.now().replace(second=0, microsecond=0),
-                            DAYS_OF_WEEK[day_of_week])
-    start = date.replace(hour=start_time[0], minute=start_time[1])
-    end = date.replace(hour=end_time[0], minute=end_time[1])
+    end_date = datetime(date.year, date.month, date.day) + timedelta(weeks=10) - timedelta(minutes=1)
+    start = datetime(date.year, date.month, date.day, hour=start_time[0], minute=start_time[1])
+    end = datetime(date.year, date.month, date.day, hour=end_time[0], minute=end_time[1])
 
     # Prevents creation of already-imported events through hashing of class info
     event, created = Event.objects.get_or_create(
@@ -153,6 +151,17 @@ def create_event(user, cls):
     event.location = location
     event.description = "Imported by TritonSync"
     event.save()
+
+    weekdays = ['0'] * 7
+    weekdays[DAYS_OF_WEEK[day_of_week]] = '1'
+
+    if created:
+        WeeklyRecurrence.objects.create(
+            days_of_week=''.join(weekdays),
+            frequency=1,
+            last_event_end=end_date,
+            event=event
+        )
 
     return event
 
@@ -201,7 +210,7 @@ def extract_time(time):
     return hours, minutes
 
 
-def import_schedule(user, classes):
+def import_schedule(user, classes, start_date):
     """Imports a schedule of classes into a given user's calendar.
 
     :param user: a UserProfile, whose calendar to import the events into
@@ -211,4 +220,4 @@ def import_schedule(user, classes):
     """
 
     for cls in classes:
-        create_event(user, cls)
+        create_event(user, cls, start_date)

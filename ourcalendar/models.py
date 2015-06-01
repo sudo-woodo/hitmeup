@@ -116,7 +116,7 @@ class SingleRecurrence(RecurrenceType):
 
     def get_between(self, range_start, range_end):
 
-        if self.event.start <= range_end and self.event.end >= range_start:
+        if self.event.end >= range_start and range_end >= self.event.start >= range_start:
             return self.event
         else:
             return []

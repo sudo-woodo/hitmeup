@@ -44,6 +44,7 @@ INSTALLED_APPS = (
     # Vendor
     'django_jinja',
     'restless',
+    'datetimewidget',
 
     # Custom
     'hitmeup',

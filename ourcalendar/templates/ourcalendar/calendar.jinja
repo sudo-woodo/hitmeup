@@ -8,6 +8,12 @@
     <div class="container">
         <div id="calendar-container" class="panel panel-default">
             <div class="panel-body">
+                <div id="sync-button-wrapper">
+                    <a id="sync-button" class="btn btn-primary btn-sm" href="{{ url('triton_sync:sync') }}">
+                        <i class="fa fa-refresh"></i>&nbsp;
+                        Sync with TritonLink
+                    </a>
+                </div>
                 <div id='calendar'></div>
             </div>
         </div>
