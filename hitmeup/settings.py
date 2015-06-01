@@ -216,6 +216,7 @@ AUTHENTICATION_BACKENDS = (
    'social.backends.facebook.FacebookOAuth2',
    'django.contrib.auth.backends.ModelBackend',
    'django_facebook.auth_backends.FacebookBackend',
+    'fb_login.authentication.MyBackend',
 )
 FACEBOOK_APP_ID = "405286863009329"
 FACEBOOK_APP_SECRET = 'fba6042bfb5059027f4ba6f4b9b58cec'

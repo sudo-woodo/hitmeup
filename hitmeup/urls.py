@@ -37,5 +37,4 @@ urlpatterns = [
     url(r'^sudowoodo_login_fb/', include('fb_login.urls', namespace='fb_login')),
     url('', include('social.apps.django_app.urls', namespace='social')),
     url('', include('django.contrib.auth.urls', namespace='auth')),
-    url(r'^facebook/', include('django_facebook.urls')),
 ]
