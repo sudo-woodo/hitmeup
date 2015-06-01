@@ -1,6 +1,10 @@
-#calendar {
-    max-width: 90%;
-    margin: 20px auto auto auto;
+body {
+    background-color: #e0e0e0;
+}
+
+#calendar-container {
+    margin-top: 20px;
+    border-color: #bdbdbd;
 }
 
 .modal-body textArea {

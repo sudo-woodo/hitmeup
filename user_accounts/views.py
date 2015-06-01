@@ -1,3 +1,4 @@
+from django.contrib import messages
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
@@ -8,11 +9,15 @@ from django.http.response import HttpResponseRedirect
 from django.shortcuts import render
 from django.utils.html import escape
 from django.views.generic import View
-from user_accounts.forms import LoginForm, SignupForm, SignUpExtendedForm, SettingsForm
+from user_accounts.forms import LoginForm, SignupForm, SignUpExtendedForm, EditProfileForm, \
+    EditPasswordForm
 from user_accounts.models import Friendship
 
 
 PROFILE_PIC_SIZE = 125
+SETTINGS_TAB = 'settings_tab'
+PROFILE_SETTINGS_TAB = 'profile'
+PASSWORD_SETTINGS_TAB = 'password'
 
 
 class SignUpView(View):
@@ -44,8 +49,10 @@ class SignUpView(View):
             return HttpResponseRedirect(reverse('user_accounts:extended_signup'))
         else:
             # Return the form with errors
-            return render(request, 'user_accounts/signup.jinja',
-                          {'signup_form': signup_form})
+            return render(request, 'user_accounts/signup.jinja', {
+                'signup_form': signup_form,
+                'css': ['user_accounts/css/signup.css']
+            })
 
     def get(self, request):
         # if the user is already logged in and is trying to access the signup
@@ -55,7 +62,8 @@ class SignUpView(View):
 
         # Otherwise, return a blank form for the user to fill out
         return render(request, 'user_accounts/signup.jinja', {
-            'signup_form': SignupForm()
+            'signup_form': SignupForm(),
+            'css': ['user_accounts/css/signup.css']
         })
 
 
@@ -85,6 +93,7 @@ class SignUpExtended(View):
         # If there's an form error, rerender with errors
         else:
             return render(request, 'user_accounts/signup_extended.jinja', {
+                'css': ['user_accounts/css/signup_extended.css'],
                 'signup_extended_form': signup_extended_form
             })
 
@@ -95,6 +104,7 @@ class SignUpExtended(View):
 
         # Otherwise, return a blank form for the user to fill out
         return render(request, 'user_accounts/signup_extended.jinja', {
+            'css': ['user_accounts/css/signup_extended.css'],
             'signup_extended_form': SignUpExtendedForm(),
         })
 
@@ -119,6 +129,7 @@ class LoginView(View):
 
                 else:
                     return render(request, 'user_accounts/login.jinja', {
+                        'css': ['user_accounts/css/login.css'],
                         'login_form': login_form,
                         'error_messages': [
                             'This account has been marked as inactive.'
@@ -127,6 +138,7 @@ class LoginView(View):
             # If user provided wrong info, rerender with errors
             else:
                 return render(request, 'user_accounts/login.jinja', {
+                    'css': ['user_accounts/css/login.css'],
                     'login_form': login_form,
                     'error_messages': [
                         'Incorrect username or password.'
@@ -135,6 +147,7 @@ class LoginView(View):
         # If there's an form error, rerender with errors
         else:
             return render(request, 'user_accounts/login.jinja', {
+                'css': ['user_accounts/css/login.css'],
                 'login_form': login_form
             })
 
@@ -146,6 +159,7 @@ class LoginView(View):
 
         # Else, display a empty form for the user
         return render(request, 'user_accounts/login.jinja', {
+            'css': ['user_accounts/css/login.css'],
             'login_form': LoginForm()
         })
 
@@ -178,118 +192,109 @@ def friends_list(request):
         },
     })
 
+def render_settings(request, tab='profile', profile_form=None, password_form=None,
+                  success_messages=None, error_messages=None):
+    profile = request.user.profile
 
-class SettingsView(View):
-    def post(self, request):
-        profile = request.user.profile
-        edit_form = SettingsForm(data=request.POST)
+    return render(request, 'user_accounts/edit_settings.jinja', {
+        'css': [
+            'user_accounts/css/edit_settings.css'
+        ],
+        'js': [
+            'user_accounts/js/edit_settings.js'
+        ],
+        'tab': tab,
+        'profile_pic': profile.get_gravatar_url(PROFILE_PIC_SIZE),
+        'profile_form': profile_form or EditProfileForm(initial={
+            'first_name': profile.first_name,
+            'last_name': profile.last_name,
+            'email': profile.email,
+            'phone': profile.phone,
+            'bio': profile.bio,
+        }),
+        'password_form': password_form or EditPasswordForm(),
+        'success_messages': success_messages or [],
+        'error_messages': error_messages or [],
+    })
+
+@login_required
+def profile_settings(request):
+    profile_form = None
+    success_messages = None
+
+    if request.method == 'POST':
+        user = request.user
+        profile = user.profile
+        profile_form = EditProfileForm(data=request.POST)
+        success_messages = []
+
+        if profile_form.is_valid():
+            for key, val in profile_form.cleaned_data.iteritems():
+                if key in {'first_name', 'last_name', 'email'}:
+                    setattr(user, key, val.strip())
+                else:
+                    setattr(profile, key, val.strip())
+            user.save()
+            profile.save()
+
+            success_messages.append('Successfully updated profile!')
+
+    # Return to form
+    return render_settings(request, tab='profile', profile_form=profile_form,
+                         success_messages=success_messages)
+
+@login_required
+def password_settings(request):
+    password_form = None
+    error_messages = None
+    success_messages = None
+
+    if request.method == 'POST':
+        password_form = EditPasswordForm(data=request.POST)
         error_messages = []
         success_messages = []
 
-        # To see if we need to update password
-        update_password = False
-        password_valid = True
+        if password_form.is_valid():
+            current_password = password_form.cleaned_data['current_password']
+            new_password = password_form.cleaned_data['new_password']
+            confirm_password = password_form.cleaned_data['confirm_password']
 
-        if edit_form.is_valid():
-            # Get non-empty field values
-            updated_fields = {k: v for k, v
-                              in edit_form.cleaned_data.iteritems() if v}
+            if new_password != confirm_password:
+                error_messages.append(
+                    'New password and password confirmation don\'t match.'
+                )
 
-            # Manually check password fields
-            if updated_fields.viewkeys() & {
-                'current_password', 'new_password', 'confirm_password',
-            }:
-                if 'current_password' not in updated_fields:
-                    error_messages.append(
-                        'Current password was missing.'
-                    )
-                    password_valid = False
-                if 'new_password' not in updated_fields:
-                    error_messages.append(
-                        'New password was missing.'
-                    )
-                    password_valid = False
-                if 'confirm_password' not in updated_fields:
-                    error_messages.append(
-                        'Password confirmation was missing.'
-                    )
-                    password_valid = False
+            # Authenticate the current password
+            user = authenticate(username=request.user.username,
+                                password=current_password)
+            if not user:
+                error_messages.append('Incorrect password.')
 
-                # If we're good so far...
-                if password_valid:
-                    if updated_fields['new_password'] != updated_fields['confirm_password']:
-                        error_messages.append(
-                            'New password and password confirmation don\'t match.'
-                        )
-                        password_valid = False
+            # Update the password if no errors
+            if not error_messages:
+                # Set password
+                user.set_password(new_password)
+                user.save()
+                # Sign user in again
+                new_user = authenticate(username=request.user.username,
+                                        password=new_password)
+                login(request, new_user)
+                success_messages.append('Successfully updated password!')
 
-                    # Authenticate the current password
-                    user = authenticate(username=request.user.username,
-                                        password=updated_fields['current_password'])
-                    if user:
-                        update_password = True
-                    else:
-                        error_messages.append('Incorrect password.')
-                        password_valid = False
-
-            # Only proceed if password valid
-            if password_valid:
-                # Update password
-                if update_password:
-                    # Set password
-                    request.user.set_password(updated_fields['new_password'])
-                    request.user.save()
-                    profile.save()
-                    # Sign user in again
-                    new_user = authenticate(username=request.user.username,
-                                            password=updated_fields['new_password'])
-                    login(request, new_user)
-
-                # Update other fields
-                if not error_messages:
-                    for key, val in updated_fields.iteritems():
-                        if key in {'first_name', 'last_name', 'email'}:
-                            setattr(request.user, key, val.strip())
-                        else:
-                            setattr(profile, key, val.strip())
-                    request.user.save()
-                    profile.save()
-
-                success_messages.append('Successfully updated!')
-
-        # Return to form
-        return render(request, 'user_accounts/edit_settings.jinja', {
-            'css': [
-                'user_accounts/css/edit_settings.css'
-            ],
-            'profile_pic': profile.get_gravatar_url(PROFILE_PIC_SIZE),
-            'edit_form': edit_form,
-            'error_messages': error_messages,
-            'success_messages': success_messages,
-        })
-
-    def get(self, request):
-        profile = request.user.profile
-        return render(request, 'user_accounts/edit_settings.jinja', {
-            'css': [
-                'user_accounts/css/edit_settings.css'
-            ],
-            'profile_pic': profile.get_gravatar_url(PROFILE_PIC_SIZE),
-            'edit_form': SettingsForm(initial={
-                'first_name': profile.first_name,
-                'last_name': profile.last_name,
-                'email': profile.email,
-                'phone': profile.phone,
-                'bio': profile.bio
-            })
-        })
-
+    # Return to form
+    return render_settings(request, tab='password', password_form=password_form,
+                         error_messages=error_messages,
+                         success_messages=success_messages)
 
 class UserProfile(View):
     def get(self, request, username):
         context = {
             'ext_css': [
                 '//cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.3.1/fullcalendar.min.css',
+                '//cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.7.14/css/'
+                'bootstrap-datetimepicker.min.css',
+                '//cdnjs.cloudflare.com/ajax/libs/bootstrap-switch/3.3.2/css/bootstrap3/'
+                'bootstrap-switch.min.css'
             ],
             'css': [
                 'user_accounts/css/profile.css'
@@ -299,15 +304,38 @@ class UserProfile(View):
                 '//cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.3.1/fullcalendar.min.js',
                 '//cdnjs.cloudflare.com/ajax/libs/react/0.13.2/react-with-addons.min.js',
                 '//cdnjs.cloudflare.com/ajax/libs/react/0.13.0/JSXTransformer.js',
+                '//cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.7.14/js/'
+                'bootstrap-datetimepicker.min.js',
+                '//cdnjs.cloudflare.com/ajax/libs/bootstrap-switch/3.3.2/js/'
+                'bootstrap-switch.min.js'
             ],
             'js': [
-                'user_accounts/js/testcalendar.js'
             ],
             'jsx': [
-                'user_accounts/js/profile.jsx'
+                'ourcalendar/jsx/datetime_field.jsx',
+                'user_accounts/js/profile_calendar_input_form.jsx',
+                'user_accounts/js/calendar.jsx',
+                'user_accounts/js/profile.jsx',
+                'user_accounts/js/event_request_box.jsx',
+                'user_accounts/js/options.jsx',
             ],
-            'js_data': {}
+            'js_data': {
+
+            }
         }
+
+        try:
+            profile = User.objects.get(username=username).profile
+            context['profile'] = {
+                'username': username,
+                'gravatar': profile.get_gravatar_url(125),
+                'full_name': '***** *********',
+                'email': '*******@*****.***',
+                'phone': '**********',
+                'bio': ''
+            }
+        except User.DoesNotExist:
+            raise Http404("User does not exist")
 
         if request.user.is_authenticated():
             state = {
@@ -316,38 +344,40 @@ class UserProfile(View):
                 'IS_FRIENDS': 2
             }
 
+            # uncensor full_name, bio
+            context['profile']['full_name'] = profile.full_name
+            context['profile']['bio'] = profile.bio
+
+            context['js_data']['showFriendButton'] = request.user.id != profile.pk
+            context['js_data']['profileId'] = profile.pk
+            context['friended'] = False
+            context['censor'] = False
+
+            # uncensor email, phone if viewing own profile
+            if request.user.id == profile.pk:
+                context['profile']['email'] = profile.email
+                context['profile']['phone'] = profile.phone
+                context['profile']['is_free'] = profile.is_free
+
             try:
-                profile = User.objects.get(username=username).profile
-                context['profile'] = profile
-                context['js_data']['showFriendButton'] = request.user.id != profile.pk
-                context['js_data']['profileId'] = profile.pk
-                context['friended'] = False
-                context['censor'] = False
+                friendship = Friendship.objects.get(
+                    from_friend=self.request.user.profile,
+                    to_friend=profile
+                )
+                if friendship.accepted:
+                    context['friended'] = True
+                    context['js_data']['status'] = state['IS_FRIENDS']
 
-                try:
-                    friendship = Friendship.objects.get(
-                        from_friend=self.request.user.profile,
-                        to_friend=profile
-                    )
-                    if friendship.accepted:
-                        context['friended'] = True
-                        context['js_data']['status'] = state['IS_FRIENDS']
-                    else:
-                        context['js_data']['status'] = state['PENDING']
-                except Friendship.DoesNotExist:
-                    context['js_data']['status'] = state['CLEAN']
+                    # uncensor email, phone
+                    context['profile']['email'] = profile.email
+                    context['profile']['phone'] = profile.phone
+                    context['profile']['is_free'] = profile.is_free
+                else:
+                    context['js_data']['status'] = state['PENDING']
+            except Friendship.DoesNotExist:
+                context['js_data']['status'] = state['CLEAN']
 
-            except User.DoesNotExist:
-                raise Http404("User does not exist")
         else:
-            context['profile'] = {
-                'username': username,
-                'full_name': '***** *********',
-                'email': '*******@*****.***',
-                'phone': '**********',
-                'bio': ''
-            }
-
             return_url = reverse('user_accounts:login')
             return_url += '?next='
             return_url += reverse(
@@ -358,5 +388,29 @@ class UserProfile(View):
             context['return_url'] = return_url
             context['js_data']['showFriendButton'] = False
             context['censor'] = True
+
+        friend_events = []
+        user_events = []
+        should_display = False
+        is_user = username == request.user.username
+        if request.user.is_authenticated():
+            user_events = [e.serialize() for e in
+                                request.user.profile.calendars.get(title='Default').events.all()]
+            try:
+                if is_user:
+                    should_display = True
+                friend = User.objects.get(username=username).profile
+                friendship = request.user.profile.get_friendship(friend)
+                if friendship is not None and friendship.accepted:
+                    friend_events = [e.serialize() for e in
+                                     friend.calendars.get(title="Default").events.all()]
+
+                    should_display = True
+            except (User.DoesNotExist, Friendship.DoesNotExist):
+                pass
+        context['js_data']['user_events'] = user_events
+        context['js_data']['friend_events'] = friend_events
+        context['js_data']['should_display'] = should_display
+        context['js_data']['is_user'] = is_user
 
         return render(request, 'user_accounts/profile.jinja', context)
