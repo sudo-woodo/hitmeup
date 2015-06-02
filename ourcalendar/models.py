@@ -26,7 +26,7 @@ class Calendar(models.Model):
         return "%s -> %s" % (self.owner, self.title)
 
     def get_between(self, range_start=None, range_end=None):
-        return list(itertools.chain([e.get_between(range_start, range_end) for e in self.events.all()]))
+        return list(itertools.chain(*[e.get_between(range_start, range_end) for e in self.events.all()]))
 
 # TODO here to refactor to signals.py
 @receiver(post_save, sender=UserProfile)

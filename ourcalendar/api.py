@@ -53,7 +53,7 @@ class EventResource(DjangoResource):
         query = calendar.events.get(id=event_id) if event_id else calendar
         events = query.get_between(range_start, range_end)
 
-        return list(itertools.chain(*events))
+        return events
 
     # GET /api/events/<pk>/
     # Gets detail on a specific event.
