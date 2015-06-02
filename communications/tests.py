@@ -49,10 +49,16 @@ class EmailTestCase(TestCase):
         p.add_friend(q)
         q.add_friend(r)
         r.add_friend(p)
-        self.assertEqual(len(mail.outbox), 3)
+        q.add_friend(p)
+        r.add_friend(q)
+        p.add_friend(r)
+        self.assertEqual(len(mail.outbox), 6)
         self.assertEqual(mail.outbox[0].subject, 'A Notification from HitMeUp')
-        self.assertEqual(mail.outbox[0].subject, 'A Notification from HitMeUp')
-        self.assertEqual(mail.outbox[0].subject, 'A Notification from HitMeUp')
+        self.assertEqual(mail.outbox[1].subject, 'A Notification from HitMeUp')
+        self.assertEqual(mail.outbox[2].subject, 'A Notification from HitMeUp')
+        self.assertEqual(mail.outbox[3].subject, 'A Notification from HitMeUp')
+        self.assertEqual(mail.outbox[4].subject, 'A Notification from HitMeUp')
+        self.assertEqual(mail.outbox[5].subject, 'A Notification from HitMeUp')
 
 
 
