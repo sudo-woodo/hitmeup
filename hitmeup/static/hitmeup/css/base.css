@@ -31,3 +31,7 @@ body {
 .red-bg {
     background-color: #EF5350;
 }
+
+.settings-icon, .logout-icon {
+    margin-right: 5px;
+}

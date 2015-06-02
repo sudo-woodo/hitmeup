@@ -43,11 +43,17 @@
                         <ul class="dropdown-menu dropdown-menu-right" role="menu">
                             <li>
                                 <a href="{{ url('user_accounts:profile_settings') }}">
+                                    <i class="fa fa-cog settings-icon"></i>
                                     Settings
                                 </a>
                             </li>
                             <li role="presentation" class="divider"></li>
-                            <li><a href="{{ url('user_accounts:logout') }}">Logout</a></li>
+                            <li>
+                                <a href="{{ url('user_accounts:logout') }}">
+                                    <i class="fa fa-sign-out logout-icon"></i>
+                                    Logout
+                                </a>
+                            </li>
                         </ul>
                     </li>
 
