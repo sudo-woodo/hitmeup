@@ -219,7 +219,8 @@ class WeeklyRecurrenceTest(TestCase):
         self.w.last_event_end = datetime.datetime(2015, 12, 31, 10, 46, 45, 349955)
         self.assertEquals(len(self.event.get_between(datetime.datetime(2013, 5, 29, 10, 46, 45, 349955),
                               datetime.datetime(2016, 6, 29, 10, 46, 45, 349955))),
-            70 )
+            69)
+
     def test_frequency3(self):
         self.event.start=datetime.datetime(2015, 1, 1, 1, 46, 45, 349955)
         self.event.end=datetime.datetime(2015, 1, 2, 1, 46, 45, 349955)

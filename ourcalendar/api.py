@@ -1,5 +1,7 @@
 from collections import defaultdict
 from datetime import timedelta
+import re
+import itertools
 from restless.dj import DjangoResource
 from restless.exceptions import BadRequest
 from restless.preparers import FieldsPreparer
@@ -33,26 +35,25 @@ class EventResource(DjangoResource):
         range_start = range_end = None
 
         if start is not None:
-            range_start = datetime.strptime(start, '%Y-%m-%d %H:%M')
+            try:
+                range_start = datetime.strptime(start, '%Y-%m-%d %H:%M')
+            except ValueError:
+                errors['start'].append("Start not in the correct format")
 
         if end is not None:
-            range_end = datetime.strptime(end, '%Y-%m-%d %H:%M')
+            try:
+                range_end = datetime.strptime(end, '%Y-%m-%d %H:%M')
+            except ValueError:
+                errors['end'].append("End not in the correct format")
 
         if errors:
             raise BadRequest(str(errors))
 
         calendar = self.request.user.profile.calendars.get(title="Default")
-        events = calendar.get_between(range_start, range_end)
-        if event_id is not None:
-            events = calendar.events.get(id=event_id).get_between(range_start, range_end)
+        query = calendar.events.get(id=event_id) if event_id else calendar
+        events = query.get_between(range_start, range_end)
 
-        flattened_events = []
-        for e in events:
-            try:
-                flattened_events += e
-            except TypeError:
-                flattened_events.append(e)
-        return flattened_events
+        return events
 
     # GET /api/events/<pk>/
     # Gets detail on a specific event.
@@ -65,11 +66,8 @@ class EventResource(DjangoResource):
 
         # Helper function to shift days_of_week array by some integer offset
         def shift_days(days_of_week, offset):
-            prev_days = list(days_of_week)
-            next_days = list(days_of_week)
-            for i in range(len(days_of_week)):
-                next_days[(i + offset) % 7] = prev_days[i]
-            return ''.join(next_days)
+            offset = -(offset % 7)
+            return days_of_week[offset:] + days_of_week[:offset]
 
         event = Event.objects.get(id=pk, calendar__owner=self.request.user.profile)
         errors = defaultdict(list)
@@ -83,11 +81,17 @@ class EventResource(DjangoResource):
         if 'end_delta' in self.data:
             end_diff = self.data['end_delta']
 
-        if 'recurrence_type' in self.data and self.data['recurrence_type'] == 'weekly':
-            recurrence = WeeklyRecurrence.objects.get(event=event)
-            is_recurring = True
+        if self.data.get('recurrence_type') == 'weekly':
+            try:
+                recurrence = WeeklyRecurrence.objects.get(event=event)
+                is_recurring = True
+            except WeeklyRecurrence.DoesNotExist:
+                errors['recurrence_type'].append("Event is not a weekly recurrence")
         else:
-            recurrence = SingleRecurrence.objects.get(event=event)
+            try:
+                recurrence = SingleRecurrence.objects.get(event=event)
+            except SingleRecurrence.DoesNotExist:
+                errors['recurrence_type'].append("Event is not a single recurrence")
 
         if 'start' in self.data:
             try:
@@ -192,8 +196,9 @@ class EventResource(DjangoResource):
                     errors['days_of_week'].append("Days of week not provided")
                 else:
                     days_of_week = self.data['days_of_week']
-                    # TODO: How to check that the string is of length 7 and all are 0's and 1's?
-                    # TODO: If we do error checks here, do we need to error check again in backend?
+
+                if not re.match(r'^[01]{7}$', days_of_week):
+                    errors['days_of_week'].append("Days of week in incorrect format")
 
         if errors:
             raise BadRequest(str(errors))

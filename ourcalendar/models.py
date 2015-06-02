@@ -26,7 +26,7 @@ class Calendar(models.Model):
         return "%s -> %s" % (self.owner, self.title)
 
     def get_between(self, range_start=None, range_end=None):
-        return list(itertools.chain([e.get_between(range_start, range_end) for e in self.events.all()]))
+        return list(itertools.chain(*[e.get_between(range_start, range_end) for e in self.events.all()]))
 
 # TODO here to refactor to signals.py
 @receiver(post_save, sender=UserProfile)
@@ -89,8 +89,8 @@ class Event(models.Model):
                 except WeeklyRecurrence.DoesNotExist:
                     pass
 
-        range_start = range_start if range_start is not None else datetime.strptime('1990-01-01 12:12', '%Y-%m-%d %H:%M')
-        range_end = range_end if range_end is not None else datetime.strptime('2050-01-01 12:12', '%Y-%m-%d %H:%M')
+        range_start = range_start or datetime.min
+        range_end = range_end or datetime.max
 
         return subclass.get_between(range_start, range_end)
 
@@ -117,7 +117,7 @@ class SingleRecurrence(RecurrenceType):
     def get_between(self, range_start, range_end):
 
         if self.event.end >= range_start and range_end >= self.event.start >= range_start:
-            return self.event
+            return [self.event]
         else:
             return []
 
@@ -140,7 +140,7 @@ class WeeklyRecurrence(RecurrenceType):
 
     last_event_end = models.DateTimeField(default=hour_from_now)
 
-    # TODO: implement with frequency
+
     def get_between(self, range_start, range_end):
 
         # An array of events to return
@@ -161,10 +161,9 @@ class WeeklyRecurrence(RecurrenceType):
                                   id=self.event.id)
                     events.append(event)
                     event.recurrence_type = WeeklyRecurrence()
+                start += timezone.timedelta(days=1)
                 if start.weekday() == 6:
-                    start = start + timezone.timedelta(days=1) + timezone.timedelta(weeks=self.frequency - 1)
-                else:
-                    start = start + timezone.timedelta(days=1)
+                    start += timezone.timedelta(weeks=self.frequency - 1)
 
         return events
 
