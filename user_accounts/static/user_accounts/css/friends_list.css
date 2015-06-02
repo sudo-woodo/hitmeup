@@ -15,6 +15,10 @@ body {
     border-color: #bdbdbd;
 }
 
+.friend-info {
+    height: 130px;
+}
+
 .profile-pic-container {
     display: inline-block;
     float: left;

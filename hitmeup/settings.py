@@ -43,6 +43,7 @@ INSTALLED_APPS = (
 
     # Vendor
     'django_jinja',
+    'haystack',
     'restless',
 
     # Custom
@@ -52,6 +53,7 @@ INSTALLED_APPS = (
     'user_accounts',
     'ourcalendar',
     'notifications',
+    'search_bar',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -188,3 +190,26 @@ CSRF_FAILURE_VIEW = 'hitmeup.views.csrf_failure'
 
 # Fullcalendar
 TIME_FMT = '%Y-%m-%dT%H:%M:%S'
+
+# Haystack settings
+from urlparse import urlparse
+
+es = urlparse(os.environ.get('SEARCHBOX_URL', 'http://127.0.0.1:9200/'))
+
+port = es.port or 80
+
+HAYSTACK_CONNECTIONS = {
+    'default': {
+        'ENGINE': 'haystack.backends.elasticsearch_backend.ElasticsearchSearchEngine',
+        'URL': es.scheme + '://' + es.hostname + ':' + str(port),
+        'INDEX_NAME': 'documents',
+    },
+}
+
+if es.username:
+    HAYSTACK_CONNECTIONS['default']['KWARGS'] = {"http_auth": es.username + ':' + es.password}
+
+# Allows constant real-time updating of search indexes, removes need for ./manage.py rebuild_index
+# If this is removed then we may have to set a cron job to update...
+HAYSTACK_SIGNAL_PROCESSOR = 'haystack.signals.RealtimeSignalProcessor'
+# End of Haystack settings

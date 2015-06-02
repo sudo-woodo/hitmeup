@@ -1,0 +1,48 @@
+{% extends "base.jinja" %}
+
+{% block title %}
+    Search Results
+{% endblock %}
+
+{% block content %}
+    <div id="main-content">
+        <div class="container">
+            {% for result in results %}
+                <div class="col-xs-12 col-sm-6 col-md-4">
+                    <div class="panel panel-default">
+                        <div class="friend-info profile-info panel-body">
+                            <div class="profile-pic-container">
+                                <img src="{{ result.gravatar_url }}" class="profile-pic img-thumbnail">
+                            </div>
+                            <div class="profile-info-container overflow-control">
+                                <strong class="suggestion-title">
+                                    {{ result.username }}
+                                    {% if result.full_name %}
+                                        <br />
+                                        {{ result.full_name }}
+                                    {% endif %}
+                                </strong>
+                                <ul class="fa-ul info-container">
+                                    <li>
+                                        <i class="fa fa-li fa-user"></i>
+                                        <a href="{{ result.profile_url }}">
+                                            My Profile
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% else %}
+                <div class="panel panel-default">
+                    <div class="panel-body no-results-panel">
+                        <em>
+                            No results found for your query. Try another search item.
+                        </em>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}
