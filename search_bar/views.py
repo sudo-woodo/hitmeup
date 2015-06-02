@@ -31,9 +31,9 @@ def user_search(request):
             profile = suggestion.profile
             try:
                 request.user.profile.get_friendship(profile)
-                friends.append((profile, True))
+                friends.append(profile)
             except Friendship.DoesNotExist:
-                others.append((profile, False))
+                others.append(profile)
 
         return render(request, 'search_bar/result.jinja', {
             'css': [
