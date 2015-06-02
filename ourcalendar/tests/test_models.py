@@ -94,7 +94,7 @@ class EventTestCase(TestCase):
 
         # Test unicode representation
         self.assertEqual(
-            "%s -> %s -> %s" % (event.calendar.owner, event.calendar, event.title),
+            "%s -> %s : %s -> %s" % (event.calendar, event.title, event.start, event.end,),
             unicode(event)
         )
 

@@ -9,6 +9,7 @@ from django.http.response import HttpResponseRedirect
 from django.shortcuts import render
 from django.utils.html import escape
 from django.views.generic import View
+import itertools
 from user_accounts.forms import LoginForm, SignupForm, SignUpExtendedForm, EditProfileForm, \
     EditPasswordForm
 from user_accounts.models import Friendship
@@ -192,8 +193,9 @@ def friends_list(request):
         },
     })
 
+
 def render_settings(request, tab='profile', profile_form=None, password_form=None,
-                  success_messages=None, error_messages=None):
+                    success_messages=None, error_messages=None):
     profile = request.user.profile
 
     return render(request, 'user_accounts/edit_settings.jinja', {
@@ -241,7 +243,7 @@ def profile_settings(request):
 
     # Return to form
     return render_settings(request, tab='profile', profile_form=profile_form,
-                         success_messages=success_messages)
+                           success_messages=success_messages)
 
 @login_required
 def password_settings(request):
@@ -283,8 +285,8 @@ def password_settings(request):
 
     # Return to form
     return render_settings(request, tab='password', password_form=password_form,
-                         error_messages=error_messages,
-                         success_messages=success_messages)
+                           error_messages=error_messages,
+                           success_messages=success_messages)
 
 class UserProfile(View):
     def get(self, request, username):
@@ -394,16 +396,16 @@ class UserProfile(View):
         should_display = False
         is_user = username == request.user.username
         if request.user.is_authenticated():
-            user_events = [e.serialize() for e in
-                                request.user.profile.calendars.get(title='Default').events.all()]
+            events = request.user.profile.calendars.get(title='Default').get_between()
+            user_events = [e.serialize() for e in events]
             try:
                 if is_user:
                     should_display = True
                 friend = User.objects.get(username=username).profile
                 friendship = request.user.profile.get_friendship(friend)
                 if friendship is not None and friendship.accepted:
-                    friend_events = [e.serialize() for e in
-                                     friend.calendars.get(title="Default").events.all()]
+                    events = friend.calendars.get(title="Default").get_between()
+                    friend_events = [e.serialize() for e in events]
 
                     should_display = True
             except (User.DoesNotExist, Friendship.DoesNotExist):

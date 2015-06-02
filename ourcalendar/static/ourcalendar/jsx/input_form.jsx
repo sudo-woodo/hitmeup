@@ -4,14 +4,31 @@ var InputForm = (function(React, $)  {
 
     return React.createClass({
 
+        // State in regards to the frequency and days of repetition are held in create_event_modal
+        // since they are accessed using jQuery.
         getInitialState: function()  {
             return  {
                 title: '',
                 start: '',
                 end: '',
                 description: '',
-                location: ''
+                location: '',
+                repeat: false
             };
+        },
+
+        componentDidMount: function()  {
+            // Repeat button switch. Toggle the repeat box.
+            $("[name='repeat']").bootstrapSwitch({
+                onSwitchChange: this.onChangeRepeat,
+                size: 'normal',
+                labelText: "repeat",
+                handleWidth: 50
+            });
+        },
+
+        onChangeRepeat: function()  {
+            this.setState({repeat: !this.state.repeat});
         },
 
         handleInput: function()  {
@@ -24,10 +41,20 @@ var InputForm = (function(React, $)  {
 
         // Returns fields that are then put into the form.
         render: function()  {
+            // User has ability to make an event repeating only upon creation, not edit.
+            var isCreation = false;
+            if (this.props.edit == "false")  {
+                isCreation = true;
+            }
+            var repeatBox = (this.state.repeat && isCreation) ? <RepeatBox ref="repeat"/> : "";
+            var repeatButton = isCreation ? <p><input id="repeat" name="repeat" type="checkbox" checked={this.state.repeat} /></p> : "";
+
             return (
                 <div>
                     <p><input type="text" maxLength="200" className="form-control" placeholder="Title" value={this.state.title} ref="title" onChange={this.handleInput} /></p>
                     <p><DateTimeField ref="datetime" /></p>
+                    {repeatButton}
+                    <p>{repeatBox}</p>
                     <p><input type="text" maxLength="200" className="form-control" placeholder="Location" value={this.state.location} ref="location" onChange={this.handleInput} /></p>
                     <p><textArea maxLength="600" className="form-control" placeholder="Description" value={this.state.description} ref="description" onChange={this.handleInput} /></p>
                 </div>
