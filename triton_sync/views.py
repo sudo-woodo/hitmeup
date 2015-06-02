@@ -26,13 +26,15 @@ class SyncView(View):
                 error_message = 'There was error getting your classes: %s' % TritonLinkException.message
         else:
             return render(request, 'triton_sync/sync.jinja', {
-                'login_form': login_form
+                'login_form': login_form,
+                'css': ['triton_sync/css/sync.css'],
             })
 
         if error_message is not None:
             return render(request, 'triton_sync/sync.jinja', {
                 'login_form': login_form,
-                'error_messages': [error_message]
+                'error_messages': [error_message],
+                'css': ['triton_sync/css/sync.css'],
             })
 
         # Create events for each of the user's class
@@ -42,5 +44,6 @@ class SyncView(View):
     @method_decorator(login_required)
     def get(self, request):
         return render(request, 'triton_sync/sync.jinja', {
-            'login_form': TritonLinkLoginForm()
+            'login_form': TritonLinkLoginForm(),
+            'css': ['triton_sync/css/sync.css'],
         })
