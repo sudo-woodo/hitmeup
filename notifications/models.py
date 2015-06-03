@@ -63,8 +63,7 @@ def send_friend_request_notification(sender, from_friend, to_friend, **kwargs):
     )
     if created:
         send_notification_email(notification)
-
-    if not created:
+    else:
         notification.refresh()
 
 @receiver(accept_friend, sender=UserProfile)
@@ -78,6 +77,5 @@ def send_friend_accept_notification(sender, from_friend, to_friend, **kwargs):
     )
     if created:
         send_notification_email(notification)
-
-    if not created:
+    else:
         notification.refresh()
