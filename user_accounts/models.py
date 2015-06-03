@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.core.urlresolvers import reverse
 import django.dispatch
 from django.contrib.auth.models import User
@@ -9,6 +10,8 @@ from django.dispatch.dispatcher import receiver
 from ourcalendar.logic.intervals import Interval
 from user_accounts.templatetags import gravatar
 from django.utils import timezone
+from django.core.mail import EmailMessage
+from communications.emails import send_registration_email
 
 
 request_friend = django.dispatch.Signal(providing_args=['from_friend', 'to_friend'])
@@ -54,6 +57,16 @@ class UserProfile(models.Model):
     @property
     def gravatar_url(self):
         return self.get_gravatar_url()
+
+    def create_html_email(self,
+                          sender=settings.EMAIL_HOST_USER,
+                          *args, **kwargs):
+        # Create an EmailMessage Object with recipient = user
+        msg = EmailMessage(from_email=sender, to=[self.email], *args, **kwargs)
+
+        # Set html content type
+        msg.content_subtype = "html"
+        return msg
 
     def get_gravatar_url(self, size=80):
         return gravatar.gravatar_url(self.user.email, size)
@@ -113,11 +126,23 @@ class UserProfile(models.Model):
             'username': self.username,
             'first_name': self.first_name,
             'last_name': self.last_name,
+            'full_name': self.full_name,
             'email': self.email,
             'phone': self.phone,
             'gravatar_url': self.get_gravatar_url(size=100),
             'profile_url': self.profile_url,
             'is_free': self.is_free,
+        }
+
+    @property
+    def public_serialized(self):
+        return {
+            'id': self.pk,
+            'username': self.username,
+            'first_name': self.first_name,
+            'last_name': self.last_name,
+            'gravatar_url': self.get_gravatar_url(size=100),
+            'profile_url': self.profile_url,
         }
 
     def get_friendship(self, other):

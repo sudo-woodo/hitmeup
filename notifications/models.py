@@ -1,9 +1,9 @@
 from django.contrib.humanize.templatetags.humanize import naturaltime
-from django.core.urlresolvers import reverse
 from django.db import models
 from django.dispatch.dispatcher import receiver
 from user_accounts.models import UserProfile, request_friend, accept_friend
 from django.utils import timezone
+from communications.emails import send_notification_email
 
 
 class Notification(models.Model):
@@ -61,8 +61,9 @@ def send_friend_request_notification(sender, from_friend, to_friend, **kwargs):
         action_url=from_friend.profile_url,
         text=Notification.NOTIFICATION_STRINGS[Notification.REQUEST_FRIEND] % from_friend,
     )
-
-    if not created:
+    if created:
+        send_notification_email(notification)
+    else:
         notification.refresh()
 
 @receiver(accept_friend, sender=UserProfile)
@@ -74,6 +75,7 @@ def send_friend_accept_notification(sender, from_friend, to_friend, **kwargs):
         action_url=from_friend.profile_url,
         text=Notification.NOTIFICATION_STRINGS[Notification.ACCEPT_FRIEND] % from_friend,
     )
-
-    if not created:
+    if created:
+        send_notification_email(notification)
+    else:
         notification.refresh()

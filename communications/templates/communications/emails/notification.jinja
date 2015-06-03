@@ -1,0 +1,20 @@
+{% extends "communications/emails/base.jinja" %}
+
+{% block content %}
+    <a href="{{ BASE_URL }}{{ notification.action_url }}"
+            style="
+            display: block;
+            padding: 20px;
+            border: 1px solid #eee;
+            -webkit-border-radius: 5px;
+            -moz-border-radius: 5px;
+            border-radius: 5px;
+            text-decoration: none;
+            ">
+        <img src="{{ notification.image_url }}"
+             style="height: auto; width: 50px;">
+        <span style="margin-left: 5px; vertical-align: top;">
+            {{ notification.text }} (Click here to view.)
+        </span>
+    </a>
+{%  endblock %}

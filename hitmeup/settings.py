@@ -15,6 +15,8 @@ import os
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+BASE_URL = os.environ.get('HMU_BASE_URL', 'http://localhost:8000')
+
 # Honor the 'X-Forwarded-Proto' header for request.is_secure()
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
@@ -43,6 +45,7 @@ INSTALLED_APPS = (
 
     # Vendor
     'django_jinja',
+    'haystack',
     'restless',
     'datetimewidget',
 
@@ -53,7 +56,9 @@ INSTALLED_APPS = (
     'user_accounts',
     'ourcalendar',
     'notifications',
-    'triton_sync',
+	'triton_sync',
+    'search_bar',
+    'communications',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -188,5 +193,36 @@ LOGIN_URL = '/login/'
 CSRF_FAILURE_VIEW = 'hitmeup.views.csrf_failure'
 
 
+# Emails
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = 'sudowoodohitmeup@gmail.com'
+EMAIL_HOST_PASSWORD = 'bobandkavin'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+
+
 # Fullcalendar
 TIME_FMT = '%Y-%m-%dT%H:%M:%S'
+
+# Haystack settings
+from urlparse import urlparse
+
+es = urlparse(os.environ.get('SEARCHBOX_URL', 'http://127.0.0.1:9200/'))
+
+port = es.port or 80
+
+HAYSTACK_CONNECTIONS = {
+    'default': {
+        'ENGINE': 'haystack.backends.elasticsearch_backend.ElasticsearchSearchEngine',
+        'URL': es.scheme + '://' + es.hostname + ':' + str(port),
+        'INDEX_NAME': 'documents',
+    },
+}
+
+if es.username:
+    HAYSTACK_CONNECTIONS['default']['KWARGS'] = {"http_auth": es.username + ':' + es.password}
+
+# Allows constant real-time updating of search indexes, removes need for ./manage.py rebuild_index
+# If this is removed then we may have to set a cron job to update...
+HAYSTACK_SIGNAL_PROCESSOR = 'haystack.signals.RealtimeSignalProcessor'
+# End of Haystack settings

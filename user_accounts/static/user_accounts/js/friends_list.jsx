@@ -126,6 +126,8 @@
                         <span className="info">
                             <strong>
                                 {this.props.friend.username}
+                                {this.props.friend.full_name ?
+                                 ' (' + this.props.friend.full_name + ')' : ''}
                             </strong>
                         </span>
                     ),
