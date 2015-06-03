@@ -1,0 +1,17 @@
+body {
+    background-color: #e0e0e0;
+}
+
+.sync-panel {
+    border-color: #bdbdbd;
+    margin-top: 10px;
+}
+
+.sync-title {
+    font-size: 2em;
+    margin-bottom: 5px;
+}
+
+.sync-help-text {
+    margin-bottom: 0;
+}

@@ -47,6 +47,7 @@ INSTALLED_APPS = (
     'django_jinja',
     'haystack',
     'restless',
+    'datetimewidget',
 
     # Custom
     'hitmeup',
@@ -55,6 +56,7 @@ INSTALLED_APPS = (
     'user_accounts',
     'ourcalendar',
     'notifications',
+	'triton_sync',
     'search_bar',
     'communications',
 )

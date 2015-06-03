@@ -23,3 +23,8 @@ body {
 .days-picker {
     float: right !important;
 }
+
+#sync-button-wrapper {
+    text-align: right;
+    margin-bottom: 10px;
+}
