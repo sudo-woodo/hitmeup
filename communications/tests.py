@@ -1,13 +1,7 @@
 from django.core import mail
-from django.contrib.auth.models import User
-from django.core.urlresolvers import reverse
 from django.test import TestCase, Client
-from django.utils.crypto import get_random_string
 from util.factories import *
-from communications.emails import render_email
 from user_accounts.models import *
-from user_accounts.models import *
-from notifications.models import *
 
 SIGNUP_URL = reverse('user_accounts:signup')
 
@@ -44,22 +38,21 @@ class EmailTestCase(TestCase):
 
     def test_notification(self):
         # testing notification emails for sending friend requests
-        # p, q, r = UserProfile.objects.all()[4:6]
-        p, q, r = [UserProfileFactory(user__email='sudowoodohitmeup@gmail.com') for _ in range(3)]
-        p.add_friend(q)
-        q.add_friend(r)
-        r.add_friend(p)
-        q.add_friend(p)
-        r.add_friend(q)
-        p.add_friend(r)
-        self.assertEqual(len(mail.outbox), 6)
-        self.assertEqual(mail.outbox[0].subject, 'A Notification from HitMeUp')
-        self.assertEqual(mail.outbox[1].subject, 'A Notification from HitMeUp')
-        self.assertEqual(mail.outbox[2].subject, 'A Notification from HitMeUp')
-        self.assertEqual(mail.outbox[3].subject, 'A Notification from HitMeUp')
-        self.assertEqual(mail.outbox[4].subject, 'A Notification from HitMeUp')
-        self.assertEqual(mail.outbox[5].subject, 'A Notification from HitMeUp')
+        users = [UserProfileFactory(user__email='sudowoodohitmeup@gmail.com') for _ in range(3)]
+        num_mails = 0
 
+        for f1 in users:
+            for f2 in users:
+                if f1 is not f2:
+                    f1.add_friend(f2)
+                    self.assertEqual(mail.outbox[num_mails].subject,
+                                     'A Notification from HitMeUp')
+                    num_mails += 1
+                    self.assertEqual(len(mail.outbox), num_mails)
 
-
-
+        # No repeat notifs
+        for f1 in users:
+            for f2 in users:
+                if f1 is not f2:
+                    f1.add_friend(f2)
+                    self.assertEqual(len(mail.outbox), num_mails)
