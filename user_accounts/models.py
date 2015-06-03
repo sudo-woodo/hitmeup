@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.core.urlresolvers import reverse
 import django.dispatch
 from django.contrib.auth.models import User
@@ -9,6 +10,8 @@ from django.dispatch.dispatcher import receiver
 from ourcalendar.logic.intervals import Interval
 from user_accounts.templatetags import gravatar
 from django.utils import timezone
+from django.core.mail import EmailMessage
+from communications.emails import send_registration_email
 
 
 request_friend = django.dispatch.Signal(providing_args=['from_friend', 'to_friend'])
@@ -54,6 +57,16 @@ class UserProfile(models.Model):
     @property
     def gravatar_url(self):
         return self.get_gravatar_url()
+
+    def create_html_email(self,
+                          sender=settings.EMAIL_HOST_USER,
+                          *args, **kwargs):
+        # Create an EmailMessage Object with recipient = user
+        msg = EmailMessage(from_email=sender, to=[self.email], *args, **kwargs)
+
+        # Set html content type
+        msg.content_subtype = "html"
+        return msg
 
     def get_gravatar_url(self, size=80):
         return gravatar.gravatar_url(self.user.email, size)

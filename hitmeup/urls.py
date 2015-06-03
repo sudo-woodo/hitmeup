@@ -33,4 +33,5 @@ urlpatterns = [
     url(r'^search/', include('search_bar.urls', namespace='search_bar')),
     url(r'^', include('static_pages.urls', namespace='static_pages')),
     url(r'^', include('user_accounts.urls', namespace='user_accounts')),
+    url(r'^communications/', include('communications.urls', namespace='communications')),
 ]

@@ -11,6 +11,7 @@ urlpatterns = [
 
     # Settings stuff
     url(r'^settings/profile$', views.profile_settings, name='profile_settings'),
+    url(r'^settings/subscriptions$', views.subscription_settings, name='subscription_settings'),
     url(r'^settings/password$', views.password_settings, name='password_settings'),
 
     url(r'^user/(?P<username>[\w.@+-]+)/$', views.UserProfile.as_view(),

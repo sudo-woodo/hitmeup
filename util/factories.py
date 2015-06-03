@@ -4,7 +4,8 @@ from django.utils.crypto import get_random_string
 import factory
 from factory.django import DjangoModelFactory
 from django.contrib.auth.models import User
-from ourcalendar.models import Event, Calendar, create_calendar, RecurrenceType, SingleRecurrence,WeeklyRecurrence
+from communications.models import Subscription, create_subscription
+from ourcalendar.models import Event, Calendar, create_calendar, RecurrenceType, SingleRecurrence, WeeklyRecurrence
 from user_accounts.models import UserProfile, create_user_profile
 from notifications.models import Notification
 
@@ -44,6 +45,7 @@ class UserProfileFactory(DjangoModelFactory):
     bio = factory.LazyAttribute(lambda p: "%s's biography..." % p.user.username)
 
     calendar = factory.RelatedFactory('util.factories.CalendarFactory', 'owner')
+    subscription = factory.RelatedFactory('util.factories.SubscriptionFactory', 'profile')
 
     @classmethod
     def _generate(cls, create, attrs):
@@ -51,9 +53,20 @@ class UserProfileFactory(DjangoModelFactory):
 
         # Note: If the signal was defined with a dispatch_uid, include that in both calls.
         post_save.disconnect(create_calendar, UserProfile)
+        post_save.disconnect(create_subscription, UserProfile)
+
         user = super(UserProfileFactory, cls)._generate(create, attrs)
+
         post_save.connect(create_calendar, UserProfile)
+        post_save.connect(create_subscription, UserProfile)
+
         return user
+
+class SubscriptionFactory(DjangoModelFactory):
+    class Meta:
+        model = Subscription
+
+    profile = factory.SubFactory(UserProfileFactory, subscription=None)
 
 
 class NotificationFactory(DjangoModelFactory):

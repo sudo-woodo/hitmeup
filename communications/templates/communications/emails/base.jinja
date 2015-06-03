@@ -1,0 +1,46 @@
+<html>
+    <body>
+        {% block logo %}
+            <img src="{{ BASE_URL }}/static/communications/img/hitmeup_small.png"
+                 alt="HitMeUp" style="margin-bottom: 2em; height: 40px; width: 147px;"/>
+        {% endblock %}
+
+        {% block message %}
+            <div style="font-size: 1em; margin-bottom: 2em;">
+                <div style="margin-bottom: 2em;">
+                    {% block greeting %}
+                        Hello {{ profile.username }},
+                    {% endblock %}
+                </div>
+
+                <div style="margin-bottom: 2em;">
+                    {%  block content %}
+                    {% endblock %}
+                </div>
+
+                <div>
+                    {% block signature %}
+                        Sincerely, <br />
+                        <em>The HitMeUp Team</em>
+                    {% endblock %}
+                </div>
+            </div>
+        {% endblock %}
+
+        <hr/>
+
+        {% block footer %}
+            <div style="font-size: 0.8em;">
+                <div>
+                    <a href="{{ BASE_URL + url('user_accounts:subscription_settings') }}">
+                        Manage Email Settings
+                    </a>
+                </div>
+
+                <div>
+                    <p>&copy; 2015 HitMeUp All Rights Reserved</p>
+                </div>
+            </div>
+        {% endblock %}
+    </body>
+</html>
