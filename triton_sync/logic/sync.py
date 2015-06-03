@@ -162,6 +162,10 @@ def create_event(user, cls, date):
             last_event_end=end_date,
             event=event
         )
+    else:
+        recurrence = WeeklyRecurrence.objects.get(event=event)
+        recurrence.last_event_end = end_date
+        recurrence.save()
 
     return event
 
