@@ -1,6 +1,6 @@
 from django.test import TestCase, Client, RequestFactory
 from django.core.urlresolvers import reverse
-from util.factories import UserFactory, UserProfileFactory
+from util.factories import UserFactory
 from django.utils.crypto import get_random_string
 from django.contrib.auth.models import User
 
@@ -23,7 +23,6 @@ class SearchTestCase(TestCase):
         self.client = Client()
         self.factory = RequestFactory()
         self.password = get_random_string()
-        #self.user = UserFactory.create(password=self.password, first_name='test', last_name='name')
         self.user = UserFactory(username='TestUser', password=self.password, first_name='Test', last_name='Name')
         self.LOGIN_INFO = {
             'username': self.user.username,
