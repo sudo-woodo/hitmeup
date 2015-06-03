@@ -25,9 +25,12 @@ def send_registration_email(profile):
 def send_notification_email(notification):
     # Send the notification email
 
-    notification.recipient.create_html_email(
-        subject='A Notification from HitMeUp',
-        body=render_email('communications/emails/notification.jinja', notification.recipient, {
-            'notification': notification,
-        })
-    ).send(fail_silently=False)
+    recip = notification.recipient
+
+    if recip.subscription.friend_notifications:
+        notification.recipient.create_html_email(
+            subject='A Notification from HitMeUp',
+            body=render_email('communications/emails/notification.jinja', recip, {
+                'notification': notification,
+            })
+        ).send(fail_silently=False)
