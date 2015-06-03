@@ -18,26 +18,20 @@ def render_email(template, profile, context=None):
 def send_registration_email(profile):
     # Send the welcome email
 
-    def task():
-        profile.create_html_email(
-            subject='Welcome to HitMeUp!',
-            body=render_email('communications/emails/registration.jinja', profile)
-        ).send(fail_silently=False)
-
-    Thread(target=task).start()
+    profile.create_html_email(
+        subject='Welcome to HitMeUp!',
+        body=render_email('communications/emails/registration.jinja', profile)
+    ).send(fail_silently=False)
 
 def send_notification_email(notification):
     # Send the notification email
 
     recip = notification.recipient
 
-    def task():
-        if recip.subscription.friend_notifications:
-            notification.recipient.create_html_email(
-                subject='A Notification from HitMeUp',
-                body=render_email('communications/emails/notification.jinja', recip, {
-                    'notification': notification,
-                })
-            ).send(fail_silently=False)
-
-    Thread(target=task).start()
+    if recip.subscription.friend_notifications:
+        notification.recipient.create_html_email(
+            subject='A Notification from HitMeUp',
+            body=render_email('communications/emails/notification.jinja', recip, {
+                'notification': notification,
+            })
+        ).send(fail_silently=False)
