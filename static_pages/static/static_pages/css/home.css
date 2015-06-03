@@ -39,7 +39,7 @@ body {
     margin-bottom: 30px;
 }
 
-@media (min-width: 768px) {
+@media (min-width: 992px) {
     .content-promo-block {
         margin-bottom: 0;
     }
