@@ -9,6 +9,7 @@ from django.http.response import HttpResponseRedirect
 from django.shortcuts import render
 from django.utils.html import escape
 from django.views.generic import View
+import itertools
 from user_accounts.forms import LoginForm, SignupForm, SignUpExtendedForm, EditProfileForm, \
     EditPasswordForm, EditSubscriptionForm
 from user_accounts.models import Friendship
@@ -49,8 +50,10 @@ class SignUpView(View):
             return HttpResponseRedirect(reverse('user_accounts:extended_signup'))
         else:
             # Return the form with errors
-            return render(request, 'user_accounts/signup.jinja',
-                          {'signup_form': signup_form})
+            return render(request, 'user_accounts/signup.jinja', {
+                'signup_form': signup_form,
+                'css': ['user_accounts/css/signup.css']
+            })
 
     def get(self, request):
         # if the user is already logged in and is trying to access the signup
@@ -60,7 +63,8 @@ class SignUpView(View):
 
         # Otherwise, return a blank form for the user to fill out
         return render(request, 'user_accounts/signup.jinja', {
-            'signup_form': SignupForm()
+            'signup_form': SignupForm(),
+            'css': ['user_accounts/css/signup.css']
         })
 
 
@@ -90,6 +94,7 @@ class SignUpExtended(View):
         # If there's an form error, rerender with errors
         else:
             return render(request, 'user_accounts/signup_extended.jinja', {
+                'css': ['user_accounts/css/signup_extended.css'],
                 'signup_extended_form': signup_extended_form
             })
 
@@ -100,6 +105,7 @@ class SignUpExtended(View):
 
         # Otherwise, return a blank form for the user to fill out
         return render(request, 'user_accounts/signup_extended.jinja', {
+            'css': ['user_accounts/css/signup_extended.css'],
             'signup_extended_form': SignUpExtendedForm(),
         })
 
@@ -124,6 +130,7 @@ class LoginView(View):
 
                 else:
                     return render(request, 'user_accounts/login.jinja', {
+                        'css': ['user_accounts/css/login.css'],
                         'login_form': login_form,
                         'error_messages': [
                             'This account has been marked as inactive.'
@@ -132,6 +139,7 @@ class LoginView(View):
             # If user provided wrong info, rerender with errors
             else:
                 return render(request, 'user_accounts/login.jinja', {
+                    'css': ['user_accounts/css/login.css'],
                     'login_form': login_form,
                     'error_messages': [
                         'Incorrect username or password.'
@@ -140,6 +148,7 @@ class LoginView(View):
         # If there's an form error, rerender with errors
         else:
             return render(request, 'user_accounts/login.jinja', {
+                'css': ['user_accounts/css/login.css'],
                 'login_form': login_form
             })
 
@@ -151,6 +160,7 @@ class LoginView(View):
 
         # Else, display a empty form for the user
         return render(request, 'user_accounts/login.jinja', {
+            'css': ['user_accounts/css/login.css'],
             'login_form': LoginForm()
         })
 
@@ -300,14 +310,18 @@ def password_settings(request):
 
     # Return to form
     return render_settings(request, tab='password', password_form=password_form,
-                         error_messages=error_messages,
-                         success_messages=success_messages)
+                           error_messages=error_messages,
+                           success_messages=success_messages)
 
 class UserProfile(View):
     def get(self, request, username):
         context = {
             'ext_css': [
                 '//cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.3.1/fullcalendar.min.css',
+                '//cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.7.14/css/'
+                'bootstrap-datetimepicker.min.css',
+                '//cdnjs.cloudflare.com/ajax/libs/bootstrap-switch/3.3.2/css/bootstrap3/'
+                'bootstrap-switch.min.css'
             ],
             'css': [
                 'user_accounts/css/profile.css'
@@ -317,14 +331,24 @@ class UserProfile(View):
                 '//cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.3.1/fullcalendar.min.js',
                 '//cdnjs.cloudflare.com/ajax/libs/react/0.13.2/react-with-addons.min.js',
                 '//cdnjs.cloudflare.com/ajax/libs/react/0.13.0/JSXTransformer.js',
+                '//cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.7.14/js/'
+                'bootstrap-datetimepicker.min.js',
+                '//cdnjs.cloudflare.com/ajax/libs/bootstrap-switch/3.3.2/js/'
+                'bootstrap-switch.min.js'
             ],
             'js': [
-                'user_accounts/js/testcalendar.js'
             ],
             'jsx': [
-                'user_accounts/js/profile.jsx'
+                'ourcalendar/jsx/datetime_field.jsx',
+                'user_accounts/js/profile_calendar_input_form.jsx',
+                'user_accounts/js/calendar.jsx',
+                'user_accounts/js/profile.jsx',
+                'user_accounts/js/event_request_box.jsx',
+                'user_accounts/js/options.jsx',
             ],
-            'js_data': {}
+            'js_data': {
+
+            }
         }
 
         try:
@@ -391,5 +415,29 @@ class UserProfile(View):
             context['return_url'] = return_url
             context['js_data']['showFriendButton'] = False
             context['censor'] = True
+
+        friend_events = []
+        user_events = []
+        should_display = False
+        is_user = username == request.user.username
+        if request.user.is_authenticated():
+            events = request.user.profile.calendars.get(title='Default').get_between()
+            user_events = [e.serialize() for e in events]
+            try:
+                if is_user:
+                    should_display = True
+                friend = User.objects.get(username=username).profile
+                friendship = request.user.profile.get_friendship(friend)
+                if friendship is not None and friendship.accepted:
+                    events = friend.calendars.get(title="Default").get_between()
+                    friend_events = [e.serialize() for e in events]
+
+                    should_display = True
+            except (User.DoesNotExist, Friendship.DoesNotExist):
+                pass
+        context['js_data']['user_events'] = user_events
+        context['js_data']['friend_events'] = friend_events
+        context['js_data']['should_display'] = should_display
+        context['js_data']['is_user'] = is_user
 
         return render(request, 'user_accounts/profile.jinja', context)

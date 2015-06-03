@@ -1,0 +1,17 @@
+body {
+    background-color: #e0e0e0;
+}
+
+.panel-heading {
+    padding-bottom: 0;
+}
+
+.signup-ext-panel {
+    border-color: #bdbdbd;
+    margin-top: 20px;
+}
+
+.signup-ext-title {
+    font-size: 2em;
+    margin-bottom: 5px;
+}

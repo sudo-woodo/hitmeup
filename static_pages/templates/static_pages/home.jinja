@@ -5,10 +5,45 @@
 {% endblock %}
 
 {% block content %}
-    <div class="jumbotron">
+    <div class="jumbotron home-header">
         <div class="container">
-            <h1>HitMeUp.</h1>
-            <h2>Kiss your scheduling problems goodbye.</h2>
+            <h2 class="header-title">HitMeUp.</h2>
+            <h4 class="header-text"><em>Find out who's free at a click of a button.</em></h4>
+            {% if not user.is_authenticated() %}
+                <div class="header-button-wrapper">
+                    <a class="btn btn-info header-button" href="{{ url('user_accounts:signup') }}">
+                        <span class="header-button-text">
+                            Get Started
+                        </span>
+                    </a>
+                </div>
+            {% endif %}
         </div>
     </div>
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12 col-sm-12 col-md-4">
+                <div class="content-promo-left-block content-promo-block">
+                    <h4 class="text">Customize your profile</h4>
+                    <img class="profile-img img" src="{{ static('static_pages/img/Profile.jpg') }}" />
+
+                </div>
+            </div>
+            <div class="col-xs-12 col-sm-12 col-md-4">
+                <div class="content-promo-mid-block content-promo-block">
+                    <h4 class="text">Create your calendar</h4>
+                    <img class="calendar-img img" src="{{ static('static_pages/img/Calendar.jpg') }}" />
+
+                </div>
+            </div>
+            <div class="col-xs-12 col-sm-12 col-md-4">
+                <div class="content-promo-right-block content-promo-block">
+                    <h4 class="text">Meet with friends</h4>
+                    <img class="friends-img img" src="{{ static('static_pages/img/Friends.jpg') }}" />
+
+                </div>
+            </div>
+        </div>
+    </div>
+
 {% endblock %}

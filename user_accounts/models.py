@@ -78,7 +78,7 @@ class UserProfile(models.Model):
     def flatten_busy(self, other, show_range):
         from ourcalendar.models import Event
 
-        events = Event.objects.filter(calendar__ownder=self,
+        events = Event.objects.filter(calendar__owner=self,
                                       start__gt=show_range.start,
                                       end__lt=show_range.end)
 
@@ -126,11 +126,23 @@ class UserProfile(models.Model):
             'username': self.username,
             'first_name': self.first_name,
             'last_name': self.last_name,
+            'full_name': self.full_name,
             'email': self.email,
             'phone': self.phone,
             'gravatar_url': self.get_gravatar_url(size=100),
             'profile_url': self.profile_url,
             'is_free': self.is_free,
+        }
+
+    @property
+    def public_serialized(self):
+        return {
+            'id': self.pk,
+            'username': self.username,
+            'first_name': self.first_name,
+            'last_name': self.last_name,
+            'gravatar_url': self.get_gravatar_url(size=100),
+            'profile_url': self.profile_url,
         }
 
     def get_friendship(self, other):

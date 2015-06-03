@@ -6,49 +6,54 @@
 
 {% block content %}
     <div class="container">
-        <h1>Login to HitMeUp</h1>
+        <div class="panel panel-default login-panel">
+            <div class="panel-heading">
+                <h1 class="panel-title login-title">Login to HitMeUp</h1>
+            </div>
+            <div class="panel-body">
+                {% if error_messages %}
+                    {% for error in error_messages %}
+                        <div class="form-error alert alert-danger alert-dismissible" role="alert">
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                            <strong>{{ error }}</strong>
+                        </div>
+                    {% endfor %}
+                {% endif %}
 
-        {% if error_messages %}
-            {% for error in error_messages %}
-                <div class="form-error alert alert-danger alert-dismissible" role="alert">
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                    <strong>{{ error }}</strong>
-                </div>
-            {% endfor %}
-        {% endif %}
-
-        {% for field in login_form %}
-            {% if field.errors %}
-                {% for error in field.errors %}
-                    <div class="form-error alert alert-danger alert-dismissible" role="alert">
-                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                        {{ field.label_tag() }} {{ error|escape }}
-                    </div>
+                {% for field in login_form %}
+                    {% if field.errors %}
+                        {% for error in field.errors %}
+                            <div class="form-error alert alert-danger alert-dismissible" role="alert">
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                                {{ field.label_tag() }} {{ error|escape }}
+                            </div>
+                        {% endfor %}
+                    {% endif %}
                 {% endfor %}
-            {% endif %}
-        {% endfor %}
 
-        {% if request.GET.next %}
-            <form id="login_form" method="post" action="{{ url('user_accounts:login') }}?next={{ request.GET.next }}">
-        {% else %}
-            <form id="login_form" method="post" action="{{ url('user_accounts:login') }}">
-        {%  endif %}
+                {% if request.GET.next %}
+                    <form id="login_form" method="post" action="{{ url('user_accounts:login') }}?next={{ request.GET.next }}">
+                {% else %}
+                    <form id="login_form" method="post" action="{{ url('user_accounts:login') }}">
+                {%  endif %}
 
-            {% csrf_token %}
+                    {% csrf_token %}
 
-            {% for field in login_form %}
-                <div class="form-group">
-                    {{ field }}
-                </div>
-            {% endfor %}
+                    {% for field in login_form %}
+                        <div class="form-group">
+                            {{ field }}
+                        </div>
+                    {% endfor %}
 
-            <button type="submit" name="submit" class="btn btn-default">
-                Login
-            </button>
-        </form>
+                    <button type="submit" name="submit" class="btn btn-default">
+                        Login
+                    </button>
+                </form>
+            </div>
+        </div>
     </div>
 {% endblock %}

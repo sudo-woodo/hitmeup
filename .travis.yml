@@ -3,14 +3,18 @@ python: 2.7
 cache:
   directories:
   - $HOME/.cache/pip
-services: postgresql
+services:
+- postgresql
+- elasticsearch
 install:
-  - pip install -r requirements.txt
-  - npm install
+- pip install -r requirements.txt
+- npm install
 before_script:
+- sleep 10
 - psql -c "create user hmu with password 'hmu';" -U postgres
 - psql -c "alter user hmu createdb;" -U postgres
-script: python manage.py test
+script:
+- python manage.py test
 branches:
   only:
   - master

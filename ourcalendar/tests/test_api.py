@@ -2,8 +2,8 @@ import json
 from django.core.urlresolvers import reverse
 from django.test import TestCase, Client
 from django.utils.crypto import get_random_string
-from ourcalendar.models import Calendar, Event
-from util.factories import EventFactory, UserFactory
+from ourcalendar.models import Calendar, Event, SingleRecurrence
+from util.factories import EventFactory, UserFactory, SingleRecurrenceFactory
 
 
 class EventApiTestCase(TestCase):
@@ -24,6 +24,10 @@ class EventApiTestCase(TestCase):
             EventFactory(calendar=self.calendar) for _ in range(self.NUM_EVENTS)
         ]
 
+        # Turn all those events into single events
+        for event in self.events:
+            SingleRecurrenceFactory(event=event)
+
         # Set up client
         self.client = Client()
         self.client.login(username=user.username,
@@ -35,8 +39,17 @@ class EventApiTestCase(TestCase):
             'end': '2015-12-12 11:00',
             'title': 'Birthday Bash',
             'description': 'A swell time',
-            'location': 'Everywhere'
+            'location': 'Everywhere',
+            'last_event':  '2016-1-12 08:00',
+            'days_of_week': '1000000',
+            'frequency': '1',
+            'recurrence_type': 'single'
         }
+        self.LIST_DATA= {
+            'range_start': '2015-12-12 08:00',
+            'range_end': '2015-12-12 11:00'
+        }
+        self.REPEATING_EVENT_FIELDS = ['days_of_week', 'frequency', 'recurrence_type', 'last_event']
 
     def test_auth(self):
         # Tests if request rejected when not authenticated
@@ -57,7 +70,7 @@ class EventApiTestCase(TestCase):
         # Check if all the events are there
         event_ids = [e.id for e in Event.objects.filter(calendar__owner=self.profile)]
         for user in data:
-            self.assertIn(user['event_id'], event_ids)
+            self.assertIn(user['id'], event_ids)
 
     def test_detail(self):
         event = self.events[0]
@@ -66,12 +79,12 @@ class EventApiTestCase(TestCase):
         response = self.client.get(self.GET_DETAIL_URL(event.pk))
         data = json.loads(response.content)
 
-        expected_fields = ['event_id', 'start', 'end', 'title',
+        expected_fields = ['id', 'start', 'end', 'title',
                            'calendar', 'location', 'description']
 
         # Ensure all the fields are present
         for field in expected_fields:
-            if field == 'event_id':
+            if field == 'id':
                 self.assertEqual(data[field], event.pk)
             elif field == 'calendar':
                 self.assertEqual(data[field], event.calendar.pk)
@@ -85,6 +98,7 @@ class EventApiTestCase(TestCase):
     def test_update(self):
         # Create a event that belongs to another user
         new_event = EventFactory()
+        new_event.recurrence_type = SingleRecurrence()
 
         # Try to update an event that isn't ours
         response = self.client.put(self.GET_DETAIL_URL(new_event.pk),
@@ -141,7 +155,7 @@ class EventApiTestCase(TestCase):
                     getattr(Event.objects.get(pk=event.pk),
                             field).strftime('%Y-%m-%d %H:%M'),
                     self.NEW_DATA[field])
-            else:
+            elif field not in self.REPEATING_EVENT_FIELDS:
                 self.assertEqual(data[field], self.NEW_DATA[field])
                 self.assertEqual(
                     getattr(Event.objects.get(pk=event.pk), field),
@@ -206,7 +220,7 @@ class EventApiTestCase(TestCase):
                                     json.dumps(self.NEW_DATA),
                                     content_type='text/json')
         data = json.loads(response.content)
-        event_id = data['event_id']
+        event_id = data['id']
 
         # Ensure all the fields are present and updated
         for field in self.NEW_DATA:
@@ -217,6 +231,14 @@ class EventApiTestCase(TestCase):
                     getattr(Event.objects.get(pk=event_id),
                             field).strftime('%Y-%m-%d %H:%M'),
                     self.NEW_DATA[field])
+            elif field == 'frequency' or field == 'days_of_week' or field == 'last_event':
+                pass
+            elif field == 'recurrence_type':
+                if self.NEW_DATA[field] == 'weekly':
+                    pass
+                    self.assertEqual(data['last_event'], self.NEW_DATA['last_event'])
+                    self.assertEqual(data['days_of_week'], self.NEW_DATA['days_of_week'])
+                    self.assertEqual(data['frequency'], self.NEW_DATA['frequency'])
             else:
                 self.assertEqual(data[field], self.NEW_DATA[field])
                 self.assertEqual(

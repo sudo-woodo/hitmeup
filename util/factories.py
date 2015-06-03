@@ -5,7 +5,7 @@ import factory
 from factory.django import DjangoModelFactory
 from django.contrib.auth.models import User
 from communications.models import Subscription, create_subscription
-from ourcalendar.models import Event, Calendar, create_calendar
+from ourcalendar.models import Event, Calendar, create_calendar, RecurrenceType, SingleRecurrence, WeeklyRecurrence
 from user_accounts.models import UserProfile, create_user_profile
 from notifications.models import Notification
 
@@ -97,3 +97,22 @@ class EventFactory(DjangoModelFactory):
     location = factory.Sequence(lambda n: "Sweet %s Club" % n)
     description = factory.Sequence(lambda n: "Ethan is turning %s, "
                                              "so let's turn up!" % n)
+
+class RecurrenceFactory(DjangoModelFactory):
+    class Meta:
+        model = RecurrenceType
+
+    event = factory.SubFactory(EventFactory)
+
+class SingleRecurrenceFactory(DjangoModelFactory):
+    class Meta:
+        model = SingleRecurrence
+
+    event = factory.SubFactory(EventFactory)
+
+class WeeklyRecurrenceFactory(DjangoModelFactory):
+    class Meta:
+        model = WeeklyRecurrence
+
+    event = factory.SubFactory(EventFactory)
+

@@ -4,6 +4,7 @@ body {
 
 #calendar-container {
     margin-top: 20px;
+    border-color: #bdbdbd;
 }
 
 .modal-body textArea {
@@ -17,4 +18,8 @@ body {
 
 #desc-loc-container {
     word-wrap: break-word;
+}
+
+.days-picker {
+    float: right !important;
 }

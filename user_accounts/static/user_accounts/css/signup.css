@@ -1,0 +1,12 @@
+body {
+    background-color: #e0e0e0;
+}
+
+.signup-panel {
+    border-color: #bdbdbd;
+    margin-top: 10px;
+}
+
+.signup-title {
+    font-size: 2em;
+}
