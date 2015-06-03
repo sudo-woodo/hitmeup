@@ -47,6 +47,7 @@ class Event(models.Model):
     end = models.DateTimeField(default=hour_from_now)
     location = models.CharField(max_length=200, blank=True)
     description = models.TextField(max_length=600, blank=True)
+    import_hash = models.BigIntegerField(default=0)
 
     DEFAULT_TIME_FMT = '%Y-%m-%dT%H:%M:%S'
 
@@ -115,7 +116,7 @@ class SingleRecurrence(RecurrenceType):
 
     def get_between(self, range_start, range_end):
 
-        if self.event.start <= range_end and self.event.end >= range_start:
+        if self.event.end >= range_start and range_end >= self.event.start >= range_start:
             return [self.event]
         else:
             return []
@@ -138,6 +139,7 @@ class WeeklyRecurrence(RecurrenceType):
     frequency = models.IntegerField(default=1)
 
     last_event_end = models.DateTimeField(default=hour_from_now)
+
 
     def get_between(self, range_start, range_end):
 
