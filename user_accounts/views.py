@@ -36,6 +36,7 @@ class SignUpView(View):
                     'error_messages': [
                         'Passwords do not match.',
                     ],
+                    'css': ['user_accounts/css/signup.css']
                 })
 
             user = signup_form.save()
