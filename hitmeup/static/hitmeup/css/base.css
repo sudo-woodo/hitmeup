@@ -18,9 +18,15 @@ body {
 
 .navbar-my-profile-image {
     position: absolute;
-    top: 10px;
+    top: 6px;
     height: 30px;
     width: 30px;
+}
+
+@media (min-width: 992px) {
+    .navbar-my-profile-image {
+        top: 10px;
+    }
 }
 
 .navbar-my-profile-text {
@@ -30,6 +36,16 @@ body {
 
 .red-bg {
     background-color: #EF5350;
+}
+
+.navbar-more {
+    display: inline;
+}
+
+@media (min-width: 992px) {
+    .navbar-more {
+        display: none;
+    }
 }
 
 .settings-icon, .logout-icon {
