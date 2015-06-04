@@ -4,7 +4,7 @@ from django.contrib.auth.decorators import login_required
 
 urlpatterns = [
     url(r'^signup/$', views.SignUpView.as_view(), name='signup'),
-    url(r'^signup/extended/$', views.SignUpExtended.as_view(),
+    url(r'^signup/extended/$', login_required(views.SignUpExtended.as_view()),
         name='extended_signup'),
     url(r'^login/$', views.LoginView.as_view(), name='login'),
     url(r'^logout/$', views.logout, name='logout'),
