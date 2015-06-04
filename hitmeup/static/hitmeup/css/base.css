@@ -3,6 +3,16 @@ body {
     padding-top: 50px;
 }
 
+ul.navbar-nav:nth-last-of-type(n + 2) {
+    border-bottom: 1px solid #e7e7e7;
+}
+
+@media(min-width: 992px) {
+    ul.navbar-nav:nth-last-of-type(n + 2) {
+        border-bottom: 0;
+    }
+}
+
 .navbar-brand {
     padding: 10px;
 }
