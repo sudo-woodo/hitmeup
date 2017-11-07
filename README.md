@@ -2,7 +2,7 @@
 
 [![Build Status](https://magnum.travis-ci.com/sudo-woodo/hitmeup.svg?token=mrfhggqSNNETj8jymZkK&branch=master)](https://magnum.travis-ci.com/sudo-woodo/hitmeup)
 
-![Preview](preview.png)
+[![Preview](preview.png)](https://sudowoodo-hitmeup.herokuapp.com/)
 
 No more looking between calendars. See what time your friends are free.
 
