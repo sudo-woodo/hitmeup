@@ -1,4 +1,4 @@
-# hitmeup
+# HitMeUp
 
 [![Build Status](https://magnum.travis-ci.com/sudo-woodo/hitmeup.svg?token=mrfhggqSNNETj8jymZkK&branch=master)](https://magnum.travis-ci.com/sudo-woodo/hitmeup)
 
